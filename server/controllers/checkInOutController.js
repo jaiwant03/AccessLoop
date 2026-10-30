@@ -282,13 +282,13 @@ const verifyReturn = async (req, res, next) => {
     await booking.save();
 
     // Update user stats (completed bookings and hours)
-    await User.findByIdAndUpdate(booking.borrower, {
-      $inc: {
-        completedBookingsCount: 1,
-        activeBookingsCount: -1,
-        totalHoursUsed: booking.durationHours,
-      },
-    });
+    const borrowerUser = await User.findById(booking.borrower);
+    if (borrowerUser) {
+      borrowerUser.completedBookingsCount = (borrowerUser.completedBookingsCount || 0) + 1;
+      borrowerUser.activeBookingsCount = Math.max(0, (borrowerUser.activeBookingsCount || 1) - 1);
+      borrowerUser.totalHoursUsed = (borrowerUser.totalHoursUsed || 0) + (booking.durationHours || 0);
+      await borrowerUser.save();
+    }
 
     // Increment resource total bookings count
     await Resource.findByIdAndUpdate(booking.resource._id, {

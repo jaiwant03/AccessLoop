@@ -31,9 +31,16 @@ const calculateFairUsageMetrics = async (userId) => {
     0
   );
 
-  // 4. Incident penalty points (e.g. late returns or confirmed damage)
+  // 4. Incident penalty points (e.g. late returns or confirmed damage on user's reservations)
+  const allUserBookingIds = (
+    await Booking.find({ borrower: userId }).select('_id')
+  ).map((b) => b._id);
+
   const userIncidents = await Incident.find({
-    reportedBy: userId,
+    $or: [
+      { booking: { $in: allUserBookingIds } },
+      { reportedBy: userId },
+    ],
     category: { $in: ['late_return', 'physical_damage', 'misuse'] },
     status: { $in: ['Resolved', 'Action Required'] },
   });
