@@ -83,7 +83,7 @@ async function runTests() {
 
   const newResource = {
     name: 'E2E Autonomous Navigation Robot Kit',
-    category: 'Robotics & Automation',
+    category: 'Specialised Technical Resources',
     description: 'High-precision mobile robotics kit with LiDAR and stereo depth camera.',
     quantity: 2,
     location: 'Robotics Hall, Lab 3A',
@@ -103,6 +103,9 @@ async function runTests() {
     token: ownerToken,
     body: newResource,
   });
+  if (!createRes.ok) {
+    console.error('Create Resource Error response:', createRes.status, createRes.data);
+  }
   assert(createRes.ok && createRes.data.resource, 'Owner successfully listed new multi-unit resource (Quantity = 2)');
   const resource = createRes.data.resource;
   assert(resource.quantity === 2, 'Resource quantity is exactly 2 units');
@@ -126,6 +129,9 @@ async function runTests() {
       purpose: 'Robotics SLAM navigation mapping experiment',
     },
   });
+  if (!b1Req.ok) {
+    console.error('Borrower 1 Booking Error:', b1Req.status, b1Req.data);
+  }
   assert(b1Req.ok && b1Req.data.booking, 'Borrower 1 reserved Unit 1 successfully (Status: Pending)');
   const booking1 = b1Req.data.booking;
 
@@ -133,8 +139,11 @@ async function runTests() {
   const b1Approve = await request(`/bookings/${booking1._id}/review`, {
     method: 'PUT',
     token: ownerToken,
-    body: { status: 'Approved', reviewNotes: 'Approved for robotics project.' },
+    body: { action: 'approve', reviewNotes: 'Approved for robotics project.' },
   });
+  if (!b1Approve.ok) {
+    console.error('Owner Review Booking 1 Error:', b1Approve.status, b1Approve.data);
+  }
   assert(b1Approve.ok && b1Approve.data.booking.status === 'Approved', 'Owner approved Booking 1 (Unit 1 in use)');
 
   // Borrower 2 reserves Unit 2 for the exact same time slot
@@ -155,8 +164,11 @@ async function runTests() {
   const b2Approve = await request(`/bookings/${booking2._id}/review`, {
     method: 'PUT',
     token: ownerToken,
-    body: { status: 'Approved', reviewNotes: 'Approved for second unit.' },
+    body: { action: 'approve', reviewNotes: 'Approved for second unit.' },
   });
+  if (!b2Approve.ok) {
+    console.error('Owner Review Booking 2 Error:', b2Approve.status, b2Approve.data);
+  }
   assert(b2Approve.ok && b2Approve.data.booking.status === 'Approved', 'Owner approved Booking 2 (Both units now reserved)');
 
   // Attempt a 3rd reservation for the same slot (Capacity is 2, so 3rd must fail with 409 Conflict)
