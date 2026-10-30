@@ -51,12 +51,14 @@ const BookingDetailsPage = () => {
   const [checkInPhotoUrl, setCheckInPhotoUrl] = useState(
     'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'
   );
+  const [checkInFile, setCheckInFile] = useState(null);
 
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [returnNotes, setReturnNotes] = useState('Resource returned in complete working order with accessories.');
   const [returnPhotoUrl, setReturnPhotoUrl] = useState(
     'https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?auto=format&fit=crop&w=400&q=80'
   );
+  const [returnFile, setReturnFile] = useState(null);
 
   const [showInspectModal, setShowInspectModal] = useState(false);
   const [inspectionNotes, setInspectionNotes] = useState('All components verified intact. Lens clean. Battery charged.');
@@ -152,10 +154,19 @@ const BookingDetailsPage = () => {
     setActionLoading(true);
     setActionError('');
     try {
-      await api.post(`/check-in-out/${booking._id}/check-in`, {
-        borrowerNotes: checkInNotes,
-        initialPhotos: [checkInPhotoUrl],
-      });
+      if (checkInFile) {
+        const formData = new FormData();
+        formData.append('borrowerNotes', checkInNotes);
+        formData.append('photos', checkInFile);
+        await api.post(`/check-in-out/${booking._id}/check-in`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        await api.post(`/check-in-out/${booking._id}/check-in`, {
+          borrowerNotes: checkInNotes,
+          initialPhotos: [checkInPhotoUrl],
+        });
+      }
       setShowCheckInModal(false);
       setActionSuccess('Check-in details submitted! Awaiting owner handover confirmation.');
       await fetchBooking();
@@ -187,10 +198,19 @@ const BookingDetailsPage = () => {
     setActionLoading(true);
     setActionError('');
     try {
-      await api.post(`/check-in-out/${booking._id}/request-return`, {
-        borrowerNotes: returnNotes,
-        returnPhotos: [returnPhotoUrl],
-      });
+      if (returnFile) {
+        const formData = new FormData();
+        formData.append('borrowerNotes', returnNotes);
+        formData.append('photos', returnFile);
+        await api.post(`/check-in-out/${booking._id}/request-return`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        await api.post(`/check-in-out/${booking._id}/request-return`, {
+          borrowerNotes: returnNotes,
+          returnPhotos: [returnPhotoUrl],
+        });
+      }
       setShowReturnModal(false);
       setActionSuccess('Return request submitted! Awaiting custodian inspection.');
       await fetchBooking();
