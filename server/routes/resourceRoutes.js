@@ -20,8 +20,19 @@ router.post(
   upload.array('images', 5),
   createResource
 );
-router.put('/:id', protect, updateResource);
-router.delete('/:id', protect, deleteResource);
+router.put(
+  '/:id',
+  protect,
+  authorize('owner', 'manager', 'admin'),
+  upload.array('images', 5),
+  updateResource
+);
+router.delete(
+  '/:id',
+  protect,
+  authorize('owner', 'manager', 'admin'),
+  deleteResource
+);
 router.post('/:id/check-availability', checkAvailability);
 
 module.exports = router;
