@@ -304,8 +304,9 @@ const reviewBooking = async (req, res, next) => {
     }
 
     if (action === 'approve') {
-      // Re-verify no conflicts in the interim
-      const conflict = await Booking.findOne({
+      // Re-verify no conflicts exceeding resource quantity
+      const resourceQuantity = booking.resource?.quantity || 1;
+      const conflicts = await Booking.find({
         resource: booking.resource._id,
         _id: { $ne: booking._id },
         status: { $in: ['Approved', 'Active', 'Return Pending'] },
@@ -314,11 +315,11 @@ const reviewBooking = async (req, res, next) => {
         ],
       });
 
-      if (conflict) {
+      if (conflicts.length >= resourceQuantity) {
         return res.status(409).json({
           success: false,
           message:
-            'A conflicting booking was approved earlier. Cannot approve overlapping reservation.',
+            `All ${resourceQuantity} unit(s) of this resource are already reserved during this time slot. Cannot approve overlapping reservation.`,
         });
       }
 
