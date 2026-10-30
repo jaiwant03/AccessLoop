@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { AlertTriangle, PlusCircle, MessageSquare, ShieldCheck, Clock, CheckCircle } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { AlertTriangle, PlusCircle, MessageSquare, ShieldCheck, Clock, CheckCircle, Edit, Send, X } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const IncidentCenterPage = () => {
+  const { id: targetIncidentId } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNewModal, setShowNewModal] = useState(false);
   const [resources, setResources] = useState([]);
+
+  // Resolve / Update Modal State
+  const [incidentToUpdate, setIncidentToUpdate] = useState(null);
+  const [updateStatus, setUpdateStatus] = useState('Under Review');
+  const [managerNotes, setManagerNotes] = useState('');
+  const [resolutionDetails, setResolutionDetails] = useState('');
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  // Comment State
+  const [activeCommentIncidentId, setActiveCommentIncidentId] = useState(null);
+  const [commentText, setCommentText] = useState('');
+  const [commentLoading, setCommentLoading] = useState(false);
 
   // Form State
   const [selectedResource, setSelectedResource] = useState('');
@@ -58,6 +73,51 @@ const IncidentCenterPage = () => {
         evidenceImages: [evidenceUrl],
       });
       setShowNewModal(false);
+      setDescription('');
+      await fetchIncidents();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to file incident report.');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleStatusUpdateSubmit = async (e) => {
+    e.preventDefault();
+    if (!incidentToUpdate) return;
+    setUpdateLoading(true);
+    try {
+      await api.put(`/incidents/${incidentToUpdate._id}/status`, {
+        status: updateStatus,
+        managerNotes,
+        resolutionDetails: updateStatus === 'Resolved' || updateStatus === 'Closed' ? (resolutionDetails || managerNotes) : resolutionDetails,
+      });
+      setIncidentToUpdate(null);
+      await fetchIncidents();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to update incident status.');
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  const handleAddComment = async (incidentId) => {
+    if (!commentText.trim()) return;
+    setCommentLoading(true);
+    try {
+      await api.post(`/incidents/${incidentId}/comments`, {
+        message: commentText.trim(),
+      });
+      setCommentText('');
+      await fetchIncidents();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to add comment.');
+    } finally {
+      setCommentLoading(false);
+    }
+  };
+
+  const canManage = ['manager', 'admin', 'owner'].includes(user?.role);
       setDescription('');
       await fetchIncidents();
     } catch (err) {
