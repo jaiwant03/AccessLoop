@@ -68,7 +68,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/audit-logs" style={{ fontSize: '0.85rem', color: '#64748B' }}>
-                  Public Audit Logs
+                  System Audit Trail (Admin/Staff)
                 </Link>
               </li>
             </ul>
