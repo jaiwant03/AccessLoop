@@ -184,21 +184,42 @@ const IncidentCenterPage = () => {
                       <span className="badge badge-red">{inc.category.replace('_', ' ')}</span>
                       <span className="badge badge-gray">Severity: {inc.severity}</span>
                       <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>{inc.incidentNumber}</span>
+                      {targetIncidentId === inc._id && (
+                        <span className="badge badge-blue">Selected</span>
+                      )}
                     </div>
                     <h3 style={{ fontSize: '1.1rem', color: '#17231C' }}>
                       {inc.resource?.name}
                     </h3>
                   </div>
 
-                  <span
-                    className={`badge ${
-                      inc.status === 'Resolved' || inc.status === 'Closed'
-                        ? 'badge-green'
-                        : 'badge-amber'
-                    }`}
-                  >
-                    Status: {inc.status}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span
+                      className={`badge ${
+                        inc.status === 'Resolved' || inc.status === 'Closed'
+                          ? 'badge-green'
+                          : 'badge-amber'
+                      }`}
+                    >
+                      Status: {inc.status}
+                    </span>
+
+                    {canManage && (
+                      <button
+                        onClick={() => {
+                          setIncidentToUpdate(inc);
+                          setUpdateStatus(inc.status);
+                          setManagerNotes(inc.managerNotes || '');
+                          setResolutionDetails(inc.resolutionDetails || '');
+                        }}
+                        className="btn btn-secondary btn-sm"
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                      >
+                        <Edit size={13} />
+                        <span>Update Status</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: 1.6, marginBottom: '1rem' }}>
@@ -223,16 +244,40 @@ const IncidentCenterPage = () => {
                     Reported by <strong>{inc.reportedBy?.name}</strong> ({inc.reportedBy?.role}) • {new Date(inc.createdAt).toLocaleString()}
                   </div>
 
-                  {inc.evidenceImages && inc.evidenceImages.length > 0 && (
-                    <a
-                      href={inc.evidenceImages[0]}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ color: '#16A34A', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    {inc.evidenceImages && inc.evidenceImages.length > 0 && (
+                      <a
+                        href={inc.evidenceImages[0]}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{ color: '#16A34A', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                      >
+                        <span>View Evidence ({inc.evidenceImages.length})</span>
+                      </a>
+                    )}
+
+                    <button
+                      onClick={() =>
+                        setActiveCommentIncidentId(
+                          activeCommentIncidentId === inc._id ? null : inc._id
+                        )
+                      }
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#3B82F6',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        fontSize: '0.8rem',
+                      }}
                     >
-                      <span>View Photographic Evidence ({inc.evidenceImages.length})</span>
-                    </a>
-                  )}
+                      <MessageSquare size={13} />
+                      <span>Discussion ({inc.comments?.length || 0})</span>
+                    </button>
+                  </div>
                 </div>
 
                 {inc.managerNotes && (
@@ -248,6 +293,93 @@ const IncidentCenterPage = () => {
                     }}
                   >
                     <strong>Supervisor Findings:</strong> {inc.managerNotes}
+                  </div>
+                )}
+
+                {inc.resolutionDetails && (
+                  <div
+                    style={{
+                      marginTop: '0.5rem',
+                      padding: '0.65rem 0.85rem',
+                      backgroundColor: '#F0FDF4',
+                      borderRadius: '6px',
+                      fontSize: '0.8rem',
+                      color: '#15803D',
+                      border: '1px solid rgba(34, 197, 94, 0.3)',
+                    }}
+                  >
+                    <strong>Resolution Agreed:</strong> {inc.resolutionDetails}
+                    {inc.resolvedBy && (
+                      <span style={{ marginLeft: '0.5rem', color: '#166534', fontSize: '0.75rem' }}>
+                        (Resolved by {inc.resolvedBy?.name || 'Staff'})
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* Comments Section */}
+                {activeCommentIncidentId === inc._id && (
+                  <div
+                    style={{
+                      marginTop: '1rem',
+                      paddingTop: '1rem',
+                      borderTop: '1px solid #E5E7EB',
+                    }}
+                  >
+                    <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: '#17231C' }}>
+                      Incident Discussion & Oversight Notes
+                    </h4>
+
+                    {(!inc.comments || inc.comments.length === 0) ? (
+                      <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginBottom: '0.75rem' }}>
+                        No comments recorded yet.
+                      </p>
+                    ) : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                        {inc.comments.map((c, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              padding: '0.5rem 0.75rem',
+                              backgroundColor: '#F8FAF9',
+                              borderRadius: '6px',
+                              border: '1px solid #E5E7EB',
+                              fontSize: '0.8rem',
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                              <strong style={{ color: '#17231C' }}>{c.authorName} ({c.authorRole})</strong>
+                              <span style={{ color: '#94A3B8', fontSize: '0.7rem' }}>
+                                {new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                            </div>
+                            <div style={{ color: '#334155' }}>{c.message}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Type an official remark or update..."
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        style={{ fontSize: '0.825rem' }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') handleAddComment(inc._id);
+                        }}
+                      />
+                      <button
+                        onClick={() => handleAddComment(inc._id)}
+                        disabled={commentLoading || !commentText.trim()}
+                        className="btn btn-primary btn-sm"
+                      >
+                        <Send size={13} />
+                        <span>Send</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -350,6 +482,85 @@ const IncidentCenterPage = () => {
                   </button>
                   <button type="submit" disabled={formLoading} className="btn btn-danger btn-sm">
                     {formLoading ? 'Submitting...' : 'Submit Official Report'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {/* Update Incident Status Modal */}
+        {incidentToUpdate && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h3 style={{ fontSize: '1.15rem' }}>Update Status: {incidentToUpdate.incidentNumber}</h3>
+                <button
+                  onClick={() => setIncidentToUpdate(null)}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleStatusUpdateSubmit}>
+                <div className="modal-body">
+                  <div style={{ marginBottom: '1rem', fontSize: '0.85rem', color: '#475569' }}>
+                    Asset: <strong>{incidentToUpdate.resource?.name}</strong> • Reported by: {incidentToUpdate.reportedBy?.name}
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Workflow Status</label>
+                    <select
+                      className="form-select"
+                      value={updateStatus}
+                      onChange={(e) => setUpdateStatus(e.target.value)}
+                    >
+                      <option value="Reported">Reported</option>
+                      <option value="Under Review">Under Review</option>
+                      <option value="Action Required">Action Required</option>
+                      <option value="Resolved">Resolved</option>
+                      <option value="Closed">Closed</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Supervisor / Manager Notes</label>
+                    <textarea
+                      rows={3}
+                      className="form-textarea"
+                      placeholder="Enter investigation observations, assessment of culpability or technical findings..."
+                      value={managerNotes}
+                      onChange={(e) => setManagerNotes(e.target.value)}
+                    />
+                  </div>
+
+                  {(updateStatus === 'Resolved' || updateStatus === 'Closed' || updateStatus === 'Action Required') && (
+                    <div className="form-group">
+                      <label className="form-label">Resolution Details / Settlement</label>
+                      <textarea
+                        rows={3}
+                        className="form-textarea"
+                        placeholder="Detail agreement: replacement parts arranged, repair completed, deposit refunded/retained..."
+                        value={resolutionDetails}
+                        onChange={(e) => setResolutionDetails(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    onClick={() => setIncidentToUpdate(null)}
+                    className="btn btn-secondary btn-sm"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={updateLoading}
+                    className="btn btn-primary btn-sm"
+                  >
+                    {updateLoading ? 'Saving...' : 'Save & Notify Reporter'}
                   </button>
                 </div>
               </form>
