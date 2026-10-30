@@ -1,0 +1,11 @@
+{
+  "name": "accessloop",
+  "version": "1.0.0",
+  "description": "AccessLoop - Smart, Trusted & Fair Resource Sharing Ecosystem",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "seed": "npm --prefix server run seed",
+    "server": "npm --prefix server run dev",
+    "client": "npm --prefix client run dev"
+  }
+}
