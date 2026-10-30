@@ -43,9 +43,19 @@ export const DEMO_ACCOUNTS = {
 };
 
 export const AuthProvider = ({ children }) => {
+  const normalizeUser = (u) => {
+    if (!u) return null;
+    const resolvedId = u._id || u.id;
+    return {
+      ...u,
+      _id: resolvedId,
+      id: resolvedId,
+    };
+  };
+
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('accessloop_user');
-    return saved ? JSON.parse(saved) : null;
+    return saved ? normalizeUser(JSON.parse(saved)) : null;
   });
   const [token, setToken] = useState(() => localStorage.getItem('accessloop_token'));
   const [loading, setLoading] = useState(true);
@@ -56,8 +66,9 @@ export const AuthProvider = ({ children }) => {
       if (storedToken) {
         try {
           const res = await api.get('/auth/me');
-          setUser(res.data.user);
-          localStorage.setItem('accessloop_user', JSON.stringify(res.data.user));
+          const normalized = normalizeUser(res.data.user);
+          setUser(normalized);
+          localStorage.setItem('accessloop_user', JSON.stringify(normalized));
         } catch (err) {
           console.error('Session expired or invalid:', err);
           logout();
@@ -70,22 +81,24 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
-    const { token: newToken, user: newUser } = res.data;
+    const { token: newToken, user: rawUser } = res.data;
+    const normalized = normalizeUser(rawUser);
     localStorage.setItem('accessloop_token', newToken);
-    localStorage.setItem('accessloop_user', JSON.stringify(newUser));
+    localStorage.setItem('accessloop_user', JSON.stringify(normalized));
     setToken(newToken);
-    setUser(newUser);
-    return newUser;
+    setUser(normalized);
+    return normalized;
   };
 
   const register = async (userData) => {
     const res = await api.post('/auth/register', userData);
-    const { token: newToken, user: newUser } = res.data;
+    const { token: newToken, user: rawUser } = res.data;
+    const normalized = normalizeUser(rawUser);
     localStorage.setItem('accessloop_token', newToken);
-    localStorage.setItem('accessloop_user', JSON.stringify(newUser));
+    localStorage.setItem('accessloop_user', JSON.stringify(normalized));
     setToken(newToken);
-    setUser(newUser);
-    return newUser;
+    setUser(normalized);
+    return normalized;
   };
 
   const demoLogin = async (accountKey) => {
@@ -104,9 +117,10 @@ export const AuthProvider = ({ children }) => {
   const refreshUser = async () => {
     try {
       const res = await api.get('/auth/me');
-      setUser(res.data.user);
-      localStorage.setItem('accessloop_user', JSON.stringify(res.data.user));
-      return res.data.user;
+      const normalized = normalizeUser(res.data.user);
+      setUser(normalized);
+      localStorage.setItem('accessloop_user', JSON.stringify(normalized));
+      return normalized;
     } catch (err) {
       console.error('Error refreshing user:', err);
     }

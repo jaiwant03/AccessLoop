@@ -29,6 +29,7 @@ const OwnerDashboard = () => {
   const fetchOwnerData = async () => {
     setLoading(true);
     try {
+      const currentUserId = (user?._id || user?.id)?.toString();
       const [dashRes, bookRes, resRes] = await Promise.all([
         api.get('/analytics/dashboard'),
         api.get('/bookings?roleFilter=owner'),
@@ -38,8 +39,8 @@ const OwnerDashboard = () => {
       setAnalytics(dashRes.data.summary);
       const allOwnerBookings = bookRes.data.bookings || [];
       setRequests(allOwnerBookings.filter((b) => b.status === 'Pending'));
-      setActiveBorrowings(allOwnerBookings.filter((b) => ['Active', 'Approved'].includes(b.status)));
-      setMyResources(resRes.data.resources?.filter((r) => r.owner?._id === user?._id) || []);
+      setActiveBorrowings(allOwnerBookings.filter((b) => ['Active', 'Approved', 'Return Pending', 'Overdue'].includes(b.status)));
+      setMyResources(resRes.data.resources?.filter((r) => (r.owner?._id || r.owner)?.toString() === currentUserId) || []);
     } catch (err) {
       console.error('Error fetching owner data:', err);
     } finally {
@@ -49,7 +50,7 @@ const OwnerDashboard = () => {
 
   useEffect(() => {
     fetchOwnerData();
-  }, [user?._id]);
+  }, [user?._id, user?.id]);
 
   const handleQuickApprove = async (bookingId) => {
     try {
@@ -296,9 +297,24 @@ const OwnerDashboard = () => {
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                    <span className="badge badge-blue">{b.status}</span>
-                    <Link to={`/bookings/${b._id}`} className="btn btn-secondary btn-sm">
-                      Inspect & Details
+                    <span
+                      className={`badge ${
+                        b.status === 'Return Pending'
+                          ? 'badge-amber'
+                          : b.status === 'Active'
+                          ? 'badge-blue'
+                          : 'badge-green'
+                      }`}
+                    >
+                      {b.status}
+                    </span>
+                    <Link
+                      to={`/bookings/${b._id}`}
+                      className={`btn btn-sm ${
+                        b.status === 'Return Pending' ? 'btn-primary' : 'btn-secondary'
+                      }`}
+                    >
+                      {b.status === 'Return Pending' ? 'Inspect & Sign-Off' : 'Inspect & Details'}
                     </Link>
                   </div>
                 </div>

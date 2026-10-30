@@ -69,6 +69,7 @@ const register = async (req, res, next) => {
       success: true,
       token,
       user: {
+        _id: user._id,
         id: user._id,
         name: user.name,
         email: user.email,
@@ -77,6 +78,8 @@ const register = async (req, res, next) => {
         department: user.department,
         verificationStatus: user.verificationStatus,
         fairUsageScore: user.fairUsageScore,
+        avatar: user.avatar,
+        studentOrEmployeeId: user.studentOrEmployeeId,
       },
     });
   } catch (error) {
@@ -121,6 +124,7 @@ const login = async (req, res, next) => {
       success: true,
       token,
       user: {
+        _id: user._id,
         id: user._id,
         name: user.name,
         email: user.email,
@@ -130,6 +134,7 @@ const login = async (req, res, next) => {
         verificationStatus: user.verificationStatus,
         fairUsageScore: user.fairUsageScore,
         avatar: user.avatar,
+        studentOrEmployeeId: user.studentOrEmployeeId,
       },
     });
   } catch (error) {

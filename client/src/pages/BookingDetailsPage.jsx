@@ -112,8 +112,11 @@ const BookingDetailsPage = () => {
     );
   }
 
-  const isBorrower = booking.borrower?._id === user?._id;
-  const isOwner = booking.owner?._id === user?._id;
+  const currentUserId = (user?._id || user?.id)?.toString();
+  const borrowerId = (booking.borrower?._id || booking.borrower)?.toString();
+  const ownerId = (booking.owner?._id || booking.owner)?.toString();
+  const isBorrower = Boolean(currentUserId && borrowerId === currentUserId);
+  const isOwner = Boolean(currentUserId && ownerId === currentUserId);
   const isStaff = ['admin', 'manager'].includes(user?.role);
 
   // Stepper Calculation

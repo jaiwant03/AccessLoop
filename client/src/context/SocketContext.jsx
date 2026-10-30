@@ -11,7 +11,8 @@ export const SocketProvider = ({ children }) => {
   const [bookingUpdate, setBookingUpdate] = useState(null);
 
   useEffect(() => {
-    if (user && user._id) {
+    const currentUserId = user?._id || user?.id;
+    if (user && currentUserId) {
       // Connect to root backend
       const socketUrl = window.location.origin.includes(':5173')
         ? 'http://localhost:5000'
@@ -22,7 +23,7 @@ export const SocketProvider = ({ children }) => {
       });
 
       newSocket.on('connect', () => {
-        newSocket.emit('join_user_room', user._id);
+        newSocket.emit('join_user_room', currentUserId);
       });
 
       newSocket.on('new_notification', (notif) => {
@@ -44,7 +45,7 @@ export const SocketProvider = ({ children }) => {
         setSocket(null);
       }
     }
-  }, [user?._id]);
+  }, [user?._id, user?.id]);
 
   return (
     <SocketContext.Provider
