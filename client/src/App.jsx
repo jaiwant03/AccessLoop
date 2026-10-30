@@ -101,6 +101,14 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/incidents/:id"
+          element={
+            <ProtectedRoute>
+              <IncidentCenterPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Role Dashboards */}
         <Route

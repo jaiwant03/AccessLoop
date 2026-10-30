@@ -452,8 +452,16 @@ const cancelBooking = async (req, res, next) => {
     booking.cancelledBy = req.user._id;
     await booking.save();
 
+    if (oldStatus === 'Active') {
+      const bUser = await User.findById(booking.borrower);
+      if (bUser) {
+        bUser.activeBookingsCount = Math.max(0, (bUser.activeBookingsCount || 1) - 1);
+        await bUser.save();
+      }
+    }
+
     // Check if slot opens up for waiting list
-    if (oldStatus === 'Approved') {
+    if (oldStatus === 'Approved' || oldStatus === 'Active') {
       await promoteWaitingList(booking.resource._id, {
         startTime: booking.startTime,
         endTime: booking.endTime,
