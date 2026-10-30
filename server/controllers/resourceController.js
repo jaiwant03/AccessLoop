@@ -309,6 +309,13 @@ const checkAvailability = async (req, res, next) => {
       });
     }
 
+    const targetResource = await Resource.findById(resourceId);
+    if (!targetResource) {
+      return res.status(404).json({ success: false, message: 'Resource not found.' });
+    }
+
+    const maxQuantity = targetResource.quantity || 1;
+
     // Check overlapping approved/active bookings
     const overlapping = await Booking.find({
       resource: resourceId,
@@ -318,11 +325,12 @@ const checkAvailability = async (req, res, next) => {
       ],
     });
 
-    const isAvailable = overlapping.length === 0;
+    const isAvailable = overlapping.length < maxQuantity;
 
     res.status(200).json({
       success: true,
       isAvailable,
+      capacity: maxQuantity,
       conflictsCount: overlapping.length,
       conflicts: overlapping.map((b) => ({
         startTime: b.startTime,
