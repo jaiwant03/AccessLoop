@@ -118,14 +118,6 @@ const IncidentCenterPage = () => {
   };
 
   const canManage = ['manager', 'admin', 'owner'].includes(user?.role);
-      setDescription('');
-      await fetchIncidents();
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to file incident report.');
-    } finally {
-      setFormLoading(false);
-    }
-  };
 
   return (
     <div className="main-content">
