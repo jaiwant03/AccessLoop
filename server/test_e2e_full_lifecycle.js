@@ -364,8 +364,8 @@ async function runTests() {
   console.log('\n--- Step 10: Immutable Audit Trail Verification ---');
 
   const auditRes = await request('/audit-logs?limit=50', { token: adminToken });
-  assert(auditRes.ok && auditRes.data.auditLogs.length > 0, 'Admin fetched audit log entries');
-  const actions = auditRes.data.auditLogs.map((l) => l.actionType);
+  assert(auditRes.ok && auditRes.data.logs && auditRes.data.logs.length > 0, 'Admin fetched audit log entries');
+  const actions = auditRes.data.logs.map((l) => l.actionType);
   console.log(`  ℹ Logged actions captured: ${actions.slice(0, 10).join(', ')}...`);
 
   assert(actions.includes('check_in_submitted'), 'Audit trail captured check_in_submitted');
