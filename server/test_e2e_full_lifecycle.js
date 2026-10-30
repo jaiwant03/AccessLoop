@@ -63,6 +63,20 @@ async function runTests() {
   const borrower1Token = borrower1Login.data.token;
   assert(borrower1._id && borrower1.id, 'Borrower 1 object has normalized _id and id');
 
+  // Cancel any stale pending/approved test bookings to ensure clean test slate
+  const b1Stale = await request('/bookings', { token: borrower1Token });
+  if (b1Stale.ok && b1Stale.data.bookings) {
+    for (const b of b1Stale.data.bookings) {
+      if (['Pending', 'Approved'].includes(b.status)) {
+        await request(`/bookings/${b._id}/cancel`, {
+          method: 'PUT',
+          token: borrower1Token,
+          body: { reason: 'Resetting test environment' },
+        });
+      }
+    }
+  }
+
   const borrower2Login = await request('/auth/login', {
     method: 'POST',
     body: { email: 'priya.researcher@accessloop.edu', password: 'Password123!' },
@@ -286,13 +300,16 @@ async function runTests() {
     method: 'POST',
     token: borrower1Token,
     body: {
-      category: 'minor_damage',
+      category: 'physical_damage',
       resourceId: resource._id,
       bookingId: booking1._id,
       description: 'Minor cosmetic scratch noticed on sensor casing during return.',
       severity: 'Low',
     },
   });
+  if (!incidentRes.ok) {
+    console.error('Incident Report Error:', incidentRes.status, incidentRes.data);
+  }
   assert(incidentRes.ok && incidentRes.data.incident, 'Incident reported successfully');
   const incident = incidentRes.data.incident;
 
