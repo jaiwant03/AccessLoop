@@ -9,6 +9,7 @@ const ProfilePage = () => {
 
   const [idNumber, setIdNumber] = useState(user?.studentOrEmployeeId || '');
   const [verificationType, setVerificationType] = useState('Student ID');
+  const [docFile, setDocFile] = useState(null);
   const [docUrl, setDocUrl] = useState(
     'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=400&q=80'
   );
@@ -24,13 +25,25 @@ const ProfilePage = () => {
     setSuccess('');
 
     try {
-      await api.post('/auth/verify-request', {
-        verificationType,
-        idNumber,
-        department: user?.department,
-        documentUrl: docUrl,
-        submittedNotes: notes,
-      });
+      if (docFile) {
+        const formData = new FormData();
+        formData.append('verificationType', verificationType);
+        formData.append('idNumber', idNumber);
+        formData.append('department', user?.department || '');
+        formData.append('submittedNotes', notes);
+        formData.append('verificationDoc', docFile);
+        await api.post('/auth/verify-request', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        await api.post('/auth/verify-request', {
+          verificationType,
+          idNumber,
+          department: user?.department,
+          documentUrl: docUrl,
+          submittedNotes: notes,
+        });
+      }
 
       setSuccess('Verification documentation submitted! An Institution Manager will review it.');
       await refreshUser();
