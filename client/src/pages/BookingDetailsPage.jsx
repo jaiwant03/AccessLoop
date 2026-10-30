@@ -663,13 +663,27 @@ const BookingDetailsPage = () => {
                   </p>
 
                   <div className="form-group">
-                    <label className="form-label">Initial Condition Photograph URL</label>
+                    <label className="form-label">Upload Photo File (or provide URL below)</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-input"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setCheckInFile(e.target.files[0]);
+                        }
+                      }}
+                      style={{ marginBottom: '0.5rem' }}
+                    />
                     <input
                       type="text"
                       className="form-input"
+                      placeholder="Or enter image URL https://..."
                       value={checkInPhotoUrl}
-                      onChange={(e) => setCheckInPhotoUrl(e.target.value)}
-                      required
+                      onChange={(e) => {
+                        setCheckInPhotoUrl(e.target.value);
+                        setCheckInFile(null);
+                      }}
                     />
                   </div>
 
