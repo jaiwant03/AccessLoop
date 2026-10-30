@@ -543,15 +543,125 @@ const Navbar = ({ onOpenChatbot }) => {
 
           {/* Mobile Menu Hamburger */}
           <button
-            className="btn btn-secondary btn-sm"
+            className="btn btn-secondary btn-sm mobile-nav-toggle"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{ display: 'none' }} // Visible on mobile via media queries
+            aria-label="Toggle navigation menu"
             id="mobile-nav-toggle"
           >
             {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Drawer Navigation */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-drawer">
+          <div className="mobile-menu-inner">
+            <Link
+              to="/"
+              className={`mobile-menu-link ${location.pathname === '/' ? 'active' : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/explore"
+              className={`mobile-menu-link ${location.pathname === '/explore' ? 'active' : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Explore Resources
+            </Link>
+
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to={getDashboardPath()}
+                  className={`mobile-menu-link ${location.pathname.startsWith('/dashboard') ? 'active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Dashboard ({role})
+                </Link>
+
+                {role === 'owner' && (
+                  <Link
+                    to="/resources/new"
+                    className="mobile-menu-link"
+                    style={{ color: '#16A34A', fontWeight: 700 }}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    + List New Resource
+                  </Link>
+                )}
+
+                {['admin', 'manager'].includes(role) && (
+                  <Link
+                    to="/audit-logs"
+                    className={`mobile-menu-link ${location.pathname === '/audit-logs' ? 'active' : ''}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Audit Trail
+                  </Link>
+                )}
+
+                <Link
+                  to="/incidents"
+                  className={`mobile-menu-link ${location.pathname.startsWith('/incidents') ? 'active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Incidents & Safety
+                </Link>
+
+                <Link
+                  to="/profile"
+                  className={`mobile-menu-link ${location.pathname === '/profile' ? 'active' : ''}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Profile & Verification
+                </Link>
+
+                <div style={{ borderTop: '1px solid #E5E7EB', margin: '0.75rem 0' }} />
+
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                    navigate('/');
+                  }}
+                  className="mobile-menu-link"
+                  style={{
+                    color: '#EF4444',
+                    background: 'none',
+                    border: 'none',
+                    width: '100%',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Log Out ({user?.name})
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="mobile-menu-link"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  className="mobile-menu-link"
+                  style={{ color: '#16A34A', fontWeight: 700 }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Register Account
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
