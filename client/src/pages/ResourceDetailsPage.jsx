@@ -185,7 +185,7 @@ const ResourceDetailsPage = () => {
           <span style={{ color: '#17231C', fontWeight: 600 }}>{resource.name}</span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '2.5rem', alignItems: 'start' }}>
+        <div className="responsive-detail-grid">
           {/* ================= LEFT COLUMN: DETAILS & GALLERY ================= */}
           <div>
             {/* Gallery */}

@@ -132,7 +132,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Analytics Charts Section (Recharts) */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '2rem', marginBottom: '2.5rem' }}>
+        <div className="responsive-admin-grid">
           {/* BarChart: Resources by Category */}
           <div className="al-card">
             <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#17231C' }}>

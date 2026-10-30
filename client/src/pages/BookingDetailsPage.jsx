@@ -442,7 +442,7 @@ const BookingDetailsPage = () => {
         </div>
 
         {/* Booking Details Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '2rem' }}>
+        <div className="responsive-booking-grid">
           {/* Left Column: Resource & Schedule */}
           <div>
             <div className="al-card" style={{ marginBottom: '1.5rem' }}>
