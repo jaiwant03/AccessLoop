@@ -388,14 +388,28 @@ const AddResourcePage = () => {
                 />
               </div>
               <div>
-                <label className="form-label">Image URL</label>
+                <label className="form-label">Upload Image File (or enter URL below)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="form-input"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setImageFile(e.target.files[0]);
+                    }
+                  }}
+                  style={{ marginBottom: '0.45rem' }}
+                />
                 <input
                   type="text"
                   name="imageUrl"
                   className="form-input"
                   placeholder="https://..."
                   value={formData.imageUrl}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setImageFile(null);
+                  }}
                 />
               </div>
             </div>
