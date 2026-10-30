@@ -214,7 +214,12 @@ const updateResource = async (req, res, next) => {
       });
     }
 
-    resource = await Resource.findByIdAndUpdate(req.params.id, req.body, {
+    let updates = { ...req.body };
+    if (req.files && req.files.length > 0) {
+      updates.images = req.files.map((f) => `/uploads/${f.filename}`);
+    }
+
+    resource = await Resource.findByIdAndUpdate(req.params.id, updates, {
       new: true,
       runValidators: true,
     });

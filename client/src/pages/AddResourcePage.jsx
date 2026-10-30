@@ -53,6 +53,7 @@ const AddResourcePage = () => {
     tags: '',
   });
 
+  const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -70,35 +71,68 @@ const AddResourcePage = () => {
     setError('');
 
     try {
-      const payload = {
-        name: formData.name,
-        category: formData.category,
-        resourceType: formData.resourceType,
-        description: formData.description,
-        department: formData.department,
-        location: formData.location,
-        quantity: parseInt(formData.quantity),
-        minBookingDurationHours: parseFloat(formData.minBookingDurationHours),
-        maxBookingDurationHours: parseFloat(formData.maxBookingDurationHours),
-        eligibilityRequirements: {
+      let res;
+      if (imageFile) {
+        const data = new FormData();
+        data.append('name', formData.name);
+        data.append('category', formData.category);
+        data.append('resourceType', formData.resourceType);
+        data.append('description', formData.description);
+        data.append('department', formData.department);
+        data.append('location', formData.location);
+        data.append('quantity', formData.quantity);
+        data.append('minBookingDurationHours', formData.minBookingDurationHours);
+        data.append('maxBookingDurationHours', formData.maxBookingDurationHours);
+        data.append('eligibilityRequirements', JSON.stringify({
           requiresVerifiedUser: formData.requiresVerifiedUser,
           minFairUsageScore: parseInt(formData.minFairUsageScore),
           requiresTraining: formData.requiresTraining,
           trainingCourseName: formData.trainingCourseName,
           requiresSupervision: formData.requiresSupervision,
           supervisorName: formData.supervisorName,
-        },
-        safetyInstructions: formData.safetyInstructions,
-        usageGuidelines: formData.usageGuidelines,
-        securityDeposit: parseFloat(formData.securityDeposit),
-        isPaid: formData.isPaid,
-        hourlyFee: parseFloat(formData.hourlyFee),
-        cancellationPolicy: formData.cancellationPolicy,
-        images: [formData.imageUrl],
-        tags: formData.tags ? formData.tags.split(',').map((t) => t.trim()) : [],
-      };
+        }));
+        data.append('safetyInstructions', formData.safetyInstructions);
+        data.append('usageGuidelines', formData.usageGuidelines);
+        data.append('securityDeposit', formData.securityDeposit);
+        data.append('isPaid', formData.isPaid);
+        data.append('hourlyFee', formData.hourlyFee);
+        data.append('cancellationPolicy', formData.cancellationPolicy);
+        data.append('tags', formData.tags);
+        data.append('images', imageFile);
 
-      const res = await api.post('/resources', payload);
+        res = await api.post('/resources', data, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        const payload = {
+          name: formData.name,
+          category: formData.category,
+          resourceType: formData.resourceType,
+          description: formData.description,
+          department: formData.department,
+          location: formData.location,
+          quantity: parseInt(formData.quantity),
+          minBookingDurationHours: parseFloat(formData.minBookingDurationHours),
+          maxBookingDurationHours: parseFloat(formData.maxBookingDurationHours),
+          eligibilityRequirements: {
+            requiresVerifiedUser: formData.requiresVerifiedUser,
+            minFairUsageScore: parseInt(formData.minFairUsageScore),
+            requiresTraining: formData.requiresTraining,
+            trainingCourseName: formData.trainingCourseName,
+            requiresSupervision: formData.requiresSupervision,
+            supervisorName: formData.supervisorName,
+          },
+          safetyInstructions: formData.safetyInstructions,
+          usageGuidelines: formData.usageGuidelines,
+          securityDeposit: parseFloat(formData.securityDeposit),
+          isPaid: formData.isPaid,
+          hourlyFee: parseFloat(formData.hourlyFee),
+          cancellationPolicy: formData.cancellationPolicy,
+          images: [formData.imageUrl],
+          tags: formData.tags ? formData.tags.split(',').map((t) => t.trim()) : [],
+        };
+        res = await api.post('/resources', payload);
+      }
       navigate(`/resources/${res.data.resource._id}`);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to list resource.');
