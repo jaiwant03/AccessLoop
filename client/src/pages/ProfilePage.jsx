@@ -185,13 +185,27 @@ const ProfilePage = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Document Photo / Scan URL</label>
+              <label className="form-label">Upload ID / Certificate File (or enter URL below)</label>
+              <input
+                type="file"
+                accept="image/*,.pdf"
+                className="form-input"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setDocFile(e.target.files[0]);
+                  }
+                }}
+                style={{ marginBottom: '0.5rem' }}
+              />
               <input
                 type="text"
                 className="form-input"
+                placeholder="Or enter image URL https://..."
                 value={docUrl}
-                onChange={(e) => setDocUrl(e.target.value)}
-                required
+                onChange={(e) => {
+                  setDocUrl(e.target.value);
+                  setDocFile(null);
+                }}
               />
             </div>
 
