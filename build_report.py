@@ -394,8 +394,8 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         ("16. Team Composition & Individual Contributions (Solo Project)", "12"),
         ("17. Detailed Individual Contributions (21 Domains)", "12"),
         ("18. Deployment & Execution Guide", "13"),
-        ("19. Conclusion & Impact", "14"),
-        ("20. References & Acknowledgements", "14"),
+        ("19. Conclusion & Impact", "13"),
+        ("20. References & Acknowledgements", "13"),
     ]
 
     toc_rows = []
