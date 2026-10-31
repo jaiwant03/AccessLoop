@@ -172,25 +172,44 @@ const ProfilePage = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               {/* Profile Avatar with Camera Button */}
               <div style={{ position: 'relative' }}>
-                <img
-                  src={resolveImageUrl(user?.avatar) || DEFAULT_AVATAR}
-                  alt={user?.name || 'Profile'}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = DEFAULT_AVATAR;
-                  }}
-                  style={{
-                    width: '76px',
-                    height: '76px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '3px solid #22C55E',
-                    boxShadow: '0 2px 8px rgba(34, 197, 94, 0.25)',
-                  }}
-                />
+                {resolveImageUrl(user?.avatar) ? (
+                  <img
+                    src={resolveImageUrl(user?.avatar)}
+                    alt={user?.name || 'Profile'}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                    style={{
+                      width: '76px',
+                      height: '76px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '3px solid #22C55E',
+                      boxShadow: '0 2px 8px rgba(34, 197, 94, 0.25)',
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '76px',
+                      height: '76px',
+                      borderRadius: '50%',
+                      backgroundColor: '#F8FAFC',
+                      border: '2px dashed #94A3B8',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#94A3B8',
+                      boxShadow: '0 1px 4px rgba(0, 0, 0, 0.05)',
+                    }}
+                    title="No photo uploaded"
+                  >
+                    <User size={38} color="#94A3B8" />
+                  </div>
+                )}
                 <label
                   htmlFor="profile-avatar-input"
-                  title="Upload profile photo"
+                  title={resolveImageUrl(user?.avatar) ? "Change profile photo" : "Upload profile photo"}
                   style={{
                     position: 'absolute',
                     bottom: '0px',
@@ -229,7 +248,7 @@ const ProfilePage = () => {
                 <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '2px' }}>
                   {user?.department} • {user?.institution}
                 </div>
-                <div style={{ marginTop: '0.45rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ marginTop: '0.45rem', display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
                   <label
                     htmlFor="profile-avatar-input"
                     style={{
@@ -247,8 +266,31 @@ const ProfilePage = () => {
                     }}
                   >
                     <Upload size={13} />
-                    {uploadingAvatar ? 'Uploading photo...' : 'Change profile photo'}
+                    {uploadingAvatar
+                      ? 'Uploading photo...'
+                      : resolveImageUrl(user?.avatar)
+                      ? 'Change profile photo'
+                      : 'Upload profile photo'}
                   </label>
+
+                  {resolveImageUrl(user?.avatar) && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveAvatar}
+                      disabled={uploadingAvatar}
+                      style={{
+                        fontSize: '0.75rem',
+                        color: '#DC2626',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '3px 6px',
+                        textDecoration: 'underline',
+                      }}
+                    >
+                      Remove photo
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
