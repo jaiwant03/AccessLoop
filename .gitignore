@@ -30,6 +30,8 @@ server/uploads/*
 !server/uploads/.gitkeep
 
 # Temporary files
+__pycache__/
+*.py[cod]
 tmp/
 temp/
 .cache/
