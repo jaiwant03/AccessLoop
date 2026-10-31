@@ -69,22 +69,12 @@ const BorrowerDashboard = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-            <img
-              src={resolveImageUrl(user?.avatar) || DEFAULT_AVATAR}
-              alt={user?.name || 'Borrower'}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = DEFAULT_AVATAR;
-              }}
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                border: '2.5px solid #22C55E',
-                boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)',
-                flexShrink: 0,
-              }}
+            <UserAvatar
+              src={user?.avatar}
+              name={user?.name}
+              size={64}
+              border="2.5px solid #22C55E"
+              style={{ boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)' }}
             />
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
