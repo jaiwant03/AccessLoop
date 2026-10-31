@@ -45,24 +45,44 @@ api.interceptors.response.use(
 
 // Resolve image URL (supports relative /uploads paths, Vite dev proxy, and cloud backend origins)
 export const resolveImageUrl = (url) => {
-  if (!url) return '';
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+
+  // Ignore stock/random Unsplash portrait URLs so unuploaded accounts remain clean and empty
   if (
-    url.startsWith('http://') ||
-    url.startsWith('https://') ||
-    url.startsWith('data:') ||
-    url.startsWith('blob:')
+    trimmed.includes('images.unsplash.com/photo-') &&
+    (trimmed.includes('1534528741775') ||
+      trimmed.includes('1507003211169') ||
+      trimmed.includes('1580489944761') ||
+      trimmed.includes('1573496359142') ||
+      trimmed.includes('1500648767791') ||
+      trimmed.includes('1539571696357') ||
+      trimmed.includes('1494790108377') ||
+      trimmed.includes('1517841905240') ||
+      trimmed.includes('1522075469751') ||
+      trimmed.includes('1544005313-94d'))
   ) {
-    return url;
+    return '';
+  }
+
+  if (
+    trimmed.startsWith('http://') ||
+    trimmed.startsWith('https://') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('blob:')
+  ) {
+    return trimmed;
   }
   const envUrl = import.meta.env.VITE_API_URL;
   if (envUrl && !envUrl.startsWith('/')) {
     const base = envUrl.trim().replace(/\/api\/?$/, '');
-    return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+    return `${base}${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;
   }
-  return url;
+  return trimmed;
 };
 
-export const DEFAULT_AVATAR =
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
+// Default empty avatar fallback
+export const DEFAULT_AVATAR = '';
 
 export default api;
