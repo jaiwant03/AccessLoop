@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Repeat, ShieldCheck, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useAuth, DEMO_ACCOUNTS } from '../context/AuthContext';
+import { Repeat } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, demoLogin } = useAuth();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,27 +42,6 @@ export const LoginPage = () => {
     }
   };
 
-  const handleDemoClick = async (key) => {
-    setLoading(true);
-    setError('');
-    try {
-      const loggedUser = await demoLogin(key);
-      navigate(
-        loggedUser.role === 'admin'
-          ? '/dashboard/admin'
-          : loggedUser.role === 'manager'
-          ? '/dashboard/manager'
-          : loggedUser.role === 'owner'
-          ? '/dashboard/owner'
-          : '/dashboard/borrower'
-      );
-    } catch (err) {
-      setError('Demo login failed.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <div className="main-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="app-container" style={{ maxWidth: '440px', width: '100%' }}>
@@ -78,55 +57,6 @@ export const LoginPage = () => {
             <p style={{ fontSize: '0.85rem', color: '#64748B' }}>
               Access underused campus equipment, labs, and tools.
             </p>
-          </div>
-
-          {/* Quick Demo Logins Bar for Judges */}
-          <div
-            style={{
-              backgroundColor: '#F0FDF4',
-              border: '1px solid rgba(34, 197, 94, 0.4)',
-              borderRadius: '8px',
-              padding: '0.85rem',
-              marginBottom: '1.5rem',
-            }}
-          >
-            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#15803D', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-              ⚡ 1-Click Demo Evaluation Sign In
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
-              <button
-                type="button"
-                onClick={() => handleDemoClick('borrower')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem', justifyContent: 'flex-start' }}
-              >
-                🎓 Student
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoClick('owner')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem', justifyContent: 'flex-start' }}
-              >
-                🔬 Lab Owner
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoClick('manager')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem', justifyContent: 'flex-start' }}
-              >
-                🏛️ Manager
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDemoClick('admin')}
-                className="btn btn-secondary btn-sm"
-                style={{ fontSize: '0.75rem', justifyContent: 'flex-start' }}
-              >
-                👑 Admin
-              </button>
-            </div>
           </div>
 
           {error && (

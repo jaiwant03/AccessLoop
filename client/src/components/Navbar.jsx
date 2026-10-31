@@ -18,12 +18,12 @@ import {
   Repeat,
   CheckCircle,
 } from 'lucide-react';
-import { useAuth, DEMO_ACCOUNTS } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import api from '../services/api';
 
 const Navbar = ({ onOpenChatbot }) => {
-  const { user, role, logout, demoLogin, isAuthenticated } = useAuth();
+  const { user, role, logout, isAuthenticated } = useAuth();
   const { liveNotification } = useSocket();
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +32,6 @@ const Navbar = ({ onOpenChatbot }) => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showDemoSwitcher, setShowDemoSwitcher] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Fetch notifications if logged in
@@ -64,24 +63,6 @@ const Navbar = ({ onOpenChatbot }) => {
       await api.put('/notifications/read-all');
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       setUnreadCount(0);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleSwitchDemoRole = async (key) => {
-    try {
-      await demoLogin(key);
-      setShowDemoSwitcher(false);
-      navigate(
-        key === 'admin'
-          ? '/dashboard/admin'
-          : key === 'manager'
-          ? '/dashboard/manager'
-          : key.includes('owner')
-          ? '/dashboard/owner'
-          : '/dashboard/borrower'
-      );
     } catch (err) {
       console.error(err);
     }
@@ -215,84 +196,8 @@ const Navbar = ({ onOpenChatbot }) => {
           )}
         </ul>
 
-        {/* Right Section: Role Switcher, Notifications, Auth */}
+        {/* Right Section: Notifications, User Profile & Auth */}
         <div className="navbar-right">
-          {/* Quick Demo Switcher Pill for Judges */}
-          <div style={{ position: 'relative' }}>
-            <button
-              className="demo-role-badge"
-              onClick={() => setShowDemoSwitcher(!showDemoSwitcher)}
-              title="Test platform under different authorized roles"
-            >
-              <ShieldCheck size={14} color="#16A34A" />
-              <span>Demo Role: {role || 'Guest'}</span>
-              <ChevronDown size={12} />
-            </button>
-
-            {showDemoSwitcher && (
-              <div
-                className="al-card"
-                style={{
-                  position: 'absolute',
-                  top: '110%',
-                  right: 0,
-                  width: '260px',
-                  padding: '0.75rem',
-                  zIndex: 200,
-                  boxShadow: 'var(--shadow-xl)',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    color: '#64748B',
-                    textTransform: 'uppercase',
-                    marginBottom: '0.5rem',
-                    paddingBottom: '0.35rem',
-                    borderBottom: '1px solid #E5E7EB',
-                  }}
-                >
-                  Switch Demo Account
-                </div>
-                {Object.entries(DEMO_ACCOUNTS).map(([key, acc]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleSwitchDemoRole(key)}
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: '0.45rem 0.65rem',
-                      borderRadius: '6px',
-                      border: 'none',
-                      backgroundColor:
-                        user?.email === acc.email ? '#F0FDF4' : 'transparent',
-                      color:
-                        user?.email === acc.email ? '#16A34A' : '#17231C',
-                      fontWeight: user?.email === acc.email ? 700 : 500,
-                      fontSize: '0.825rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: '0.2rem',
-                    }}
-                  >
-                    <div>
-                      <div>{acc.label}</div>
-                      <div style={{ fontSize: '0.7rem', color: '#64748B' }}>
-                        {acc.email}
-                      </div>
-                    </div>
-                    {user?.email === acc.email && (
-                      <CheckCircle size={14} color="#16A34A" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           {isAuthenticated ? (
             <>
               {/* Notification Bell */}
