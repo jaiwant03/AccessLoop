@@ -1041,11 +1041,18 @@ button, input, select, textarea {
   gap: 2rem;
 }
 
-.responsive-admin-grid {
+.responsive-two-col {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .responsive-two-col {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }
 
 .mobile-nav-toggle {

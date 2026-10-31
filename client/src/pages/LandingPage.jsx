@@ -374,14 +374,7 @@ const LandingPage = () => {
           ================================================================= */}
       <section id="trust-safety" style={{ padding: '4.5rem 0', backgroundColor: '#FFFFFF', borderTop: '1px solid #E5E7EB' }}>
         <div className="app-container">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '3rem',
-              alignItems: 'center',
-            }}
-          >
+          <div className="responsive-two-col">
             <div>
               <span className="badge badge-green" style={{ marginBottom: '0.5rem' }}>
                 Trust Architecture
