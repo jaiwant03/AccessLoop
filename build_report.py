@@ -16,8 +16,8 @@ from reportlab.platypus import (
 from reportlab.pdfgen import canvas
 
 PAGE_WIDTH, PAGE_HEIGHT = A4
-MARGIN = 46
-CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN  # ~503 pt
+MARGIN = 40  # Tightened margins to maximize printable area and reduce bottom gaps
+CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN  # ~515 pt
 
 # AccessLoop Colors
 C_WHITE = colors.HexColor("#FFFFFF")
@@ -58,13 +58,13 @@ class NumberedCanvas(canvas.Canvas):
 
     def draw_page_decorations(self, total_pages):
         if self._pageNumber == 1:
-            return  # Suppress on cover page
+            return  # Suppress running header/footer on cover page
 
         self.saveState()
         self.setFont("Helvetica-Bold", 7.5)
         self.setFillColor(C_PRIMARY_GREEN)
 
-        header_y = PAGE_HEIGHT - 28
+        header_y = PAGE_HEIGHT - 24
         self.drawString(MARGIN, header_y, "ACCESSLOOP")
         self.setFont("Helvetica", 7.5)
         self.setFillColor(C_MUTED_TEXT)
@@ -73,11 +73,11 @@ class NumberedCanvas(canvas.Canvas):
 
         self.setStrokeColor(C_BORDER)
         self.setLineWidth(0.5)
-        self.line(MARGIN, header_y - 5, PAGE_WIDTH - MARGIN, header_y - 5)
+        self.line(MARGIN, header_y - 4, PAGE_WIDTH - MARGIN, header_y - 4)
 
-        footer_y = 26
-        self.line(MARGIN, footer_y + 10, PAGE_WIDTH - MARGIN, footer_y + 10)
-        self.drawString(MARGIN, footer_y, "Solo Developer Project • Academic & Technical Implementation Audit")
+        footer_y = 22
+        self.line(MARGIN, footer_y + 9, PAGE_WIDTH - MARGIN, footer_y + 9)
+        self.drawString(MARGIN, footer_y, "Academic & Technical Implementation Audit")
         page_str = f"Page {self._pageNumber} of {total_pages}"
         self.drawRightString(PAGE_WIDTH - MARGIN, footer_y, page_str)
 
@@ -91,7 +91,7 @@ def get_styles():
     styles["CoverBadge"] = ParagraphStyle(
         "CoverBadge",
         fontName="Helvetica-Bold",
-        fontSize=10,
+        fontSize=9.5,
         leading=12,
         textColor=C_PRIMARY_GREEN,
         alignment=0,
@@ -99,15 +99,15 @@ def get_styles():
     styles["CoverTitle"] = ParagraphStyle(
         "CoverTitle",
         fontName="Helvetica-Bold",
-        fontSize=28,
-        leading=34,
+        fontSize=30,
+        leading=36,
         textColor=C_DARK_TEXT,
         alignment=0,
     )
     styles["CoverSubtitle"] = ParagraphStyle(
         "CoverSubtitle",
         fontName="Helvetica-Bold",
-        fontSize=13.5,
+        fontSize=14,
         leading=18,
         textColor=C_PRIMARY_GREEN,
         alignment=0,
@@ -115,141 +115,126 @@ def get_styles():
     styles["CoverTagline"] = ParagraphStyle(
         "CoverTagline",
         fontName="Helvetica-Oblique",
-        fontSize=11,
+        fontSize=11.5,
         leading=15,
         textColor=C_DARK_GREEN,
         alignment=0,
     )
-    styles["CoverMetaLabel"] = ParagraphStyle(
-        "CoverMetaLabel",
+    styles["CoverSectionLabel"] = ParagraphStyle(
+        "CoverSectionLabel",
         fontName="Helvetica-Bold",
         fontSize=8.5,
-        leading=12,
+        leading=11,
         textColor=C_MUTED_TEXT,
     )
-    styles["CoverMetaVal"] = ParagraphStyle(
-        "CoverMetaVal",
-        fontName="Helvetica-Bold",
+    styles["CoverBody"] = ParagraphStyle(
+        "CoverBody",
+        fontName="Helvetica",
         fontSize=9.5,
-        leading=13,
+        leading=14,
+        textColor=C_DARK_TEXT,
+    )
+    styles["CoverLeaderName"] = ParagraphStyle(
+        "CoverLeaderName",
+        fontName="Helvetica-Bold",
+        fontSize=13,
+        leading=16,
         textColor=C_DARK_TEXT,
     )
 
     styles["H1"] = ParagraphStyle(
         "H1",
         fontName="Helvetica-Bold",
-        fontSize=16,
-        leading=20,
+        fontSize=13.5,
+        leading=17,
         textColor=C_DARK_GREEN,
-        spaceBefore=14,
-        spaceAfter=7,
+        spaceBefore=10,
+        spaceAfter=4,
         keepWithNext=True,
     )
     styles["H2"] = ParagraphStyle(
         "H2",
         fontName="Helvetica-Bold",
-        fontSize=12,
-        leading=16,
+        fontSize=10.5,
+        leading=14,
         textColor=C_DARK_TEXT,
-        spaceBefore=10,
-        spaceAfter=5,
+        spaceBefore=7,
+        spaceAfter=3,
         keepWithNext=True,
     )
     styles["H3"] = ParagraphStyle(
         "H3",
         fontName="Helvetica-Bold",
-        fontSize=10,
-        leading=13,
+        fontSize=9,
+        leading=12,
         textColor=C_PRIMARY_GREEN,
-        spaceBefore=7,
-        spaceAfter=3,
+        spaceBefore=5,
+        spaceAfter=2,
         keepWithNext=True,
     )
     styles["Body"] = ParagraphStyle(
         "Body",
         fontName="Helvetica",
-        fontSize=9,
-        leading=13,
+        fontSize=8.5,
+        leading=11.5,
         textColor=C_DARK_TEXT,
-        spaceAfter=5,
+        spaceAfter=3.5,
     )
     styles["BodySecondary"] = ParagraphStyle(
         "BodySecondary",
         fontName="Helvetica",
-        fontSize=8.5,
-        leading=12,
+        fontSize=8,
+        leading=10.5,
         textColor=C_SECONDARY_TEXT,
-        spaceAfter=4,
+        spaceAfter=2.5,
     )
     styles["Bullet"] = ParagraphStyle(
         "Bullet",
         fontName="Helvetica",
-        fontSize=8.5,
-        leading=12,
+        fontSize=8,
+        leading=11,
         textColor=C_DARK_TEXT,
-        leftIndent=12,
-        spaceAfter=3,
+        leftIndent=10,
+        spaceAfter=2,
     )
     styles["Callout"] = ParagraphStyle(
         "Callout",
         fontName="Helvetica",
-        fontSize=8.5,
-        leading=12,
+        fontSize=8,
+        leading=11,
         textColor=C_DARK_TEXT,
     )
     styles["TableHead"] = ParagraphStyle(
         "TableHead",
         fontName="Helvetica-Bold",
-        fontSize=8,
-        leading=10,
+        fontSize=7.5,
+        leading=9.5,
         textColor=C_WHITE,
         alignment=0,
     )
     styles["TableCell"] = ParagraphStyle(
         "TableCell",
         fontName="Helvetica",
-        fontSize=7.5,
-        leading=10,
+        fontSize=7,
+        leading=9,
         textColor=C_DARK_TEXT,
         alignment=0,
     )
     styles["TableCellBold"] = ParagraphStyle(
         "TableCellBold",
         fontName="Helvetica-Bold",
-        fontSize=7.5,
-        leading=10,
+        fontSize=7,
+        leading=9,
         textColor=C_DARK_TEXT,
         alignment=0,
     )
     styles["TableCellCenter"] = ParagraphStyle(
         "TableCellCenter",
         fontName="Helvetica",
-        fontSize=7.5,
-        leading=10,
+        fontSize=7,
+        leading=9,
         textColor=C_DARK_TEXT,
         alignment=1,
-    )
-    styles["Code"] = ParagraphStyle(
-        "Code",
-        fontName="Courier",
-        fontSize=7.5,
-        leading=9.5,
-        textColor=C_DARK_TEXT,
-    )
-    styles["TOCItem"] = ParagraphStyle(
-        "TOCItem",
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        leading=12,
-        textColor=C_DARK_TEXT,
-    )
-    styles["TOCPage"] = ParagraphStyle(
-        "TOCPage",
-        fontName="Helvetica-Bold",
-        fontSize=9,
-        leading=12,
-        textColor=C_PRIMARY_GREEN,
-        alignment=2,
     )
     return styles
 
@@ -260,11 +245,11 @@ def make_callout(text, styles, bg_color=C_LIGHT_GREEN, border_color=C_BRIGHT_GRE
     t.setStyle(
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, -1), bg_color),
-            ("BOX", (0, 0), (-1, -1), 1.2, border_color),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-            ("LEFTPADDING", (0, 0), (-1, -1), 8),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+            ("BOX", (0, 0), (-1, -1), 1, border_color),
+            ("TOPPADDING", (0, 0), (-1, -1), 4),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+            ("LEFTPADDING", (0, 0), (-1, -1), 6),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
         ])
     )
     return t
@@ -278,39 +263,55 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         leftMargin=MARGIN,
         rightMargin=MARGIN,
         topMargin=MARGIN,
-        bottomMargin=MARGIN,
+        bottomMargin=30,  # Tightened bottom margin to eliminate huge bottom space
     )
 
     story = []
 
     # =========================================================================
-    # COVER PAGE (MINIMAL, CLEAN & ELEGANT - EXACT REQUEST)
+    # FIRST PAGE (CLEAN, MODERN, PROPERLY ALIGNED & PROPORTIONATE UI TEMPLATE)
     # =========================================================================
-    story.append(Spacer(1, 140))
+    story.append(Spacer(1, 35))
 
-    # Project Title & Subtitle
-    story.append(Paragraph("AccessLoop", styles["CoverTitle"]))
-    story.append(Spacer(1, 10))
-    story.append(Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"]))
-    story.append(Spacer(1, 6))
-    story.append(Paragraph("“Share More. Waste Less.”", styles["CoverTagline"]))
-    story.append(Spacer(1, 45))
+    # Clean Cover Card Layout
+    cover_elements = [
+        [Paragraph("●  CAMPUS RESOURCE SHARING PLATFORM", styles["CoverBadge"])],
+        [Spacer(1, 14)],
+        [Paragraph("AccessLoop", styles["CoverTitle"])],
+        [Spacer(1, 4)],
+        [Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"])],
+        [Spacer(1, 4)],
+        [Paragraph("“Share More. Waste Less.”", styles["CoverTagline"])],
+        [Spacer(1, 24)],
+        [HRFlowable(width="100%", thickness=1, color=C_LIGHT_GREEN_BORDER, spaceBefore=4, spaceAfter=20)],
+        [Paragraph("PROBLEM STATEMENT", styles["CoverSectionLabel"])],
+        [Spacer(1, 4)],
+        [Paragraph("<b>Unlock Underused Equipment and Spaces</b>", styles["CoverSubtitle"])],
+        [Spacer(1, 4)],
+        [Paragraph(
+            "Transforming expensive, locked campus laboratories, fabrication machinery, and technical equipment "
+            "into an accountable, trusted, and equitable shared campus economy.",
+            styles["CoverBody"]
+        )],
+        [Spacer(1, 28)],
+        [HRFlowable(width="100%", thickness=1, color=C_LIGHT_GREEN_BORDER, spaceBefore=4, spaceAfter=20)],
+        [Paragraph("TEAM LEADER / TEAM MEMBER", styles["CoverSectionLabel"])],
+        [Spacer(1, 4)],
+        [Paragraph("Jaiwant Karrun SA", styles["CoverLeaderName"])],
+    ]
 
-    # Small Problem Statement
-    ps_html = (
-        "<b>PROBLEM STATEMENT:</b><br/>"
-        "<b>Unlock Underused Equipment and Spaces</b> — "
-        "Transforming expensive, locked campus laboratories, fabrication machinery, and technical equipment into an accountable and equitable shared ecosystem."
+    cover_card = Table(cover_elements, colWidths=[CONTENT_WIDTH - 24])
+    cover_card.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
+            ("BOX", (0, 0), (-1, -1), 1.5, C_BRIGHT_GREEN),
+            ("TOPPADDING", (0, 0), (-1, -1), 20),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 22),
+            ("LEFTPADDING", (0, 0), (-1, -1), 22),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 22),
+        ])
     )
-    story.append(make_callout(ps_html, styles, C_LIGHT_GREEN, C_PRIMARY_GREEN))
-    story.append(Spacer(1, 55))
-
-    # Team Leader / Team Member Name Only
-    team_member_html = (
-        "<b>TEAM LEADER / TEAM MEMBER:</b><br/>"
-        "<font size='12' color='#0F172A'><b>Jaiwant Karrun SA</b></font>"
-    )
-    story.append(make_callout(team_member_html, styles, C_CARD_BG, C_BORDER))
+    story.append(cover_card)
 
     story.append(PageBreak())
 
@@ -318,7 +319,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     # SECTION 1: PROJECT ABSTRACT
     # =========================================================================
     story.append(Paragraph("1. Project Abstract", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "Across modern educational, scientific, and maker ecosystems, academic institutions invest crores of rupees in "
@@ -344,9 +345,9 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     # =========================================================================
     # SECTION 2: PROBLEM UNDERSTANDING & ANALYSIS
     # =========================================================================
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
     story.append(Paragraph("2. Problem Understanding & Analysis", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "The hackathon problem statement, <i>“Unlock Underused Equipment and Spaces,”</i> addresses a persistent structural "
@@ -366,13 +367,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for p_title, p_desc in problems:
         story.append(Paragraph(f"• <b>{p_title}</b>{p_desc}", styles["Bullet"]))
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 3: TARGET USERS & STAKEHOLDER MATRIX
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("3. Target Users & Stakeholder Matrix", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "AccessLoop coordinates four distinct institutional roles, each with specialized workflows and security boundaries:",
@@ -411,26 +411,26 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
             Paragraph("• Immutable audit log review<br/>• User suspension & role editing<br/>• Global metrics & service health<br/>• Database integrity monitoring", styles["TableCell"]),
         ],
     ]
-    stakeholder_table = Table(stakeholder_rows, colWidths=[CONTENT_WIDTH * 0.18, CONTENT_WIDTH * 0.28, CONTENT_WIDTH * 0.28, CONTENT_WIDTH * 0.26])
+    stakeholder_table = Table(stakeholder_rows, colWidths=[CONTENT_WIDTH * 0.17, CONTENT_WIDTH * 0.28, CONTENT_WIDTH * 0.28, CONTENT_WIDTH * 0.27])
     stakeholder_table.setStyle(
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_PRIMARY_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 5),
-            ("LEFTPADDING", (0, 0), (-1, -1), 6),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ("LEFTPADDING", (0, 0), (-1, -1), 5),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(stakeholder_table)
-    story.append(Spacer(1, 10))
 
     # =========================================================================
     # SECTION 4: PROPOSED SOLUTION & CORE INNOVATION
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("4. Proposed Solution & Core Innovation", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "AccessLoop is engineered as a comprehensive <b>Hardware Trust-and-Accountability Operating System</b> rather than a "
@@ -448,7 +448,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for p_title, p_desc in pillars:
         story.append(Paragraph(f"• <b>{p_title}</b>{p_desc}", styles["Bullet"]))
 
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
 
     # Comparison Table
     comp_rows = [
@@ -488,22 +488,21 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_DARK_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 4),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-            ("LEFTPADDING", (0, 0), (-1, -1), 6),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ("LEFTPADDING", (0, 0), (-1, -1), 5),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(comp_table)
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 5: COMPLETE PRODUCT LIFECYCLE WORKFLOW
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("5. Complete Product Lifecycle Workflow", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "The complete resource-sharing lifecycle operates through 14 synchronized stages spanning four actors and the backend engine:",
@@ -602,27 +601,26 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
             Paragraph("AuditLog permanently recorded; available in Admin dashboard", styles["TableCell"]),
         ],
     ]
-    flow_table = Table(flow_rows, colWidths=[CONTENT_WIDTH * 0.22, CONTENT_WIDTH * 0.18, CONTENT_WIDTH * 0.35, CONTENT_WIDTH * 0.25])
+    flow_table = Table(flow_rows, colWidths=[CONTENT_WIDTH * 0.22, CONTENT_WIDTH * 0.17, CONTENT_WIDTH * 0.36, CONTENT_WIDTH * 0.25])
     flow_table.setStyle(
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_PRIMARY_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 3.5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
-            ("LEFTPADDING", (0, 0), (-1, -1), 5),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(flow_table)
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 6: IMPLEMENTATION STATUS & FEATURE AUDIT
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("6. Implementation Status & Feature Audit", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "A rigorous codebase inspection was performed across frontend components, backend controllers, Mongoose schemas, "
@@ -722,22 +720,21 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_DARK_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 3.5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
-            ("LEFTPADDING", (0, 0), (-1, -1), 5),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(audit_table)
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 7: TECHNOLOGY STACK SPECIFICATIONS
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("7. Technology Stack Specifications", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "AccessLoop is built strictly using modern, production-grade web technologies verified in the project's package manifests:",
@@ -823,22 +820,21 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_PRIMARY_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 3.5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3.5),
-            ("LEFTPADDING", (0, 0), (-1, -1), 5),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(stack_table)
 
-    story.append(Spacer(1, 8))
-
     # =========================================================================
     # SECTION 8: SYSTEM ARCHITECTURE & NETWORK TOPOLOGY
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("8. System Architecture & Network Topology", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "AccessLoop employs a decoupled four-tier micro-service compatible architecture engineered for security and fault isolation:",
@@ -854,13 +850,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for a_title, a_desc in arch_layers:
         story.append(Paragraph(f"• <b>{a_title}</b>{a_desc}", styles["Bullet"]))
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 9: DATABASE DESIGN & MONGOOSE SCHEMAS
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("9. Database Design & Mongoose Schemas", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "The MongoDB database architecture consists of nine interconnected Mongoose collections supporting the complete sharing lifecycle:",
@@ -928,22 +923,21 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_PRIMARY_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 3),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-            ("LEFTPADDING", (0, 0), (-1, -1), 5),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(db_table)
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 10: USER ROLE MODULES & FUNCTIONAL BREAKDOWN
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("10. User Role Modules & Functional Breakdown", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph("A. Borrower / Student Experience", styles["H2"]))
     story.append(Paragraph(
@@ -987,9 +981,9 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     # =========================================================================
     # SECTION 11: AI AND INTELLIGENT CAPABILITIES
     # =========================================================================
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
     story.append(Paragraph("11. AI and Intelligent Capabilities", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "AccessLoop integrates an intelligent campus assistant and algorithmic fairness engine designed for verified accuracy:",
@@ -1003,13 +997,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for af_title, af_desc in ai_features:
         story.append(Paragraph(f"• <b>{af_title}</b>{af_desc}", styles["Bullet"]))
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 12: COMPREHENSIVE QA & TEST CASE MATRIX
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("12. Comprehensive Quality Assurance & Test Case Matrix", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "To verify product reliability, 20 end-to-end integration test cases were executed across borrower, owner, and administrative flows:",
@@ -1170,22 +1163,21 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_PRIMARY_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 2.5),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
-            ("LEFTPADDING", (0, 0), (-1, -1), 4),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+            ("TOPPADDING", (0, 0), (-1, -1), 2),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+            ("LEFTPADDING", (0, 0), (-1, -1), 3),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 3),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(test_table)
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 13: SECURITY, PRIVACY & FAIRNESS ARCHITECTURE
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("13. Security, Privacy & Fairness Architecture", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "Security, user privacy, and algorithmic fairness are core foundational requirements of the AccessLoop architecture:",
@@ -1202,13 +1194,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for sp_title, sp_desc in sec_points:
         story.append(Paragraph(f"• <b>{sp_title}</b>{sp_desc}", styles["Bullet"]))
 
-    story.append(Spacer(1, 8))
-
     # =========================================================================
     # SECTION 14: OPERATIONAL LIMITATIONS & KNOWN CONSTRAINTS
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("14. Operational Limitations & Known Constraints", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     limits = [
         ("Render Free-Tier Spin-up Latency: ", "On free-tier cloud hosting, the backend spins down after 15 minutes of inactivity, causing an initial 50-second cold-start latency on the first request."),
@@ -1218,13 +1209,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for l_title, l_desc in limits:
         story.append(Paragraph(f"• <b>{l_title}</b>{l_desc}", styles["Bullet"]))
 
-    story.append(Spacer(1, 8))
-
     # =========================================================================
     # SECTION 15: FUTURE SCOPE & ROADMAP
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("15. Future Scope & Roadmap", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     roadmap = [
         ("Phase 1 — IoT Smart Lockers & RFID Badging: ", "Integrating ESP32-powered automated storage lockers allowing students to unlock equipment compartments 24/7 using campus RFID student cards."),
@@ -1235,13 +1225,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for r_title, r_desc in roadmap:
         story.append(Paragraph(f"• <b>{r_title}</b>{r_desc}", styles["Bullet"]))
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 16: TEAM COMPOSITION (SOLO PARTICIPANT)
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("16. Team Composition & Individual Contributions", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(make_callout(
         "<b>OFFICIAL SOLO PARTICIPATION STATEMENT:</b><br/>"
@@ -1250,7 +1239,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         "frontend engineering, backend architecture, database modeling, quality assurance testing, and technical documentation.",
         styles, C_LIGHT_GREEN, C_PRIMARY_GREEN
     ))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 4))
 
     team_rows = [
         [
@@ -1259,7 +1248,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
             Paragraph("INDIVIDUAL RESPONSIBILITIES & OWNERSHIP", styles["TableHead"]),
         ],
         [
-            Paragraph("<b>Jaiwant Karrun S.A.</b>", styles["TableCellBold"]),
+            Paragraph("<b>Jaiwant Karrun SA</b>", styles["TableCellBold"]),
             Paragraph("<b>Team Leader & Sole Team Member</b><br/>Full-Stack Software Engineer", styles["TableCell"]),
             Paragraph(
                 "• Complete project planning & requirements decomposition<br/>"
@@ -1277,21 +1266,21 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), C_DARK_GREEN),
             ("GRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 6),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-            ("LEFTPADDING", (0, 0), (-1, -1), 6),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 6),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
             ("VALIGN", (0, 0), (-1, -1), "TOP"),
         ])
     )
     story.append(team_table)
-    story.append(Spacer(1, 10))
 
     # =========================================================================
     # SECTION 17: DETAILED INDIVIDUAL CONTRIBUTIONS (21 DOMAINS)
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("17. Detailed Individual Contributions (21 Domains)", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     contributions = [
         ("1. Problem Analysis: ", "Independently deconstructed the hackathon challenge into actionable technical requirements."),
@@ -1319,13 +1308,12 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     for c_title, c_desc in contributions:
         story.append(Paragraph(f"• <b>{c_title}</b>{c_desc}", styles["Bullet"]))
 
-    story.append(PageBreak())
-
     # =========================================================================
     # SECTION 18: DEPLOYMENT & EXECUTION GUIDE
     # =========================================================================
+    story.append(Spacer(1, 4))
     story.append(Paragraph("18. Deployment & Execution Guide", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph("Local Development Setup", styles["H2"]))
     story.append(Paragraph(
@@ -1343,7 +1331,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         styles["Body"]
     ))
 
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
     story.append(Paragraph("Cloud Production Deployment (Vercel + Render)", styles["H2"]))
     story.append(Paragraph(
         "• <b>Backend on Render:</b> Connected to <code>server/</code> root directory. Build command: <code>npm ci</code>. "
@@ -1357,9 +1345,9 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     # =========================================================================
     # SECTION 19: CONCLUSION & IMPACT
     # =========================================================================
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 4))
     story.append(Paragraph("19. Conclusion & Impact", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     story.append(Paragraph(
         "AccessLoop directly resolves the hackathon challenge, <i>“Unlock Underused Equipment and Spaces,”</i> by transforming "
@@ -1377,9 +1365,9 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     # =========================================================================
     # SECTION 20: REFERENCES & ACKNOWLEDGEMENTS
     # =========================================================================
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 4))
     story.append(Paragraph("20. References & Acknowledgements", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=8))
+    story.append(HRFlowable(width="100%", thickness=1, color=C_PRIMARY_GREEN, spaceBefore=1, spaceAfter=5))
 
     refs = [
         ("Hackathon Problem Statement: ", "Official Hackathon Challenge Track: 'Unlock Underused Equipment and Spaces' (2026)."),
