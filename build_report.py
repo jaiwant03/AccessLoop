@@ -376,26 +376,26 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=12))
 
     toc_entries = [
-        ("1. Project Abstract", "2"),
-        ("2. Problem Understanding & Analysis", "2"),
-        ("3. Target Users & Stakeholder Matrix", "3"),
-        ("4. Proposed Solution & Core Innovation", "3"),
-        ("5. Complete Product Lifecycle Workflow", "4"),
-        ("6. Implementation Status & Feature Audit", "5"),
-        ("7. Technology Stack Specifications", "6"),
-        ("8. System Architecture & Network Topology", "6"),
-        ("9. Database Design & Mongoose Schemas", "7"),
-        ("10. User Role Modules & Functional Breakdown", "8"),
+        ("1. Project Abstract", "3"),
+        ("2. Problem Understanding & Analysis", "3"),
+        ("3. Target Users & Stakeholder Matrix", "4"),
+        ("4. Proposed Solution & Core Innovation", "4"),
+        ("5. Complete Product Lifecycle Workflow", "5"),
+        ("6. Implementation Status & Feature Audit", "6"),
+        ("7. Technology Stack Specifications", "7"),
+        ("8. System Architecture & Network Topology", "7"),
+        ("9. Database Design & Mongoose Schemas", "8"),
+        ("10. User Role Modules & Functional Breakdown", "9"),
         ("11. AI and Intelligent Capabilities", "9"),
         ("12. Comprehensive Quality Assurance & Test Case Matrix", "10"),
         ("13. Security, Privacy & Fairness Architecture", "11"),
         ("14. Operational Limitations & Known Constraints", "11"),
-        ("15. Future Scope & Roadmap", "12"),
+        ("15. Future Scope & Roadmap", "11"),
         ("16. Team Composition & Individual Contributions (Solo Project)", "12"),
-        ("17. Detailed Individual Contributions (21 Domains)", "13"),
-        ("18. Deployment & Execution Guide", "14"),
+        ("17. Detailed Individual Contributions (21 Domains)", "12"),
+        ("18. Deployment & Execution Guide", "13"),
         ("19. Conclusion & Impact", "14"),
-        ("20. References & Acknowledgements", "15"),
+        ("20. References & Acknowledgements", "14"),
     ]
 
     toc_rows = []
@@ -417,7 +417,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         ])
     )
     story.append(toc_table)
-    story.append(Spacer(1, 14))
+    story.append(PageBreak())
 
     # =========================================================================
     # SECTION 1: PROJECT ABSTRACT
