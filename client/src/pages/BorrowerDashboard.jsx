@@ -12,6 +12,8 @@ import {
   Scale,
   Sparkles,
   Camera,
+  Layers,
+  Inbox,
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -49,10 +51,6 @@ const BorrowerDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  const activeBookings = bookings.filter((b) =>
-    ['Approved', 'Active', 'Return Pending'].includes(b.status)
-  );
-
   return (
     <div className="main-content">
       <div className="app-container">
@@ -63,19 +61,22 @@ const BorrowerDashboard = () => {
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
-            gap: '1rem',
-            marginBottom: '2rem',
+            gap: '1.25rem',
+            marginBottom: '2.25rem',
+            paddingBottom: '1.5rem',
+            borderBottom: '1px solid #E2E8F0',
           }}
         >
           <div>
-            <span className="badge badge-green" style={{ marginBottom: '0.45rem' }}>
-              Borrower Workspace
-            </span>
-            <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+              <span className="badge badge-green">Borrower Workspace</span>
+              <span className="badge badge-gray">{user?.verificationStatus} Account</span>
+            </div>
+            <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem', letterSpacing: '-0.03em' }}>
               Welcome back, {user?.name}
             </h1>
             <p style={{ fontSize: '0.875rem', color: '#64748B' }}>
-              {user?.department} • ID: {user?.studentOrEmployeeId || 'STU-VERIFIED'} • Status: {user?.verificationStatus}
+              {user?.department} • ID: {user?.studentOrEmployeeId || 'STU-VERIFIED'} • {user?.institution}
             </p>
           </div>
 
@@ -92,55 +93,131 @@ const BorrowerDashboard = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: '1.25rem',
             marginBottom: '2.5rem',
           }}
         >
-          <div className="al-card" style={{ borderLeft: '4px solid #22C55E' }}>
-            <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
-              Active Borrowings
+          {/* Card 1: Active Borrowings */}
+          <div className="stat-card-kpi" style={{ borderLeft: '4px solid #22C55E' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                  Active Borrowings
+                </div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', marginTop: '0.35rem', letterSpacing: '-0.03em' }}>
+                  {analytics?.summary?.activeBookings || 0}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '10px',
+                  backgroundColor: '#ECFDF5',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#16A34A',
+                }}
+              >
+                <CheckCircle size={20} />
+              </div>
             </div>
-            <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#17231C', marginTop: '0.25rem' }}>
-              {analytics?.summary?.activeBookings || 0}
-            </div>
-            <div style={{ fontSize: '0.75rem', color: '#16A34A', marginTop: '0.25rem' }}>
-              Handover confirmed
+            <div style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600, marginTop: '0.75rem' }}>
+              Handover confirmed & active
             </div>
           </div>
 
-          <div className="al-card" style={{ borderLeft: '4px solid #F59E0B' }}>
-            <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
-              Pending Requests
+          {/* Card 2: Pending Requests */}
+          <div className="stat-card-kpi" style={{ borderLeft: '4px solid #F59E0B' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                  Pending Requests
+                </div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', marginTop: '0.35rem', letterSpacing: '-0.03em' }}>
+                  {analytics?.summary?.pendingRequests || 0}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '10px',
+                  backgroundColor: '#FFFBEB',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#D97706',
+                }}
+              >
+                <Clock size={20} />
+              </div>
             </div>
-            <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#17231C', marginTop: '0.25rem' }}>
-              {analytics?.summary?.pendingRequests || 0}
-            </div>
-            <div style={{ fontSize: '0.75rem', color: '#D97706', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.75rem', color: '#D97706', fontWeight: 600, marginTop: '0.75rem' }}>
               Awaiting custodian review
             </div>
           </div>
 
-          <div className="al-card" style={{ borderLeft: '4px solid #8B5CF6' }}>
-            <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
-              Waiting List Entries
+          {/* Card 3: Waiting List Entries */}
+          <div className="stat-card-kpi" style={{ borderLeft: '4px solid #8B5CF6' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                  Waiting List
+                </div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', marginTop: '0.35rem', letterSpacing: '-0.03em' }}>
+                  {waitingList.length}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '10px',
+                  backgroundColor: '#FAF5FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#7C3AED',
+                }}
+              >
+                <Layers size={20} />
+              </div>
             </div>
-            <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#17231C', marginTop: '0.25rem' }}>
-              {waitingList.length}
-            </div>
-            <div style={{ fontSize: '0.75rem', color: '#6D28D9', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.75rem', color: '#7C3AED', fontWeight: 600, marginTop: '0.75rem' }}>
               Auto-queue notification active
             </div>
           </div>
 
-          <div className="al-card" style={{ borderLeft: '4px solid #3B82F6' }}>
-            <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
-              Completed Sessions
+          {/* Card 4: Completed Sessions */}
+          <div className="stat-card-kpi" style={{ borderLeft: '4px solid #3B82F6' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                  Completed Sessions
+                </div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#0F172A', marginTop: '0.35rem', letterSpacing: '-0.03em' }}>
+                  {analytics?.summary?.completedBookings || 0}
+                </div>
+              </div>
+              <div
+                style={{
+                  width: '42px',
+                  height: '42px',
+                  borderRadius: '10px',
+                  backgroundColor: '#EFF6FF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#2563EB',
+                }}
+              >
+                <ShieldCheck size={20} />
+              </div>
             </div>
-            <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#17231C', marginTop: '0.25rem' }}>
-              {analytics?.summary?.completedBookings || 0}
-            </div>
-            <div style={{ fontSize: '0.75rem', color: '#2563EB', marginTop: '0.25rem' }}>
+            <div style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 600, marginTop: '0.75rem' }}>
               Documented & audited
             </div>
           </div>
@@ -148,27 +225,44 @@ const BorrowerDashboard = () => {
 
         {/* Active & Pending Reservations Section */}
         <div style={{ marginBottom: '3rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.35rem' }}>Current Reservations & Actions</h2>
-            <Link to="/explore" className="btn btn-primary btn-sm">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+            <div>
+              <h2 style={{ fontSize: '1.35rem' }}>Current Reservations & Actions</h2>
+              <p style={{ fontSize: '0.85rem', color: '#64748B' }}>Track equipment status, check in upon collection, or request return inspection.</p>
+            </div>
+            <Link to="/explore" className="btn btn-primary btn-sm" style={{ gap: '0.4rem' }}>
               <Search size={14} />
               <span>Explore More Resources</span>
             </Link>
           </div>
 
           {bookings.length === 0 ? (
-            <div className="al-card" style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
-              <Calendar size={36} color="#CBD5E1" style={{ margin: '0 auto 0.75rem' }} />
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.35rem' }}>No Active Reservations</h3>
-              <p style={{ fontSize: '0.85rem', color: '#64748B', marginBottom: '1.25rem' }}>
-                You do not have any active or upcoming equipment requests right now.
+            <div className="al-card" style={{ textAlign: 'center', padding: '3.5rem 1.5rem', borderStyle: 'dashed' }}>
+              <div
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  backgroundColor: '#F1F5F9',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                  color: '#94A3B8',
+                }}
+              >
+                <Inbox size={26} />
+              </div>
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>No Active Reservations</h3>
+              <p style={{ fontSize: '0.875rem', color: '#64748B', maxWidth: '420px', margin: '0 auto 1.5rem' }}>
+                You do not have any active or upcoming equipment requests right now. Discover equipment across campus labs.
               </p>
               <Link to="/explore" className="btn btn-primary btn-sm">
                 Explore Campus Resources
               </Link>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               {bookings.map((b) => (
                 <div
                   key={b._id}
@@ -179,6 +273,7 @@ const BorrowerDashboard = () => {
                     justifyContent: 'space-between',
                     flexWrap: 'wrap',
                     gap: '1rem',
+                    padding: '1.15rem 1.35rem',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -188,11 +283,11 @@ const BorrowerDashboard = () => {
                         'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=120&q=80'
                       }
                       alt=""
-                      style={{ width: '70px', height: '54px', borderRadius: '8px', objectFit: 'cover' }}
+                      style={{ width: '68px', height: '54px', borderRadius: '8px', objectFit: 'cover' }}
                     />
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <h4 style={{ fontSize: '0.975rem', color: '#17231C' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <h4 style={{ fontSize: '0.975rem', color: '#0F172A', fontWeight: 700 }}>
                           {b.resource?.name}
                         </h4>
                         <span
@@ -211,22 +306,22 @@ const BorrowerDashboard = () => {
                           {b.status}
                         </span>
                       </div>
-                      <div style={{ fontSize: '0.785rem', color: '#64748B', marginTop: '2px' }}>
-                        {new Date(b.startTime).toLocaleDateString()} ({b.durationHours} hrs) • Ref: {b.bookingNumber}
+                      <div style={{ fontSize: '0.785rem', color: '#64748B', marginTop: '3px' }}>
+                        {new Date(b.startTime).toLocaleDateString()} ({b.durationHours} hrs) • Ref: <strong>{b.bookingNumber}</strong> • {b.resource?.location || 'Campus Facility'}
                       </div>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                     {b.status === 'Approved' && !b.checkIn?.checkedInAt && (
-                      <span className="badge badge-amber" style={{ fontSize: '0.75rem' }}>
+                      <span className="badge badge-amber" style={{ fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}>
                         Check-In Required
                       </span>
                     )}
 
-                    <Link to={`/bookings/${b._id}`} className="btn btn-primary btn-sm">
+                    <Link to={`/bookings/${b._id}`} className="btn btn-primary btn-sm" style={{ gap: '0.35rem' }}>
                       <span>View & Actions</span>
-                      <ArrowRight size={14} />
+                      <ArrowRight size={13} />
                     </Link>
                   </div>
                 </div>
@@ -238,9 +333,10 @@ const BorrowerDashboard = () => {
         {/* Waiting List Queue Section */}
         {waitingList.length > 0 && (
           <div style={{ marginBottom: '3rem' }}>
-            <h2 style={{ fontSize: '1.35rem', marginBottom: '1rem' }}>
-              Your Waiting List Queue
-            </h2>
+            <div style={{ marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.35rem' }}>Your Waiting List Queue</h2>
+              <p style={{ fontSize: '0.85rem', color: '#64748B' }}>When a reserved slot opens up, you will be notified immediately to confirm.</p>
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               {waitingList.map((entry) => (
                 <div
@@ -251,10 +347,11 @@ const BorrowerDashboard = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     borderLeft: '4px solid #8B5CF6',
+                    padding: '1.15rem 1.35rem',
                   }}
                 >
                   <div>
-                    <strong style={{ fontSize: '0.95rem', color: '#17231C' }}>
+                    <strong style={{ fontSize: '0.95rem', color: '#0F172A' }}>
                       {entry.resource?.name}
                     </strong>
                     <div style={{ fontSize: '0.8rem', color: '#64748B', marginTop: '2px' }}>
@@ -278,29 +375,30 @@ const BorrowerDashboard = () => {
 
         {/* Recommended for Your Department */}
         <div>
-          <h2 style={{ fontSize: '1.35rem', marginBottom: '1rem' }}>
-            Recommended Resources in {user?.department || 'Your Faculty'}
-          </h2>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <h2 style={{ fontSize: '1.35rem' }}>Recommended Resources in {user?.department || 'Your Faculty'}</h2>
+            <p style={{ fontSize: '0.85rem', color: '#64748B' }}>High-demand items frequently utilized by your academic division.</p>
+          </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
             {recommended.map((r) => (
               <Link
                 key={r._id}
                 to={`/resources/${r._id}`}
                 className="al-card al-card-hover"
-                style={{ padding: '1rem' }}
+                style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}
               >
                 <img
                   src={r.images?.[0]}
                   alt=""
-                  style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '6px', marginBottom: '0.75rem' }}
+                  style={{ width: '100%', height: '130px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
                 />
-                <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#16A34A', fontWeight: 700 }}>
+                <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#16A34A', fontWeight: 700, letterSpacing: '0.04em' }}>
                   {r.category}
                 </div>
-                <h4 style={{ fontSize: '0.925rem', color: '#17231C', margin: '0.2rem 0 0.5rem', lineHeight: 1.3 }}>
+                <h4 style={{ fontSize: '0.925rem', color: '#0F172A', margin: '0.2rem 0 0.5rem', lineHeight: 1.35, fontWeight: 700 }}>
                   {r.name}
                 </h4>
-                <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 'auto' }}>
                   {r.location}
                 </div>
               </Link>
