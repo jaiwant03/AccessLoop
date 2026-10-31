@@ -105,18 +105,104 @@ const ProfilePage = () => {
           </p>
         </div>
 
-        {/* User Card */}
+        {/* User Card with Photo Upload */}
         <div className="al-card" style={{ marginBottom: '2rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-              <img
-                src={
-                  user?.avatar ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
-                }
-                alt=""
-                style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover' }}
-              />
+          {/* Avatar Feedback Messages */}
+          {avatarSuccess && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: '#F0FDF4',
+                color: '#15803D',
+                borderRadius: '8px',
+                border: '1px solid #BBF7D0',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '1rem',
+              }}
+            >
+              <CheckCircle size={16} color="#16A34A" />
+              <span>{avatarSuccess}</span>
+            </div>
+          )}
+
+          {avatarError && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1rem',
+                backgroundColor: '#FEF2F2',
+                color: '#DC2626',
+                borderRadius: '8px',
+                border: '1px solid #FECACA',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '1rem',
+              }}
+            >
+              <AlertCircle size={16} color="#DC2626" />
+              <span>{avatarError}</span>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+              {/* Profile Avatar with Camera Button */}
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={resolveImageUrl(user?.avatar) || DEFAULT_AVATAR}
+                  alt={user?.name || 'Profile'}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_AVATAR;
+                  }}
+                  style={{
+                    width: '76px',
+                    height: '76px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '3px solid #22C55E',
+                    boxShadow: '0 2px 8px rgba(34, 197, 94, 0.25)',
+                  }}
+                />
+                <label
+                  htmlFor="profile-avatar-input"
+                  title="Upload profile photo"
+                  style={{
+                    position: 'absolute',
+                    bottom: '0px',
+                    right: '0px',
+                    background: '#16A34A',
+                    color: '#ffffff',
+                    borderRadius: '50%',
+                    width: '28px',
+                    height: '28px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: uploadingAvatar ? 'not-allowed' : 'pointer',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                    border: '2px solid #ffffff',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <Camera size={14} />
+                  <input
+                    id="profile-avatar-input"
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    style={{ display: 'none' }}
+                    onChange={handleAvatarChange}
+                    disabled={uploadingAvatar}
+                  />
+                </label>
+              </div>
+
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <h2 style={{ fontSize: '1.25rem', color: '#17231C' }}>{user?.name}</h2>
@@ -124,6 +210,27 @@ const ProfilePage = () => {
                 </div>
                 <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '2px' }}>
                   {user?.department} • {user?.institution}
+                </div>
+                <div style={{ marginTop: '0.45rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label
+                    htmlFor="profile-avatar-input"
+                    style={{
+                      fontSize: '0.78rem',
+                      color: '#16A34A',
+                      fontWeight: 600,
+                      cursor: uploadingAvatar ? 'not-allowed' : 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '3px 8px',
+                      backgroundColor: '#F0FDF4',
+                      borderRadius: '6px',
+                      border: '1px solid rgba(34, 197, 94, 0.3)',
+                    }}
+                  >
+                    <Upload size={13} />
+                    {uploadingAvatar ? 'Uploading photo...' : 'Change profile photo'}
+                  </label>
                 </div>
               </div>
             </div>
