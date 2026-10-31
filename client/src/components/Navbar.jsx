@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
-import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
+import api from '../services/api';
+import UserAvatar from './UserAvatar';
 
 const Navbar = ({ onOpenChatbot }) => {
   const { user, role, logout, isAuthenticated } = useAuth();
@@ -330,20 +331,11 @@ const Navbar = ({ onOpenChatbot }) => {
                     cursor: 'pointer',
                   }}
                 >
-                  <img
-                    src={resolveImageUrl(user.avatar) || DEFAULT_AVATAR}
-                    alt={user.name}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = DEFAULT_AVATAR;
-                    }}
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      border: '1.5px solid #22C55E',
-                    }}
+                  <UserAvatar
+                    src={user.avatar}
+                    name={user.name}
+                    size={28}
+                    border="1.5px solid #22C55E"
                   />
                   <span
                     style={{
@@ -375,21 +367,11 @@ const Navbar = ({ onOpenChatbot }) => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.65rem', marginBottom: '0.65rem' }}>
-                      <img
-                        src={resolveImageUrl(user.avatar) || DEFAULT_AVATAR}
-                        alt={user.name}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = DEFAULT_AVATAR;
-                        }}
-                        style={{
-                          width: '38px',
-                          height: '38px',
-                          borderRadius: '50%',
-                          objectFit: 'cover',
-                          border: '2px solid #22C55E',
-                          flexShrink: 0,
-                        }}
+                      <UserAvatar
+                        src={user.avatar}
+                        name={user.name}
+                        size={38}
+                        border="2px solid #22C55E"
                       />
                       <div style={{ overflow: 'hidden' }}>
                         <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#17231C', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
