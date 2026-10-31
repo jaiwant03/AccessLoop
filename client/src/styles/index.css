@@ -1041,6 +1041,13 @@ button, input, select, textarea {
   gap: 2rem;
 }
 
+.responsive-admin-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
 .responsive-two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
