@@ -13,10 +13,15 @@ export const SocketProvider = ({ children }) => {
   useEffect(() => {
     const currentUserId = user?._id || user?.id;
     if (user && currentUserId) {
-      // Connect to root backend
-      const socketUrl = window.location.origin.includes(':5173')
-        ? 'http://localhost:5000'
-        : window.location.origin;
+      // Connect to backend (supports local, Render, or env var)
+      const socketUrl =
+        import.meta.env.VITE_SOCKET_URL ||
+        (import.meta.env.VITE_API_URL
+          ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '')
+          : null) ||
+        (window.location.origin.includes(':5173')
+          ? 'http://localhost:5000'
+          : window.location.origin);
 
       const newSocket = io(socketUrl, {
         transports: ['websocket', 'polling'],
