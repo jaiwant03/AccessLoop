@@ -214,7 +214,7 @@ const updateAvatar = async (req, res, next) => {
 
     if (req.file) {
       avatarUrl = `/uploads/${req.file.filename}`;
-    } else if (req.body && req.body.avatar) {
+    } else if (req.body && typeof req.body.avatar === 'string') {
       avatarUrl = req.body.avatar;
     } else {
       return res.status(400).json({
