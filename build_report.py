@@ -284,139 +284,34 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     story = []
 
     # =========================================================================
-    # COVER PAGE
+    # COVER PAGE (MINIMAL, CLEAN & ELEGANT - EXACT REQUEST)
     # =========================================================================
-    story.append(Spacer(1, 15))
+    story.append(Spacer(1, 140))
 
-    # Top brand bar
-    top_badge_table = Table(
-        [[
-            Paragraph("●  OFFICIAL HACKATHON PROJECT DOCUMENTATION & TECHNICAL REPORT", styles["CoverBadge"]),
-            Paragraph("VERSION 1.0  •  OCT 2026", styles["TOCPage"]),
-        ]],
-        colWidths=[CONTENT_WIDTH * 0.75, CONTENT_WIDTH * 0.25],
-    )
-    top_badge_table.setStyle(
-        TableStyle([
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-            ("LINEBELOW", (0, 0), (-1, -1), 1, C_PRIMARY_GREEN),
-        ])
-    )
-    story.append(top_badge_table)
-    story.append(Spacer(1, 28))
-
-    # Title & Tagline Box
+    # Project Title & Subtitle
     story.append(Paragraph("AccessLoop", styles["CoverTitle"]))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 10))
     story.append(Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"]))
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 6))
     story.append(Paragraph("“Share More. Waste Less.”", styles["CoverTagline"]))
-    story.append(Spacer(1, 14))
+    story.append(Spacer(1, 45))
 
-    # Problem Statement Callout on Cover
+    # Small Problem Statement
     ps_html = (
-        "<b>OFFICIAL PROBLEM STATEMENT:</b><br/>"
-        "<i>“Unlock Underused Equipment and Spaces”</i> — Transforming idle campus laboratories, "
-        "specialised fabrication machinery, cinematography rigs, and testing equipment into a secure, "
-        "accountable, and equitable shared campus economy."
+        "<b>PROBLEM STATEMENT:</b><br/>"
+        "<b>Unlock Underused Equipment and Spaces</b> — "
+        "Transforming expensive, locked campus laboratories, fabrication machinery, and technical equipment into an accountable and equitable shared ecosystem."
     )
     story.append(make_callout(ps_html, styles, C_LIGHT_GREEN, C_PRIMARY_GREEN))
-    story.append(Spacer(1, 32))
+    story.append(Spacer(1, 55))
 
-    # Executive Summary Card on Cover
-    exec_summary_html = (
-        "<b>EXECUTIVE OVERVIEW:</b><br/>"
-        "AccessLoop is an end-to-end full-stack platform designed to eliminate departmental hardware silos "
-        "in academic and research institutions. By integrating automated qualification gating, two-way photo-verified "
-        "equipment handover, an algorithmic fair allocation queue, and immutable MongoDB audit logging, the platform "
-        "guarantees complete custodian trust and democratic student access."
+    # Team Leader / Team Member Name Only
+    team_member_html = (
+        "<b>TEAM LEADER / TEAM MEMBER:</b><br/>"
+        "<font size='12' color='#0F172A'><b>Jaiwant Karrun SA</b></font>"
     )
-    story.append(make_callout(exec_summary_html, styles, C_CARD_BG, C_BORDER))
-    story.append(Spacer(1, 40))
+    story.append(make_callout(team_member_html, styles, C_CARD_BG, C_BORDER))
 
-    # Solo Participant Meta Table
-    meta_data = [
-        [
-            Paragraph("SOLO PARTICIPANT / LEAD DEVELOPER", styles["CoverMetaLabel"]),
-            Paragraph("PROJECT REPOSITORY & HOSTING", styles["CoverMetaLabel"]),
-        ],
-        [
-            Paragraph("<b>Jaiwant Karrun S.A.</b><br/>Team Leader & Sole Full-Stack Developer", styles["CoverMetaVal"]),
-            Paragraph("<b>GitHub:</b> github.com/jaiwant03/AccessLoop<br/><b>Frontend:</b> Vercel | <b>Backend:</b> Render", styles["CoverMetaVal"]),
-        ],
-        [
-            Paragraph("INSTITUTIONAL AFFILIATION", styles["CoverMetaLabel"]),
-            Paragraph("DATE OF SUBMISSION & AUDIT", styles["CoverMetaLabel"]),
-        ],
-        [
-            Paragraph("Apex Institute of Technology & Science<br/><i>[ENTER YOUR INSTITUTION NAME]</i>", styles["CoverMetaVal"]),
-            Paragraph("October 31, 2026<br/>Production Deployment Audit", styles["CoverMetaVal"]),
-        ],
-    ]
-    meta_table = Table(meta_data, colWidths=[CONTENT_WIDTH * 0.52, CONTENT_WIDTH * 0.48])
-    meta_table.setStyle(
-        TableStyle([
-            ("BACKGROUND", (0, 0), (-1, -1), C_CARD_BG),
-            ("BOX", (0, 0), (-1, -1), 1, C_BORDER),
-            ("INNERGRID", (0, 0), (-1, -1), 0.5, C_BORDER),
-            ("TOPPADDING", (0, 0), (-1, -1), 7),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
-            ("LEFTPADDING", (0, 0), (-1, -1), 10),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 10),
-        ])
-    )
-    story.append(meta_table)
-
-    story.append(PageBreak())
-
-    # =========================================================================
-    # TABLE OF CONTENTS
-    # =========================================================================
-    story.append(Paragraph("Table of Contents", styles["H1"]))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY_GREEN, spaceBefore=2, spaceAfter=12))
-
-    toc_entries = [
-        ("1. Project Abstract", "3"),
-        ("2. Problem Understanding & Analysis", "3"),
-        ("3. Target Users & Stakeholder Matrix", "4"),
-        ("4. Proposed Solution & Core Innovation", "4"),
-        ("5. Complete Product Lifecycle Workflow", "5"),
-        ("6. Implementation Status & Feature Audit", "6"),
-        ("7. Technology Stack Specifications", "7"),
-        ("8. System Architecture & Network Topology", "7"),
-        ("9. Database Design & Mongoose Schemas", "8"),
-        ("10. User Role Modules & Functional Breakdown", "9"),
-        ("11. AI and Intelligent Capabilities", "9"),
-        ("12. Comprehensive Quality Assurance & Test Case Matrix", "10"),
-        ("13. Security, Privacy & Fairness Architecture", "11"),
-        ("14. Operational Limitations & Known Constraints", "11"),
-        ("15. Future Scope & Roadmap", "11"),
-        ("16. Team Composition & Individual Contributions (Solo Project)", "12"),
-        ("17. Detailed Individual Contributions (21 Domains)", "12"),
-        ("18. Deployment & Execution Guide", "13"),
-        ("19. Conclusion & Impact", "13"),
-        ("20. References & Acknowledgements", "13"),
-    ]
-
-    toc_rows = []
-    for title, pg in toc_entries:
-        toc_rows.append([
-            Paragraph(title, styles["TOCItem"]),
-            Paragraph(f". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .", styles["BodySecondary"]),
-            Paragraph(pg, styles["TOCPage"]),
-        ])
-
-    toc_table = Table(toc_rows, colWidths=[CONTENT_WIDTH * 0.48, CONTENT_WIDTH * 0.44, CONTENT_WIDTH * 0.08])
-    toc_table.setStyle(
-        TableStyle([
-            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), 3),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-            ("LEFTPADDING", (0, 0), (-1, -1), 2),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 2),
-        ])
-    )
-    story.append(toc_table)
     story.append(PageBreak())
 
     # =========================================================================
