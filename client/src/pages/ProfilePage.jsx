@@ -54,6 +54,24 @@ const ProfilePage = () => {
     }
   };
 
+  const handleRemoveAvatar = async () => {
+    if (!window.confirm('Are you sure you want to remove your profile photo?')) return;
+    setUploadingAvatar(true);
+    setAvatarError('');
+    setAvatarSuccess('');
+
+    try {
+      await updateAvatar('');
+      setAvatarSuccess('Profile photo removed.');
+      setTimeout(() => setAvatarSuccess(''), 4000);
+    } catch (err) {
+      console.error('Failed to remove avatar:', err);
+      setAvatarError(err.response?.data?.message || 'Failed to remove profile photo.');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const handleVerificationSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
