@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, ShieldCheck, UserCheck, Star, Clock, AlertTriangle } from 'lucide-react';
+import { MapPin, ShieldCheck, UserCheck, Star, Clock, AlertTriangle, ArrowRight } from 'lucide-react';
 
 const ResourceCard = ({ resource }) => {
   if (!resource) return null;
@@ -26,17 +26,40 @@ const ResourceCard = ({ resource }) => {
           }}
         />
 
+        {/* Subtle gradient vignette for badge readability */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, transparent 45%)',
+            pointerEvents: 'none',
+          }}
+        />
+
         {/* Badges Over Image */}
         <div className="resource-card-badges">
           <span
             className={`badge ${
               isAvailable ? 'badge-green' : 'badge-amber'
             }`}
+            style={{
+              backdropFilter: 'blur(8px)',
+              backgroundColor: isAvailable ? 'rgba(236, 253, 245, 0.95)' : 'rgba(255, 251, 235, 0.95)',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
+            }}
           >
             {isAvailable ? 'Available Now' : 'Currently Reserved'}
           </span>
 
-          <span className="badge badge-gray" style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)' }}>
+          <span
+            className="badge badge-gray"
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(8px)',
+              fontWeight: 700,
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.08)',
+            }}
+          >
             {resource.isPaid ? `₹${resource.hourlyFee}/hr` : 'Free to Share'}
           </span>
         </div>
@@ -50,7 +73,7 @@ const ResourceCard = ({ resource }) => {
         </h3>
 
         <div className="resource-card-location">
-          <MapPin size={13} color="#64748B" />
+          <MapPin size={13} color="#64748B" style={{ flexShrink: 0 }} />
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {resource.location}
           </span>
@@ -62,33 +85,33 @@ const ResourceCard = ({ resource }) => {
             display: 'flex',
             alignItems: 'center',
             gap: '0.45rem',
-            padding: '0.35rem 0.55rem',
-            backgroundColor: '#F8FAF9',
-            borderRadius: '6px',
-            border: '1px solid #E5E7EB',
+            padding: '0.4rem 0.65rem',
+            backgroundColor: '#F8FAFC',
+            borderRadius: 'var(--radius-sm)',
+            border: '1px solid #E2E8F0',
             fontSize: '0.75rem',
             color: '#475569',
-            marginBottom: '0.75rem',
+            marginBottom: '0.85rem',
           }}
         >
           {resource.eligibilityRequirements?.requiresTraining ? (
             <>
-              <AlertTriangle size={13} color="#F59E0B" />
-              <span>Safety Training Required</span>
+              <AlertTriangle size={13} color="#F59E0B" style={{ flexShrink: 0 }} />
+              <span style={{ fontWeight: 500 }}>Safety Training Required</span>
             </>
           ) : (
             <>
-              <ShieldCheck size={13} color="#16A34A" />
-              <span>Standard Verified Access</span>
+              <ShieldCheck size={13} color="#16A34A" style={{ flexShrink: 0 }} />
+              <span style={{ fontWeight: 500 }}>Standard Verified Access</span>
             </>
           )}
         </div>
 
-        {/* Footer */}
+        {/* Footer with Uniform Baseline */}
         <div className="resource-card-footer">
           <div>
-            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Custodian</div>
-            <div style={{ fontSize: '0.825rem', fontWeight: 600, color: '#17231C' }}>
+            <div style={{ fontSize: '0.725rem', color: '#64748B', fontWeight: 500 }}>Custodian</div>
+            <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#0F172A' }}>
               {resource.owner?.name?.split(' ')[0] || 'Faculty'}
             </div>
           </div>
@@ -96,8 +119,10 @@ const ResourceCard = ({ resource }) => {
           <Link
             to={`/resources/${resource._id}`}
             className="btn btn-primary btn-sm"
+            style={{ gap: '0.35rem' }}
           >
-            View Details
+            <span>View Details</span>
+            <ArrowRight size={13} />
           </Link>
         </div>
       </div>
