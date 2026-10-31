@@ -15,6 +15,8 @@ import {
   ArrowRight,
   Sparkles,
   Users,
+  ChevronRight,
+  Home,
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -63,8 +65,8 @@ const ResourceDetailsPage = () => {
   if (loading) {
     return (
       <div className="main-content">
-        <div className="app-container" style={{ textAlign: 'center', padding: '5rem 0' }}>
-          <div className="badge badge-green" style={{ padding: '0.5rem 1rem' }}>
+        <div className="app-container" style={{ textAlign: 'center', padding: '6rem 0' }}>
+          <div className="badge badge-green" style={{ padding: '0.65rem 1.25rem', fontSize: '0.9rem' }}>
             Loading resource specifications...
           </div>
         </div>
@@ -75,9 +77,9 @@ const ResourceDetailsPage = () => {
   if (!resource) {
     return (
       <div className="main-content">
-        <div className="app-container" style={{ textAlign: 'center', padding: '5rem 0' }}>
-          <h2>Resource not found</h2>
-          <p style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
+        <div className="app-container" style={{ textAlign: 'center', padding: '6rem 0' }}>
+          <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', color: '#0F172A' }}>Resource not found</h2>
+          <p style={{ marginTop: '0.5rem', marginBottom: '1.75rem', color: '#64748B' }}>
             The requested asset does not exist or may have been decommissioned.
           </p>
           <Link to="/explore" className="btn btn-primary">
@@ -176,13 +178,16 @@ const ResourceDetailsPage = () => {
   return (
     <div className="main-content">
       <div className="app-container">
-        {/* Breadcrumb */}
-        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.825rem', color: '#64748B', marginBottom: '1.5rem' }}>
-          <Link to="/" style={{ color: '#64748B' }}>Home</Link>
-          <span>/</span>
+        {/* Modern Breadcrumb */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.825rem', color: '#64748B', marginBottom: '1.75rem' }}>
+          <Link to="/" style={{ color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Home size={13} />
+            <span>Home</span>
+          </Link>
+          <ChevronRight size={13} color="#CBD5E1" />
           <Link to="/explore" style={{ color: '#64748B' }}>Explore</Link>
-          <span>/</span>
-          <span style={{ color: '#17231C', fontWeight: 600 }}>{resource.name}</span>
+          <ChevronRight size={13} color="#CBD5E1" />
+          <span style={{ color: '#0F172A', fontWeight: 600 }}>{resource.name}</span>
         </div>
 
         <div className="responsive-detail-grid">
@@ -192,12 +197,13 @@ const ResourceDetailsPage = () => {
             <div style={{ marginBottom: '2rem' }}>
               <div
                 style={{
-                  height: '380px',
+                  height: '400px',
                   backgroundColor: '#F1F5F9',
-                  borderRadius: 'var(--radius-lg)',
+                  borderRadius: 'var(--radius-xl)',
                   overflow: 'hidden',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid #E2E8F0',
                   marginBottom: '1rem',
+                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
                 <img
@@ -218,12 +224,13 @@ const ResourceDetailsPage = () => {
                       key={i}
                       onClick={() => setSelectedImage(i)}
                       style={{
-                        width: '80px',
-                        height: '60px',
-                        borderRadius: '6px',
+                        width: '84px',
+                        height: '62px',
+                        borderRadius: '8px',
                         overflow: 'hidden',
                         cursor: 'pointer',
-                        border: selectedImage === i ? '2px solid #22C55E' : '1px solid #E5E7EB',
+                        border: selectedImage === i ? '2px solid #22C55E' : '1px solid #E2E8F0',
+                        transition: 'all 0.15s ease',
                       }}
                     >
                       <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -235,31 +242,38 @@ const ResourceDetailsPage = () => {
 
             {/* Header Information */}
             <div style={{ marginBottom: '2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
                 <span className="badge badge-green">{resource.category}</span>
                 <span className="badge badge-gray">{resource.resourceType}</span>
                 <span className="badge badge-blue">Condition: {resource.condition}</span>
+                <span className="badge badge-gray">Capacity: {resource.quantity} unit(s)</span>
               </div>
 
-              <h1 style={{ fontSize: '2rem', marginBottom: '0.75rem', lineHeight: 1.25 }}>
+              <h1 style={{ fontSize: '2.15rem', marginBottom: '0.75rem', lineHeight: 1.25, letterSpacing: '-0.03em' }}>
                 {resource.name}
               </h1>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', color: '#64748B', fontSize: '0.85rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', color: '#64748B', fontSize: '0.85rem', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <MapPin size={16} color="#16A34A" />
-                  <span>{resource.location}</span>
+                  <MapPin size={15} color="#16A34A" />
+                  <span style={{ fontWeight: 500 }}>{resource.location}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Building size={16} color="#16A34A" />
-                  <span>{resource.department}</span>
+                  <Building size={15} color="#16A34A" />
+                  <span style={{ fontWeight: 500 }}>{resource.department}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <Clock size={15} color="#16A34A" />
+                  <span>Max: {resource.maxBookingDurationHours} hrs / session</span>
                 </div>
               </div>
             </div>
 
             {/* Detailed Description */}
             <div className="al-card" style={{ marginBottom: '1.75rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Overview & Technical Specifications</h3>
+              <h3 style={{ fontSize: '1.15rem', marginBottom: '0.75rem', color: '#0F172A', fontWeight: 700 }}>
+                Overview & Technical Specifications
+              </h3>
               <p style={{ lineHeight: 1.7, fontSize: '0.925rem', color: '#334155', whiteSpace: 'pre-line' }}>
                 {resource.description}
               </p>
@@ -269,18 +283,18 @@ const ResourceDetailsPage = () => {
             <div className="al-card" style={{ marginBottom: '1.75rem', borderLeft: '4px solid #F59E0B' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
                 <AlertTriangle size={18} color="#D97706" />
-                <h3 style={{ fontSize: '1.05rem', color: '#17231C' }}>Safety Instructions & Laboratory Protocols</h3>
+                <h3 style={{ fontSize: '1.05rem', color: '#0F172A', fontWeight: 700 }}>Safety Instructions & Laboratory Protocols</h3>
               </div>
               <p style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.6 }}>
                 {resource.safetyInstructions}
               </p>
-              <div style={{ marginTop: '0.85rem', paddingTop: '0.75rem', borderTop: '1px solid #E5E7EB', fontSize: '0.825rem', color: '#64748B' }}>
+              <div style={{ marginTop: '0.85rem', paddingTop: '0.75rem', borderTop: '1px solid #E2E8F0', fontSize: '0.825rem', color: '#64748B' }}>
                 <strong>Guidelines:</strong> {resource.usageGuidelines}
               </div>
             </div>
 
             {/* Custodian Card */}
-            <div className="al-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="al-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                 <img
                   src={
@@ -291,7 +305,7 @@ const ResourceDetailsPage = () => {
                   style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }}
                 />
                 <div>
-                  <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#17231C' }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0F172A' }}>
                     {resource.owner?.name}
                   </div>
                   <div style={{ fontSize: '0.8rem', color: '#64748B' }}>
@@ -313,24 +327,24 @@ const ResourceDetailsPage = () => {
                   alignItems: 'baseline',
                   justifyContent: 'space-between',
                   paddingBottom: '1.25rem',
-                  borderBottom: '1px solid #E5E7EB',
+                  borderBottom: '1px solid #E2E8F0',
                   marginBottom: '1.25rem',
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700 }}>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700, letterSpacing: '0.04em' }}>
                     Access Fee
                   </div>
-                  <div style={{ fontSize: '1.65rem', fontWeight: 800, color: '#16A34A' }}>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16A34A', letterSpacing: '-0.02em' }}>
                     {resource.isPaid ? `₹${resource.hourlyFee}/hr` : 'Free'}
                   </div>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700 }}>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700, letterSpacing: '0.04em' }}>
                     Security Deposit
                   </div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#17231C' }}>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>
                     {resource.securityDeposit > 0 ? `₹${resource.securityDeposit}` : 'None Required'}
                   </div>
                 </div>
@@ -339,27 +353,27 @@ const ResourceDetailsPage = () => {
               {/* Eligibility Checklist */}
               <div
                 style={{
-                  backgroundColor: '#F8FAF9',
+                  backgroundColor: '#F8FAFC',
                   borderRadius: '10px',
                   padding: '1rem',
-                  border: '1px solid #E5E7EB',
+                  border: '1px solid #E2E8F0',
                   marginBottom: '1.5rem',
                 }}
               >
-                <div style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', color: '#475569', marginBottom: '0.65rem' }}>
+                <div style={{ fontSize: '0.785rem', fontWeight: 700, textTransform: 'uppercase', color: '#475569', marginBottom: '0.65rem', letterSpacing: '0.04em' }}>
                   Your Eligibility Assessment
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', fontSize: '0.8rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>Verified Academic Status:</span>
+                    <span style={{ color: '#475569' }}>Verified Academic Status:</span>
                     <strong style={{ color: isVerifiedUser ? '#16A34A' : '#EF4444' }}>
                       {isVerifiedUser ? 'Verified ✓' : 'Pending Verification'}
                     </strong>
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span>Fair Usage Standing (Min {resource.eligibilityRequirements?.minFairUsageScore || 50}):</span>
+                    <span style={{ color: '#475569' }}>Fair Usage Standing (Min {resource.eligibilityRequirements?.minFairUsageScore || 50}):</span>
                     <strong style={{ color: fairScoreOk ? '#16A34A' : '#EF4444' }}>
                       {user?.fairUsageScore || 100}/100 {fairScoreOk ? '✓' : '✕'}
                     </strong>
@@ -367,7 +381,7 @@ const ResourceDetailsPage = () => {
 
                   {trainingRequired && (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span>Safety Certification:</span>
+                      <span style={{ color: '#475569' }}>Safety Certification:</span>
                       <strong style={{ color: '#D97706' }}>
                         Required ({resource.eligibilityRequirements?.trainingCourseName || 'Shop Orientation'})
                       </strong>
@@ -437,10 +451,11 @@ const ResourceDetailsPage = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '0.65rem 0.85rem',
-                    backgroundColor: '#F0FDF4',
-                    borderRadius: '6px',
+                    backgroundColor: '#ECFDF5',
+                    borderRadius: '8px',
                     fontSize: '0.825rem',
                     marginBottom: '1.25rem',
+                    border: '1px solid rgba(34, 197, 94, 0.25)',
                   }}
                 >
                   <span style={{ color: '#15803D', fontWeight: 600 }}>Total Duration:</span>
@@ -452,7 +467,7 @@ const ResourceDetailsPage = () => {
                   <div
                     style={{
                       padding: '0.75rem',
-                      backgroundColor: '#FEE2E2',
+                      backgroundColor: '#FEF2F2',
                       border: '1px solid rgba(239, 68, 68, 0.4)',
                       borderRadius: '8px',
                       color: '#B91C1C',
@@ -469,7 +484,7 @@ const ResourceDetailsPage = () => {
                   <div
                     style={{
                       padding: '1rem',
-                      backgroundColor: '#F5F3FF',
+                      backgroundColor: '#FAF5FF',
                       border: '1px solid #DDD6FE',
                       borderRadius: '8px',
                       marginBottom: '1rem',
@@ -498,7 +513,7 @@ const ResourceDetailsPage = () => {
                   <div
                     style={{
                       padding: '0.75rem',
-                      backgroundColor: '#F0FDF4',
+                      backgroundColor: '#ECFDF5',
                       color: '#15803D',
                       borderRadius: '8px',
                       fontSize: '0.825rem',
@@ -514,14 +529,14 @@ const ResourceDetailsPage = () => {
                   type="submit"
                   disabled={bookingLoading}
                   className="btn btn-primary"
-                  style={{ width: '100%', height: '48px', fontSize: '1rem' }}
+                  style={{ width: '100%', height: '48px', fontSize: '0.975rem', gap: '0.5rem' }}
                 >
                   {bookingLoading ? (
                     'Evaluating Request...'
                   ) : (
                     <>
                       <span>Submit Booking Request</span>
-                      <ArrowRight size={18} />
+                      <ArrowRight size={17} />
                     </>
                   )}
                 </button>
