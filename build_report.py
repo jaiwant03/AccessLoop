@@ -16,10 +16,10 @@ from reportlab.platypus import (
 from reportlab.pdfgen import canvas
 
 PAGE_WIDTH, PAGE_HEIGHT = A4
-MARGIN = 40  # Tightened margins to maximize printable area and reduce bottom gaps
-CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN  # ~515 pt
+MARGIN = 40  # 40pt side margins for maximum printable width (~515 pt)
+CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN
 
-# AccessLoop Colors
+# AccessLoop Brand Colors
 C_WHITE = colors.HexColor("#FFFFFF")
 C_BRIGHT_GREEN = colors.HexColor("#22C55E")
 C_PRIMARY_GREEN = colors.HexColor("#16A34A")
@@ -75,7 +75,7 @@ class NumberedCanvas(canvas.Canvas):
         self.setLineWidth(0.5)
         self.line(MARGIN, header_y - 4, PAGE_WIDTH - MARGIN, header_y - 4)
 
-        footer_y = 22
+        footer_y = 20
         self.line(MARGIN, footer_y + 9, PAGE_WIDTH - MARGIN, footer_y + 9)
         self.drawString(MARGIN, footer_y, "Academic & Technical Implementation Audit")
         page_str = f"Page {self._pageNumber} of {total_pages}"
@@ -88,21 +88,20 @@ def get_styles():
     base = getSampleStyleSheet()
     styles = {}
 
-    styles["CoverBadge"] = ParagraphStyle(
-        "CoverBadge",
+    # Cover Page Typography
+    styles["CoverPill"] = ParagraphStyle(
+        "CoverPill",
         fontName="Helvetica-Bold",
-        fontSize=9,
-        leading=12,
+        fontSize=8.5,
+        leading=11,
         textColor=C_PRIMARY_GREEN,
-        alignment=0,
     )
     styles["CoverTitle"] = ParagraphStyle(
         "CoverTitle",
         fontName="Helvetica-Bold",
-        fontSize=34,
-        leading=40,
+        fontSize=36,
+        leading=42,
         textColor=C_DARK_TEXT,
-        alignment=0,
     )
     styles["CoverSubtitle"] = ParagraphStyle(
         "CoverSubtitle",
@@ -110,7 +109,6 @@ def get_styles():
         fontSize=15,
         leading=20,
         textColor=C_PRIMARY_GREEN,
-        alignment=0,
     )
     styles["CoverTagline"] = ParagraphStyle(
         "CoverTagline",
@@ -118,64 +116,64 @@ def get_styles():
         fontSize=11.5,
         leading=16,
         textColor=C_MUTED_TEXT,
-        alignment=0,
     )
     styles["CardLabel"] = ParagraphStyle(
         "CardLabel",
         fontName="Helvetica-Bold",
-        fontSize=8.5,
-        leading=11,
+        fontSize=9,
+        leading=12,
         textColor=C_PRIMARY_GREEN,
     )
     styles["CardTitle"] = ParagraphStyle(
         "CardTitle",
         fontName="Helvetica-Bold",
-        fontSize=13.5,
-        leading=17,
+        fontSize=14,
+        leading=18,
         textColor=C_DARK_TEXT,
     )
     styles["CardBody"] = ParagraphStyle(
         "CardBody",
         fontName="Helvetica",
-        fontSize=9,
-        leading=13.5,
+        fontSize=9.5,
+        leading=14.5,
         textColor=C_SECONDARY_TEXT,
     )
     styles["CardName"] = ParagraphStyle(
         "CardName",
         fontName="Helvetica-Bold",
-        fontSize=14,
-        leading=18,
+        fontSize=16,
+        leading=20,
         textColor=C_DARK_TEXT,
     )
     styles["CardRole"] = ParagraphStyle(
         "CardRole",
         fontName="Helvetica",
-        fontSize=9,
-        leading=13,
+        fontSize=9.5,
+        leading=14,
         textColor=C_MUTED_TEXT,
     )
     styles["CoverFoot"] = ParagraphStyle(
         "CoverFoot",
         fontName="Helvetica",
         fontSize=8,
-        leading=10,
+        leading=11,
         textColor=C_MUTED_TEXT,
     )
     styles["CoverFootRight"] = ParagraphStyle(
         "CoverFootRight",
         fontName="Helvetica",
         fontSize=8,
-        leading=10,
+        leading=11,
         textColor=C_MUTED_TEXT,
         alignment=2,
     )
 
+    # Body Typography
     styles["H1"] = ParagraphStyle(
         "H1",
         fontName="Helvetica-Bold",
-        fontSize=13.5,
-        leading=17,
+        fontSize=13,
+        leading=16.5,
         textColor=C_DARK_GREEN,
         spaceBefore=10,
         spaceAfter=4,
@@ -184,8 +182,8 @@ def get_styles():
     styles["H2"] = ParagraphStyle(
         "H2",
         fontName="Helvetica-Bold",
-        fontSize=10.5,
-        leading=14,
+        fontSize=10,
+        leading=13.5,
         textColor=C_DARK_TEXT,
         spaceBefore=7,
         spaceAfter=3,
@@ -205,32 +203,32 @@ def get_styles():
         "Body",
         fontName="Helvetica",
         fontSize=8.5,
-        leading=11.5,
+        leading=12,
         textColor=C_DARK_TEXT,
-        spaceAfter=3.5,
+        spaceAfter=4,
     )
     styles["BodySecondary"] = ParagraphStyle(
         "BodySecondary",
         fontName="Helvetica",
         fontSize=8,
-        leading=10.5,
+        leading=11,
         textColor=C_SECONDARY_TEXT,
-        spaceAfter=2.5,
+        spaceAfter=3,
     )
     styles["Bullet"] = ParagraphStyle(
         "Bullet",
         fontName="Helvetica",
-        fontSize=8,
-        leading=11,
+        fontSize=8.2,
+        leading=11.5,
         textColor=C_DARK_TEXT,
         leftIndent=10,
-        spaceAfter=2,
+        spaceAfter=2.5,
     )
     styles["Callout"] = ParagraphStyle(
         "Callout",
         fontName="Helvetica",
-        fontSize=8,
-        leading=11,
+        fontSize=8.2,
+        leading=11.5,
         textColor=C_DARK_TEXT,
     )
     styles["TableHead"] = ParagraphStyle(
@@ -245,7 +243,7 @@ def get_styles():
         "TableCell",
         fontName="Helvetica",
         fontSize=7,
-        leading=9,
+        leading=9.2,
         textColor=C_DARK_TEXT,
         alignment=0,
     )
@@ -253,7 +251,7 @@ def get_styles():
         "TableCellBold",
         fontName="Helvetica-Bold",
         fontSize=7,
-        leading=9,
+        leading=9.2,
         textColor=C_DARK_TEXT,
         alignment=0,
     )
@@ -261,7 +259,7 @@ def get_styles():
         "TableCellCenter",
         fontName="Helvetica",
         fontSize=7,
-        leading=9,
+        leading=9.2,
         textColor=C_DARK_TEXT,
         alignment=1,
     )
@@ -292,7 +290,7 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         leftMargin=MARGIN,
         rightMargin=MARGIN,
         topMargin=MARGIN,
-        bottomMargin=30,  # Tightened bottom margin to eliminate huge bottom space
+        bottomMargin=28,
     )
 
     story = []
@@ -302,25 +300,29 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
     # Only: Project Title, Subtitle, Tagline, Small Problem Statement,
     # and Team Leader / Team Member Name: Jaiwant Karrun SA
     # =========================================================================
-    story.append(Spacer(1, 40))
+    story.append(Spacer(1, 45))
 
-    # 1. Project Title Section
+    # Pill badge
+    story.append(Paragraph("●  CAMPUS RESOURCE SHARING PLATFORM", styles["CoverPill"]))
+    story.append(Spacer(1, 10))
+
+    # Project Title Section
     story.append(Paragraph("AccessLoop", styles["CoverTitle"]))
     story.append(Spacer(1, 6))
     story.append(Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"]))
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 6))
     story.append(Paragraph("“Share More. Waste Less.”", styles["CoverTagline"]))
 
-    story.append(Spacer(1, 28))
+    story.append(Spacer(1, 32))
     story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY_GREEN, spaceBefore=0, spaceAfter=0))
-    story.append(Spacer(1, 28))
+    story.append(Spacer(1, 32))
 
-    # 2. Small Problem Statement Card
+    # Small Problem Statement Card
     ps_content = [
         Paragraph("PROBLEM STATEMENT", styles["CardLabel"]),
-        Spacer(1, 5),
+        Spacer(1, 6),
         Paragraph("Unlock Underused Equipment and Spaces", styles["CardTitle"]),
-        Spacer(1, 5),
+        Spacer(1, 6),
         Paragraph(
             "Transforming expensive, locked campus laboratories, fabrication machinery, and technical equipment "
             "into an accountable, trusted, and equitable shared campus economy through automated qualification gates, "
@@ -333,23 +335,23 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
             ("BOX", (0, 0), (-1, -1), 0.75, C_LIGHT_GREEN_BORDER),
-            ("LINELEFT", (0, 0), (0, -1), 3.5, C_PRIMARY_GREEN),
-            ("TOPPADDING", (0, 0), (-1, -1), 14),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
-            ("LEFTPADDING", (0, 0), (-1, -1), 16),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 16),
+            ("LINELEFT", (0, 0), (0, -1), 4, C_PRIMARY_GREEN),
+            ("TOPPADDING", (0, 0), (-1, -1), 16),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 16),
+            ("LEFTPADDING", (0, 0), (-1, -1), 18),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 18),
         ])
     )
     story.append(ps_card)
 
-    story.append(Spacer(1, 24))
+    story.append(Spacer(1, 28))
 
-    # 3. Team Leader / Team Member Card
+    # Team Leader / Team Member Card
     team_content = [
         Paragraph("TEAM LEADER / TEAM MEMBER", styles["CardLabel"]),
-        Spacer(1, 5),
+        Spacer(1, 6),
         Paragraph("Jaiwant Karrun SA", styles["CardName"]),
-        Spacer(1, 4),
+        Spacer(1, 5),
         Paragraph("Lead Full-Stack Architect & Sole Developer", styles["CardRole"]),
     ]
     team_card = Table([[team_content]], colWidths=[CONTENT_WIDTH])
@@ -357,16 +359,16 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
             ("BOX", (0, 0), (-1, -1), 0.75, C_LIGHT_GREEN_BORDER),
-            ("LINELEFT", (0, 0), (0, -1), 3.5, C_PRIMARY_GREEN),
-            ("TOPPADDING", (0, 0), (-1, -1), 14),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
-            ("LEFTPADDING", (0, 0), (-1, -1), 16),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 16),
+            ("LINELEFT", (0, 0), (0, -1), 4, C_PRIMARY_GREEN),
+            ("TOPPADDING", (0, 0), (-1, -1), 16),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 16),
+            ("LEFTPADDING", (0, 0), (-1, -1), 18),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 18),
         ])
     )
     story.append(team_card)
 
-    story.append(Spacer(1, 35))
+    story.append(Spacer(1, 40))
     story.append(HRFlowable(width="100%", thickness=0.75, color=C_BORDER, spaceBefore=0, spaceAfter=0))
     story.append(Spacer(1, 8))
 
