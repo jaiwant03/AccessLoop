@@ -2,7 +2,6 @@ import os
 import sys
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
-from reportlab.lib.units import inch, cm
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -18,20 +17,27 @@ from reportlab.pdfgen import canvas
 
 # Page geometry
 PAGE_WIDTH, PAGE_HEIGHT = A4
-MARGIN = 54  # 0.75 in = 54 pt
+MARGIN = 48  # 48 pt margin = ~0.67 in
+CONTENT_WIDTH = PAGE_WIDTH - 2 * MARGIN  # 595.27 - 96 = 499.27 pt
 
-# Primary Color Palette
+# Exact Color Palette Matching AccessLoop UI
 C_WHITE = colors.HexColor("#FFFFFF")
 C_BRIGHT_GREEN = colors.HexColor("#22C55E")
 C_PRIMARY_GREEN = colors.HexColor("#16A34A")
 C_DARK_GREEN = colors.HexColor("#15803D")
+C_LIGHT_GREEN = colors.HexColor("#F0FDF4")
+C_LIGHT_GREEN_BORDER = colors.HexColor("#DCFCE7")
 C_DARK_TEXT = colors.HexColor("#0F172A")
 C_SECONDARY_TEXT = colors.HexColor("#475569")
-C_LIGHT_BG = colors.HexColor("#F0FDF4")
+C_MUTED_TEXT = colors.HexColor("#64748B")
 C_BORDER = colors.HexColor("#E2E8F0")
 C_CARD_BG = colors.HexColor("#F8FAFC")
 C_AMBER = colors.HexColor("#D97706")
+C_AMBER_BG = colors.HexColor("#FFFBEB")
 C_RED = colors.HexColor("#DC2626")
+C_RED_BG = colors.HexColor("#FEF2F2")
+C_BLUE = colors.HexColor("#2563EB")
+C_BLUE_BG = colors.HexColor("#EFF6FF")
 
 
 class NumberedCanvas(canvas.Canvas):
@@ -60,29 +66,29 @@ class NumberedCanvas(canvas.Canvas):
 
         self.saveState()
         self.setFont("Helvetica", 8)
-        self.setFillColor(C_SECONDARY_TEXT)
+        self.setFillColor(C_MUTED_TEXT)
 
         # Header (Top)
-        header_y = PAGE_HEIGHT - 36
+        header_y = PAGE_HEIGHT - 32
         self.drawString(
             MARGIN,
             header_y,
             "AccessLoop – Smart, Trusted & Fair Resource Sharing Platform",
         )
         self.drawRightString(
-            PAGE_WIDTH - MARGIN, header_y, "Official Project Documentation"
+            PAGE_WIDTH - MARGIN, header_y, "Official Hackathon Documentation"
         )
 
         self.setStrokeColor(C_BORDER)
         self.setLineWidth(0.6)
-        self.line(MARGIN, header_y - 6, PAGE_WIDTH - MARGIN, header_y - 6)
+        self.line(MARGIN, header_y - 5, PAGE_WIDTH - MARGIN, header_y - 5)
 
         # Footer (Bottom)
-        footer_y = 36
-        self.line(MARGIN, footer_y + 12, PAGE_WIDTH - MARGIN, footer_y + 12)
+        footer_y = 30
+        self.line(MARGIN, footer_y + 11, PAGE_WIDTH - MARGIN, footer_y + 11)
 
         self.drawString(
-            MARGIN, footer_y, "Hackathon Technical Report & Implementation Audit"
+            MARGIN, footer_y, "Confidential & Proprietary • Hackathon Project Audit"
         )
         page_str = f"Page {self._pageNumber} of {total_pages}"
         self.drawRightString(PAGE_WIDTH - MARGIN, footer_y, page_str)
@@ -90,4 +96,4 @@ class NumberedCanvas(canvas.Canvas):
         self.restoreState()
 
 
-print("NumberedCanvas class ready.")
+print("Base canvas script setup completed.")
