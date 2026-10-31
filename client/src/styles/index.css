@@ -431,6 +431,148 @@ button, input, select, textarea {
 }
 
 /* ==========================================================================
+   MODERN OPTION BUTTONS & INTERACTIVE CONTROLS
+   ========================================================================== */
+
+.option-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.option-btn-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  background-color: #FFFFFF;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+}
+
+.option-btn-card:hover {
+  border-color: #22C55E;
+  background-color: #F8FAFC;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.option-btn-card.active {
+  border-color: #16A34A;
+  background-color: #F0FDF4;
+  box-shadow: 0 0 0 1px #16A34A, 0 4px 12px rgba(34, 197, 94, 0.12);
+}
+
+.option-btn-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.6rem;
+  background-color: #F1F5F9;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.option-btn-card.active .option-btn-card-icon {
+  background-color: #DCFCE7;
+  color: #15803D;
+}
+
+.option-btn-card-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0F172A;
+  margin-bottom: 0.15rem;
+}
+
+.option-btn-card.active .option-btn-card-title {
+  color: #14532D;
+}
+
+.option-btn-card-desc {
+  font-size: 0.75rem;
+  color: #64748B;
+  line-height: 1.35;
+}
+
+.option-btn-card-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #16A34A;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.3);
+}
+
+/* Modern Segmented Tab Switcher */
+.modern-segmented-control {
+  display: inline-flex;
+  padding: 4px;
+  background-color: #F1F5F9;
+  border-radius: 10px;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+
+.modern-segmented-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #64748B;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.modern-segmented-btn:hover {
+  color: #0F172A;
+}
+
+.modern-segmented-btn.active {
+  background-color: #FFFFFF;
+  color: #15803D;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Modern Input with Icon */
+.input-with-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon-wrapper .input-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: #94A3B8;
+  pointer-events: none;
+}
+
+.input-with-icon-wrapper .form-input {
+  padding-left: 2.5rem;
+}
+
+/* ==========================================================================
    NAVIGATION BAR & GLOBAL BRANDING
    ========================================================================== */
 
