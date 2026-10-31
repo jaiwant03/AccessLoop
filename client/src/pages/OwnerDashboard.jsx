@@ -16,7 +16,7 @@ import {
   Inbox,
   ArrowRight,
 } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const OwnerDashboard = () => {
@@ -320,8 +320,12 @@ const OwnerDashboard = () => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <img
-                        src={b.borrower?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'}
+                        src={resolveImageUrl(b.borrower?.avatar) || DEFAULT_AVATAR}
                         alt=""
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = DEFAULT_AVATAR;
+                        }}
                         style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }}
                       />
                       <div>
