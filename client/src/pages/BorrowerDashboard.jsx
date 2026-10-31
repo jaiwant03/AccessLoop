@@ -15,7 +15,7 @@ import {
   Layers,
   Inbox,
 } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import FairUsageBadge from '../components/FairUsageBadge';
 
