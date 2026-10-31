@@ -311,25 +311,25 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
 
     # Pill badge
     story.append(Paragraph("●  CAMPUS RESOURCE SHARING PLATFORM", styles["CoverPill"]))
-    story.append(Spacer(1, 12))
+    story.append(Spacer(1, 14))
 
     # Project Title Section
     story.append(Paragraph("AccessLoop", styles["CoverTitle"]))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 10))
     story.append(Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"]))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 10))
     story.append(Paragraph("“Share More. Waste Less.”", styles["CoverTagline"]))
 
-    story.append(Spacer(1, 38))
+    story.append(Spacer(1, 48))
     story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY_GREEN, spaceBefore=0, spaceAfter=0))
-    story.append(Spacer(1, 38))
+    story.append(Spacer(1, 48))
 
     # Small Problem Statement Card
     ps_content = [
         Paragraph("PROBLEM STATEMENT", styles["CardLabel"]),
-        Spacer(1, 6),
+        Spacer(1, 7),
         Paragraph("Unlock Underused Equipment and Spaces", styles["CardTitle"]),
-        Spacer(1, 6),
+        Spacer(1, 7),
         Paragraph(
             "Transforming expensive, locked campus laboratories, fabrication machinery, and technical equipment "
             "into an accountable, trusted, and equitable shared campus economy through automated qualification gates, "
@@ -343,24 +343,24 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
             ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
             ("BOX", (0, 0), (-1, -1), 0.75, C_LIGHT_GREEN_BORDER),
             ("LINELEFT", (0, 0), (0, -1), 4, C_PRIMARY_GREEN),
-            ("TOPPADDING", (0, 0), (-1, -1), 18),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 18),
-            ("LEFTPADDING", (0, 0), (-1, -1), 20),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 20),
+            ("TOPPADDING", (0, 0), (-1, -1), 20),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 20),
+            ("LEFTPADDING", (0, 0), (-1, -1), 22),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 22),
         ])
     )
     story.append(ps_card)
 
-    story.append(Spacer(1, 32))
+    story.append(Spacer(1, 42))
 
     # Team Leader / Team Member Card
     team_content = [
         Paragraph("TEAM LEADER / TEAM MEMBER", styles["CardLabel"]),
-        Spacer(1, 6),
+        Spacer(1, 7),
         Paragraph("Jaiwant Karrun SA", styles["CardName"]),
-        Spacer(1, 5),
+        Spacer(1, 6),
         Paragraph("Lead Full-Stack Architect & Sole Developer", styles["CardRole"]),
-        Spacer(1, 3),
+        Spacer(1, 4),
         Paragraph("Individual Hackathon Submission • Full-Stack Implementation & Documentation", styles["CardNote"]),
     ]
     team_card = Table([[team_content]], colWidths=[CONTENT_WIDTH])
@@ -369,17 +369,17 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
             ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
             ("BOX", (0, 0), (-1, -1), 0.75, C_LIGHT_GREEN_BORDER),
             ("LINELEFT", (0, 0), (0, -1), 4, C_PRIMARY_GREEN),
-            ("TOPPADDING", (0, 0), (-1, -1), 18),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 18),
-            ("LEFTPADDING", (0, 0), (-1, -1), 20),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 20),
+            ("TOPPADDING", (0, 0), (-1, -1), 20),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 20),
+            ("LEFTPADDING", (0, 0), (-1, -1), 22),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 22),
         ])
     )
     story.append(team_card)
 
-    story.append(Spacer(1, 50))
+    story.append(Spacer(1, 65))
     story.append(HRFlowable(width="100%", thickness=0.75, color=C_BORDER, spaceBefore=0, spaceAfter=0))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 12))
 
     cover_footer_table = Table(
         [[
