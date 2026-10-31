@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User } from 'lucide-react';
 import { resolveImageUrl } from '../services/api';
 
 /**
  * UserAvatar Component
  * Displays the user's uploaded photo if available.
- * If no photo has been uploaded, renders a clean, neutral empty avatar placeholder (no random stock photos).
+ * If no photo has been uploaded (or image fails to load), renders a clean, neutral empty avatar placeholder (no random stock photos).
  */
 const UserAvatar = ({
   src,
@@ -17,21 +17,17 @@ const UserAvatar = ({
   className = '',
   showInitial = false,
 }) => {
+  const [hasError, setHasError] = useState(false);
   const resolved = resolveImageUrl(src);
   const initial = name ? name.trim().charAt(0).toUpperCase() : '';
 
-  if (resolved) {
+  if (resolved && !hasError) {
     return (
       <img
         src={resolved}
         alt={name || 'User avatar'}
         className={className}
-        onError={(e) => {
-          e.target.style.display = 'none';
-          if (e.target.nextSibling) {
-            e.target.nextSibling.style.display = 'flex';
-          }
-        }}
+        onError={() => setHasError(true)}
         style={{
           width: `${size}px`,
           height: `${size}px`,
