@@ -557,6 +557,30 @@ const Navbar = ({ onOpenChatbot }) => {
       {mobileMenuOpen && (
         <div className="mobile-menu-drawer">
           <div className="mobile-menu-inner">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenChatbot();
+              }}
+              className="mobile-menu-link"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.55rem',
+                backgroundColor: '#ECFDF5',
+                color: '#15803D',
+                border: '1px solid rgba(34, 197, 94, 0.35)',
+                marginBottom: '0.4rem',
+                cursor: 'pointer',
+                width: '100%',
+                textAlign: 'left',
+              }}
+            >
+              <span className="ai-pulse-dot" />
+              <Sparkles size={16} color="#16A34A" />
+              <span style={{ fontWeight: 700 }}>Ask AccessLoop AI Assistant</span>
+            </button>
+
             <Link
               to="/"
               className={`mobile-menu-link ${location.pathname === '/' ? 'active' : ''}`}

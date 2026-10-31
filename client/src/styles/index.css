@@ -910,13 +910,24 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem;
+  padding: 1.75rem 1.5rem;
   background-color: var(--color-white);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   margin-bottom: 2rem;
   position: relative;
   overflow-x: auto;
+}
+
+.lifecycle-stepper::before {
+  content: '';
+  position: absolute;
+  top: 45px;
+  left: 55px;
+  right: 55px;
+  height: 2px;
+  background-color: #E2E8F0;
+  z-index: 0;
 }
 
 .step-item {

@@ -358,18 +358,25 @@ const BookingDetailsPage = () => {
           className="al-card"
           style={{
             backgroundColor: '#FFFFFF',
-            borderLeft: '4px solid #22C55E',
-            padding: '1.25rem 1.5rem',
+            borderLeft: `4px solid ${
+              booking.status === 'Completed' || booking.status === 'Active' || booking.status === 'Approved'
+                ? '#22C55E'
+                : booking.status === 'Rejected'
+                ? '#EF4444'
+                : '#F59E0B'
+            }`,
+            padding: '1.35rem 1.6rem',
             marginBottom: '2rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: '1rem',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
           <div>
-            <div style={{ fontWeight: 700, fontSize: '1rem', color: '#17231C' }}>
+            <div style={{ fontWeight: 800, fontSize: '1.025rem', color: '#0F172A', letterSpacing: '-0.015em' }}>
               Current Lifecycle State: {booking.status}
             </div>
             <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '2px' }}>
