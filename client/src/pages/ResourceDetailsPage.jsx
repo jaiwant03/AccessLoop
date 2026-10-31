@@ -297,17 +297,11 @@ const ResourceDetailsPage = () => {
             {/* Custodian Card */}
             <div className="al-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                <img
-                  src={
-                    resolveImageUrl(resource.owner?.avatar) ||
-                    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80'
-                  }
-                  alt={resource.owner?.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80';
-                  }}
-                  style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #22C55E' }}
+                <UserAvatar
+                  src={resource.owner?.avatar}
+                  name={resource.owner?.name}
+                  size={48}
+                  border="1.5px solid #22C55E"
                 />
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0F172A' }}>
