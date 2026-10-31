@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
-import api from '../services/api';
+import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 
 const Navbar = ({ onOpenChatbot }) => {
   const { user, role, logout, isAuthenticated } = useAuth();
@@ -331,16 +331,18 @@ const Navbar = ({ onOpenChatbot }) => {
                   }}
                 >
                   <img
-                    src={
-                      user.avatar ||
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80'
-                    }
+                    src={resolveImageUrl(user.avatar) || DEFAULT_AVATAR}
                     alt={user.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = DEFAULT_AVATAR;
+                    }}
                     style={{
                       width: '28px',
                       height: '28px',
                       borderRadius: '50%',
                       objectFit: 'cover',
+                      border: '1.5px solid #22C55E',
                     }}
                   />
                   <span
@@ -372,20 +374,38 @@ const Navbar = ({ onOpenChatbot }) => {
                       boxShadow: 'var(--shadow-xl)',
                     }}
                   >
-                    <div style={{ borderBottom: '1px solid #E5E7EB', paddingBottom: '0.65rem', marginBottom: '0.65rem' }}>
-                      <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#17231C' }}>
-                        {user.name}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                        {user.email}
-                      </div>
-                      <div style={{ display: 'flex', gap: '0.35rem', marginTop: '0.45rem' }}>
-                        <span className="badge badge-green">
-                          {user.role}
-                        </span>
-                        <span className="badge badge-blue">
-                          Score: {user.fairUsageScore || 100}
-                        </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.65rem', marginBottom: '0.65rem' }}>
+                      <img
+                        src={resolveImageUrl(user.avatar) || DEFAULT_AVATAR}
+                        alt={user.name}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = DEFAULT_AVATAR;
+                        }}
+                        style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '2px solid #22C55E',
+                          flexShrink: 0,
+                        }}
+                      />
+                      <div style={{ overflow: 'hidden' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#17231C', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                          {user.name}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#64748B', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                          {user.email}
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.35rem', marginTop: '0.25rem' }}>
+                          <span className="badge badge-green" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>
+                            {user.role}
+                          </span>
+                          <span className="badge badge-blue" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>
+                            Score: {user.fairUsageScore || 100}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -462,6 +482,63 @@ const Navbar = ({ onOpenChatbot }) => {
       {mobileMenuOpen && (
         <div className="mobile-menu-drawer">
           <div className="mobile-menu-inner">
+            {isAuthenticated && user && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '0.65rem 0.85rem',
+                  backgroundColor: '#F8FAFC',
+                  borderRadius: '8px',
+                  border: '1px solid #E2E8F0',
+                  marginBottom: '0.65rem',
+                }}
+              >
+                <img
+                  src={resolveImageUrl(user.avatar) || DEFAULT_AVATAR}
+                  alt={user.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_AVATAR;
+                  }}
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '2px solid #22C55E',
+                    flexShrink: 0,
+                  }}
+                />
+                <div style={{ overflow: 'hidden' }}>
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      fontSize: '0.875rem',
+                      color: '#17231C',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {user.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '0.75rem',
+                      color: '#64748B',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {user.email}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
