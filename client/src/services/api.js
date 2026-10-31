@@ -1,7 +1,15 @@
 import axios from 'axios';
 
+// Dynamically resolve the API base URL
+const resolveBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl) return '/api';
+  const trimmed = envUrl.trim().replace(/\/+$/, '');
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: resolveBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,9 +32,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // If expired token, clear storage
-      // Only redirect if not already on login page
-      if (!window.location.pathname.includes('/login')) {
+      // Only clear storage and redirect if not on public auth pages
+      const path = window.location.pathname;
+      if (!path.includes('/login') && !path.includes('/register')) {
         localStorage.removeItem('accessloop_token');
         localStorage.removeItem('accessloop_user');
       }

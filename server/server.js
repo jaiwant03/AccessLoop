@@ -27,19 +27,23 @@ const chatbotRoutes = require('./routes/chatbotRoutes');
 const app = express();
 const server = http.createServer(app);
 
-// Initialize Socket.io
+// Initialize Socket.io with permissive CORS for production
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: (origin, callback) => callback(null, true),
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
   },
 });
 initSocket(io);
 
-// Enable CORS
+// Enable CORS - dynamically accept origin to safely support credentials
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || '*',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or Postman) or any origin in dev/prod
+      callback(null, true);
+    },
     credentials: true,
   })
 );
