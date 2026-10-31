@@ -43,4 +43,26 @@ api.interceptors.response.use(
   }
 );
 
+// Resolve image URL (supports relative /uploads paths, Vite dev proxy, and cloud backend origins)
+export const resolveImageUrl = (url) => {
+  if (!url) return '';
+  if (
+    url.startsWith('http://') ||
+    url.startsWith('https://') ||
+    url.startsWith('data:') ||
+    url.startsWith('blob:')
+  ) {
+    return url;
+  }
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && !envUrl.startsWith('/')) {
+    const base = envUrl.trim().replace(/\/api\/?$/, '');
+    return `${base}${url.startsWith('/') ? '' : '/'}${url}`;
+  }
+  return url;
+};
+
+export const DEFAULT_AVATAR =
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
+
 export default api;
