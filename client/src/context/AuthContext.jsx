@@ -126,6 +126,38 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateAvatar = async (fileOrUrl) => {
+    let res;
+    if (fileOrUrl instanceof File) {
+      const formData = new FormData();
+      formData.append('avatar', fileOrUrl);
+      res = await api.put('/auth/avatar', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } else {
+      res = await api.put('/auth/avatar', { avatar: fileOrUrl });
+    }
+    const updatedUser = normalizeUser(res.data.user);
+    setUser(updatedUser);
+    localStorage.setItem('accessloop_user', JSON.stringify(updatedUser));
+    return updatedUser;
+  };
+
+  const updateProfile = async (profileData) => {
+    let res;
+    if (profileData instanceof FormData) {
+      res = await api.put('/auth/profile', profileData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+    } else {
+      res = await api.put('/auth/profile', profileData);
+    }
+    const updatedUser = normalizeUser(res.data.user);
+    setUser(updatedUser);
+    localStorage.setItem('accessloop_user', JSON.stringify(updatedUser));
+    return updatedUser;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -138,6 +170,8 @@ export const AuthProvider = ({ children }) => {
         demoLogin,
         logout,
         refreshUser,
+        updateAvatar,
+        updateProfile,
         isAuthenticated: !!token && !!user,
       }}
     >

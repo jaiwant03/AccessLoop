@@ -5,6 +5,7 @@ const {
   login,
   getMe,
   updateProfile,
+  updateAvatar,
   submitVerification,
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
@@ -13,7 +14,8 @@ const upload = require('../middleware/upload');
 router.post('/register', register);
 router.post('/login', login);
 router.get('/me', protect, getMe);
-router.put('/profile', protect, updateProfile);
+router.put('/profile', protect, upload.single('avatar'), updateProfile);
+router.put('/avatar', protect, upload.single('avatar'), updateAvatar);
 router.post('/verify-request', protect, upload.single('verificationDoc'), submitVerification);
 
 module.exports = router;

@@ -160,19 +160,108 @@ const getMe = async (req, res, next) => {
 // @route   PUT /api/auth/profile
 const updateProfile = async (req, res, next) => {
   try {
-    const { name, phone, department, studentOrEmployeeId } = req.body;
+    const { name, phone, department, studentOrEmployeeId, avatar } = req.body;
 
     const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User account not found.',
+      });
+    }
+
     if (name) user.name = name;
-    if (phone) user.phone = phone;
+    if (phone !== undefined) user.phone = phone;
     if (department) user.department = department;
-    if (studentOrEmployeeId) user.studentOrEmployeeId = studentOrEmployeeId;
+    if (studentOrEmployeeId !== undefined) user.studentOrEmployeeId = studentOrEmployeeId;
+
+    if (req.file) {
+      user.avatar = `/uploads/${req.file.filename}`;
+    } else if (avatar !== undefined) {
+      user.avatar = avatar;
+    }
 
     await user.save();
 
     res.status(200).json({
       success: true,
-      user,
+      message: 'Profile updated successfully.',
+      user: {
+        _id: user._id,
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        institution: user.institution,
+        department: user.department,
+        verificationStatus: user.verificationStatus,
+        fairUsageScore: user.fairUsageScore,
+        avatar: user.avatar,
+        studentOrEmployeeId: user.studentOrEmployeeId,
+        phone: user.phone,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Upload / update user avatar photo
+// @route   PUT /api/auth/avatar
+const updateAvatar = async (req, res, next) => {
+  try {
+    let avatarUrl = '';
+
+    if (req.file) {
+      avatarUrl = `/uploads/${req.file.filename}`;
+    } else if (req.body && req.body.avatar) {
+      avatarUrl = req.body.avatar;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide an image file or avatar URL.',
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User account not found.',
+      });
+    }
+
+    user.avatar = avatarUrl;
+    await user.save();
+
+    await logAuditEvent({
+      req,
+      actionType: 'avatar_updated',
+      performedBy: user._id,
+      userRole: user.role,
+      userName: user.name,
+      userEmail: user.email,
+      explanation: 'User updated their account profile photo.',
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile photo updated successfully. This photo will be displayed whenever you log in.',
+      avatar: user.avatar,
+      user: {
+        _id: user._id,
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        institution: user.institution,
+        department: user.department,
+        verificationStatus: user.verificationStatus,
+        fairUsageScore: user.fairUsageScore,
+        avatar: user.avatar,
+        studentOrEmployeeId: user.studentOrEmployeeId,
+        phone: user.phone,
+      },
     });
   } catch (error) {
     next(error);
@@ -236,5 +325,6 @@ module.exports = {
   login,
   getMe,
   updateProfile,
+  updateAvatar,
   submitVerification,
 };
