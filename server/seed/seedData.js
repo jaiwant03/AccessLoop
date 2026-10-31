@@ -60,7 +60,7 @@ const seedData = async () => {
         studentOrEmployeeId: 'ADM-001',
         verificationStatus: 'Verified',
         fairUsageScore: 100,
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Dr. Evelyn Vance (Manager)',
@@ -72,7 +72,7 @@ const seedData = async () => {
         studentOrEmployeeId: 'MGR-104',
         verificationStatus: 'Verified',
         fairUsageScore: 100,
-        avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Dr. Ramesh Sharma',
@@ -84,7 +84,7 @@ const seedData = async () => {
         studentOrEmployeeId: 'FAC-201',
         verificationStatus: 'Verified',
         fairUsageScore: 98,
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Prof. Maya Sen',
@@ -96,7 +96,7 @@ const seedData = async () => {
         studentOrEmployeeId: 'FAC-312',
         verificationStatus: 'Verified',
         fairUsageScore: 95,
-        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'John Reynolds',
@@ -108,7 +108,7 @@ const seedData = async () => {
         studentOrEmployeeId: 'STF-508',
         verificationStatus: 'Verified',
         fairUsageScore: 100,
-        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Arun Kumar',
@@ -122,7 +122,7 @@ const seedData = async () => {
         fairUsageScore: 92,
         totalHoursUsed: 18,
         completedBookingsCount: 4,
-        avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Priya Menon',
@@ -136,7 +136,7 @@ const seedData = async () => {
         fairUsageScore: 96,
         totalHoursUsed: 28,
         completedBookingsCount: 6,
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Kavya Nair',
@@ -150,7 +150,7 @@ const seedData = async () => {
         fairUsageScore: 88,
         totalHoursUsed: 12,
         completedBookingsCount: 3,
-        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Rahul Verma',
@@ -164,7 +164,7 @@ const seedData = async () => {
         fairUsageScore: 78,
         totalHoursUsed: 6,
         completedBookingsCount: 1,
-        avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
       {
         name: 'Sneha Patel',
@@ -178,7 +178,7 @@ const seedData = async () => {
         fairUsageScore: 100,
         totalHoursUsed: 0,
         completedBookingsCount: 0,
-        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=256&q=80',
+        avatar: '',
       },
     ]);
     console.log(`[Seed] Seeded ${users.length} users with diverse roles & verification states.`);

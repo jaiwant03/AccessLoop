@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import UserAvatar from '../components/UserAvatar';
 
 const ResourceDetailsPage = () => {
   const { id } = useParams();

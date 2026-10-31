@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import UserAvatar from '../components/UserAvatar';
 
 const OwnerDashboard = () => {
   const { user } = useAuth();
@@ -80,22 +81,11 @@ const OwnerDashboard = () => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
-            <img
-              src={resolveImageUrl(user?.avatar) || DEFAULT_AVATAR}
-              alt={user?.name || 'Owner'}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = DEFAULT_AVATAR;
-              }}
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                border: '2.5px solid #22C55E',
-                boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)',
-                flexShrink: 0,
-              }}
+            <UserAvatar
+              src={user?.avatar}
+              name={user?.name || 'Owner'}
+              size={64}
+              border="2.5px solid #22C55E"
             />
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
@@ -338,14 +328,11 @@ const OwnerDashboard = () => {
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <img
-                        src={resolveImageUrl(b.borrower?.avatar) || DEFAULT_AVATAR}
-                        alt=""
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = DEFAULT_AVATAR;
-                        }}
-                        style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }}
+                      <UserAvatar
+                        src={b.borrower?.avatar}
+                        name={b.borrower?.name}
+                        size={48}
+                        border="1.5px solid #CBD5E1"
                       />
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>

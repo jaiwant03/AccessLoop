@@ -20,6 +20,7 @@ import {
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
+import UserAvatar from '../components/UserAvatar';
 
 const STEPS = [
   'Requested',
@@ -599,14 +600,11 @@ const BookingDetailsPage = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {/* Borrower */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <img
-                    src={resolveImageUrl(booking.borrower?.avatar) || DEFAULT_AVATAR}
-                    alt=""
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = DEFAULT_AVATAR;
-                    }}
-                    style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #22C55E' }}
+                  <UserAvatar
+                    src={booking.borrower?.avatar}
+                    name={booking.borrower?.name}
+                    size={40}
+                    border="1.5px solid #22C55E"
                   />
                   <div>
                     <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Borrower</div>
@@ -621,14 +619,11 @@ const BookingDetailsPage = () => {
 
                 {/* Owner */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderTop: '1px solid #E5E7EB', paddingTop: '1rem' }}>
-                  <img
-                    src={resolveImageUrl(booking.owner?.avatar) || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80'}
-                    alt=""
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80';
-                    }}
-                    style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #22C55E' }}
+                  <UserAvatar
+                    src={booking.owner?.avatar}
+                    name={booking.owner?.name}
+                    size={40}
+                    border="1.5px solid #22C55E"
                   />
                   <div>
                     <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Custodian / Owner</div>
