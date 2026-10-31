@@ -477,21 +477,11 @@ const Navbar = ({ onOpenChatbot }) => {
                   marginBottom: '0.65rem',
                 }}
               >
-                <img
-                  src={resolveImageUrl(user.avatar) || DEFAULT_AVATAR}
-                  alt={user.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = DEFAULT_AVATAR;
-                  }}
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '2px solid #22C55E',
-                    flexShrink: 0,
-                  }}
+                <UserAvatar
+                  src={user.avatar}
+                  name={user.name}
+                  size={38}
+                  border="2px solid #22C55E"
                 />
                 <div style={{ overflow: 'hidden' }}>
                   <div

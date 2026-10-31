@@ -15,9 +15,10 @@ import {
   Layers,
   Inbox,
 } from 'lucide-react';
-import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import FairUsageBadge from '../components/FairUsageBadge';
+import UserAvatar from '../components/UserAvatar';
 
 const BorrowerDashboard = () => {
   const { user } = useAuth();
