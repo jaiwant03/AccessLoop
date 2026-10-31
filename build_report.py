@@ -299,48 +299,93 @@ def build_pdf(filename="AccessLoop_Project_Documentation.pdf"):
 
     # =========================================================================
     # FIRST PAGE (CLEAN, MODERN, PROPERLY ALIGNED & PROPORTIONATE UI TEMPLATE)
+    # Only: Project Title, Subtitle, Tagline, Small Problem Statement,
+    # and Team Leader / Team Member Name: Jaiwant Karrun SA
     # =========================================================================
-    story.append(Spacer(1, 35))
+    story.append(Spacer(1, 40))
 
-    # Clean Cover Card Layout
-    cover_elements = [
-        [Paragraph("●  CAMPUS RESOURCE SHARING PLATFORM", styles["CoverBadge"])],
-        [Spacer(1, 14)],
-        [Paragraph("AccessLoop", styles["CoverTitle"])],
-        [Spacer(1, 4)],
-        [Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"])],
-        [Spacer(1, 4)],
-        [Paragraph("“Share More. Waste Less.”", styles["CoverTagline"])],
-        [Spacer(1, 24)],
-        [HRFlowable(width="100%", thickness=1, color=C_LIGHT_GREEN_BORDER, spaceBefore=4, spaceAfter=20)],
-        [Paragraph("PROBLEM STATEMENT", styles["CoverSectionLabel"])],
-        [Spacer(1, 4)],
-        [Paragraph("<b>Unlock Underused Equipment and Spaces</b>", styles["CoverSubtitle"])],
-        [Spacer(1, 4)],
-        [Paragraph(
+    # 1. Project Title Section
+    story.append(Paragraph("AccessLoop", styles["CoverTitle"]))
+    story.append(Spacer(1, 6))
+    story.append(Paragraph("Smart, Trusted and Fair Resource Sharing Platform", styles["CoverSubtitle"]))
+    story.append(Spacer(1, 5))
+    story.append(Paragraph("“Share More. Waste Less.”", styles["CoverTagline"]))
+
+    story.append(Spacer(1, 28))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=C_PRIMARY_GREEN, spaceBefore=0, spaceAfter=0))
+    story.append(Spacer(1, 28))
+
+    # 2. Small Problem Statement Card
+    ps_content = [
+        Paragraph("PROBLEM STATEMENT", styles["CardLabel"]),
+        Spacer(1, 5),
+        Paragraph("Unlock Underused Equipment and Spaces", styles["CardTitle"]),
+        Spacer(1, 5),
+        Paragraph(
             "Transforming expensive, locked campus laboratories, fabrication machinery, and technical equipment "
-            "into an accountable, trusted, and equitable shared campus economy.",
-            styles["CoverBody"]
-        )],
-        [Spacer(1, 28)],
-        [HRFlowable(width="100%", thickness=1, color=C_LIGHT_GREEN_BORDER, spaceBefore=4, spaceAfter=20)],
-        [Paragraph("TEAM LEADER / TEAM MEMBER", styles["CoverSectionLabel"])],
-        [Spacer(1, 4)],
-        [Paragraph("Jaiwant Karrun SA", styles["CoverLeaderName"])],
+            "into an accountable, trusted, and equitable shared campus economy through automated qualification gates, "
+            "photographic condition tracking, and fair-usage scheduling.",
+            styles["CardBody"]
+        ),
     ]
-
-    cover_card = Table(cover_elements, colWidths=[CONTENT_WIDTH - 24])
-    cover_card.setStyle(
+    ps_card = Table([[ps_content]], colWidths=[CONTENT_WIDTH])
+    ps_card.setStyle(
         TableStyle([
             ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
-            ("BOX", (0, 0), (-1, -1), 1.5, C_BRIGHT_GREEN),
-            ("TOPPADDING", (0, 0), (-1, -1), 20),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 22),
-            ("LEFTPADDING", (0, 0), (-1, -1), 22),
-            ("RIGHTPADDING", (0, 0), (-1, -1), 22),
+            ("BOX", (0, 0), (-1, -1), 0.75, C_LIGHT_GREEN_BORDER),
+            ("LINELEFT", (0, 0), (0, -1), 3.5, C_PRIMARY_GREEN),
+            ("TOPPADDING", (0, 0), (-1, -1), 14),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
+            ("LEFTPADDING", (0, 0), (-1, -1), 16),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 16),
         ])
     )
-    story.append(cover_card)
+    story.append(ps_card)
+
+    story.append(Spacer(1, 24))
+
+    # 3. Team Leader / Team Member Card
+    team_content = [
+        Paragraph("TEAM LEADER / TEAM MEMBER", styles["CardLabel"]),
+        Spacer(1, 5),
+        Paragraph("Jaiwant Karrun SA", styles["CardName"]),
+        Spacer(1, 4),
+        Paragraph("Lead Full-Stack Architect & Sole Developer", styles["CardRole"]),
+    ]
+    team_card = Table([[team_content]], colWidths=[CONTENT_WIDTH])
+    team_card.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, -1), C_LIGHT_GREEN),
+            ("BOX", (0, 0), (-1, -1), 0.75, C_LIGHT_GREEN_BORDER),
+            ("LINELEFT", (0, 0), (0, -1), 3.5, C_PRIMARY_GREEN),
+            ("TOPPADDING", (0, 0), (-1, -1), 14),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 14),
+            ("LEFTPADDING", (0, 0), (-1, -1), 16),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 16),
+        ])
+    )
+    story.append(team_card)
+
+    story.append(Spacer(1, 35))
+    story.append(HRFlowable(width="100%", thickness=0.75, color=C_BORDER, spaceBefore=0, spaceAfter=0))
+    story.append(Spacer(1, 8))
+
+    cover_footer_table = Table(
+        [[
+            Paragraph("AccessLoop Official Hackathon Project Documentation", styles["CoverFoot"]),
+            Paragraph("Official Submission Report", styles["CoverFootRight"]),
+        ]],
+        colWidths=[CONTENT_WIDTH * 0.65, CONTENT_WIDTH * 0.35],
+    )
+    cover_footer_table.setStyle(
+        TableStyle([
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ("LEFTPADDING", (0, 0), (-1, -1), 0),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+        ])
+    )
+    story.append(cover_footer_table)
 
     story.append(PageBreak())
 
