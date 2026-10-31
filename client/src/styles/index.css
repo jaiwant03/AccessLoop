@@ -1160,3 +1160,81 @@ button, input, select, textarea {
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   MOBILE DRAWER RESPONSIVENESS
+   ========================================================================== */
+
+/* Hide mobile toggle on larger screens */
+@media (min-width: 769px) {
+  .mobile-nav-toggle {
+    display: none;
+  }
+  .mobile-menu-drawer {
+    display: none;
+  }
+}
+
+/* Mobile drawer styles for small screens */
+@media (max-width: 768px) {
+  .mobile-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .mobile-menu-drawer {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    z-index: 300;
+    animation: fadeIn var(--transition-fast) forwards;
+  }
+
+  .mobile-menu-inner {
+    background: var(--color-card-bg);
+    width: 80%;
+    max-width: 260px;
+    height: 100%;
+    padding: 1rem;
+    overflow-y: auto;
+    box-shadow: var(--shadow-md);
+    transform: translateX(-100%);
+    animation: slideIn var(--transition-normal) forwards;
+  }
+
+  .mobile-menu-link {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.4rem;
+    color: var(--color-dark-text);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast), color var(--transition-fast);
+  }
+
+  .mobile-menu-link:hover,
+  .mobile-menu-link.active {
+    background: var(--color-light-green);
+    color: var(--color-deep-green);
+  }
+}
+
+/* Simple keyframe animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
