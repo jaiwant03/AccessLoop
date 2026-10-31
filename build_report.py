@@ -91,7 +91,7 @@ def get_styles():
     styles["CoverBadge"] = ParagraphStyle(
         "CoverBadge",
         fontName="Helvetica-Bold",
-        fontSize=9.5,
+        fontSize=9,
         leading=12,
         textColor=C_PRIMARY_GREEN,
         alignment=0,
@@ -99,16 +99,16 @@ def get_styles():
     styles["CoverTitle"] = ParagraphStyle(
         "CoverTitle",
         fontName="Helvetica-Bold",
-        fontSize=30,
-        leading=36,
+        fontSize=34,
+        leading=40,
         textColor=C_DARK_TEXT,
         alignment=0,
     )
     styles["CoverSubtitle"] = ParagraphStyle(
         "CoverSubtitle",
         fontName="Helvetica-Bold",
-        fontSize=14,
-        leading=18,
+        fontSize=15,
+        leading=20,
         textColor=C_PRIMARY_GREEN,
         alignment=0,
     )
@@ -116,30 +116,59 @@ def get_styles():
         "CoverTagline",
         fontName="Helvetica-Oblique",
         fontSize=11.5,
-        leading=15,
-        textColor=C_DARK_GREEN,
+        leading=16,
+        textColor=C_MUTED_TEXT,
         alignment=0,
     )
-    styles["CoverSectionLabel"] = ParagraphStyle(
-        "CoverSectionLabel",
+    styles["CardLabel"] = ParagraphStyle(
+        "CardLabel",
         fontName="Helvetica-Bold",
         fontSize=8.5,
         leading=11,
+        textColor=C_PRIMARY_GREEN,
+    )
+    styles["CardTitle"] = ParagraphStyle(
+        "CardTitle",
+        fontName="Helvetica-Bold",
+        fontSize=13.5,
+        leading=17,
+        textColor=C_DARK_TEXT,
+    )
+    styles["CardBody"] = ParagraphStyle(
+        "CardBody",
+        fontName="Helvetica",
+        fontSize=9,
+        leading=13.5,
+        textColor=C_SECONDARY_TEXT,
+    )
+    styles["CardName"] = ParagraphStyle(
+        "CardName",
+        fontName="Helvetica-Bold",
+        fontSize=14,
+        leading=18,
+        textColor=C_DARK_TEXT,
+    )
+    styles["CardRole"] = ParagraphStyle(
+        "CardRole",
+        fontName="Helvetica",
+        fontSize=9,
+        leading=13,
         textColor=C_MUTED_TEXT,
     )
-    styles["CoverBody"] = ParagraphStyle(
-        "CoverBody",
+    styles["CoverFoot"] = ParagraphStyle(
+        "CoverFoot",
         fontName="Helvetica",
-        fontSize=9.5,
-        leading=14,
-        textColor=C_DARK_TEXT,
+        fontSize=8,
+        leading=10,
+        textColor=C_MUTED_TEXT,
     )
-    styles["CoverLeaderName"] = ParagraphStyle(
-        "CoverLeaderName",
-        fontName="Helvetica-Bold",
-        fontSize=13,
-        leading=16,
-        textColor=C_DARK_TEXT,
+    styles["CoverFootRight"] = ParagraphStyle(
+        "CoverFootRight",
+        fontName="Helvetica",
+        fontSize=8,
+        leading=10,
+        textColor=C_MUTED_TEXT,
+        alignment=2,
     )
 
     styles["H1"] = ParagraphStyle(
