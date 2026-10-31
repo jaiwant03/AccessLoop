@@ -79,17 +79,36 @@ const OwnerDashboard = () => {
             borderBottom: '1px solid #E2E8F0',
           }}
         >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
-              <span className="badge badge-green">Resource Custodian</span>
-              <span className="badge badge-gray">{user?.department}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <img
+              src={resolveImageUrl(user?.avatar) || DEFAULT_AVATAR}
+              alt={user?.name || 'Owner'}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = DEFAULT_AVATAR;
+              }}
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                border: '2.5px solid #22C55E',
+                boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)',
+                flexShrink: 0,
+              }}
+            />
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                <span className="badge badge-green">Resource Custodian</span>
+                <span className="badge badge-gray">{user?.department}</span>
+              </div>
+              <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem', letterSpacing: '-0.03em' }}>
+                {user?.name}'s Custody Console
+              </h1>
+              <p style={{ fontSize: '0.875rem', color: '#64748B' }}>
+                {user?.department} • {user?.institution}
+              </p>
             </div>
-            <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem', letterSpacing: '-0.03em' }}>
-              {user?.name}'s Custody Console
-            </h1>
-            <p style={{ fontSize: '0.875rem', color: '#64748B' }}>
-              {user?.department} • {user?.institution}
-            </p>
           </div>
 
           <Link to="/resources/new" className="btn btn-primary" style={{ gap: '0.45rem' }}>
