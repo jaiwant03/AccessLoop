@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { User, ShieldCheck, Upload, AlertCircle, CheckCircle, Scale, Building, Mail, Phone } from 'lucide-react';
-import api from '../services/api';
+import { User, ShieldCheck, Upload, AlertCircle, CheckCircle, Scale, Building, Mail, Phone, Camera } from 'lucide-react';
+import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import FairUsageBadge from '../components/FairUsageBadge';
 
 const ProfilePage = () => {
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, updateAvatar } = useAuth();
 
   const [idNumber, setIdNumber] = useState(user?.studentOrEmployeeId || '');
   const [verificationType, setVerificationType] = useState('Student ID');
@@ -17,6 +17,42 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+
+  // Profile avatar upload states
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarSuccess, setAvatarSuccess] = useState('');
+  const [avatarError, setAvatarError] = useState('');
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setAvatarError('Please select a valid image file (JPEG, PNG, WEBP).');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setAvatarError('Image file size must be less than 10MB.');
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setAvatarError('');
+    setAvatarSuccess('');
+
+    try {
+      await updateAvatar(file);
+      setAvatarSuccess('Profile photo uploaded and saved! It will now appear whenever you log into this account.');
+      setTimeout(() => setAvatarSuccess(''), 6000);
+    } catch (err) {
+      console.error('Failed to upload avatar:', err);
+      setAvatarError(err.response?.data?.message || 'Failed to upload profile photo. Please try again.');
+    } finally {
+      setUploadingAvatar(false);
+      e.target.value = '';
+    }
+  };
 
   const handleVerificationSubmit = async (e) => {
     e.preventDefault();
