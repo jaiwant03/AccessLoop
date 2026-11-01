@@ -49,16 +49,12 @@ const BookingDetailsPage = () => {
 
   const [showCheckInModal, setShowCheckInModal] = useState(false);
   const [checkInNotes, setCheckInNotes] = useState('Equipment inspected upon collection. Pristine condition.');
-  const [checkInPhotoUrl, setCheckInPhotoUrl] = useState(
-    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'
-  );
+  const [checkInPhotoUrl, setCheckInPhotoUrl] = useState('');
   const [checkInFile, setCheckInFile] = useState(null);
 
   const [showReturnModal, setShowReturnModal] = useState(false);
   const [returnNotes, setReturnNotes] = useState('Resource returned in complete working order with accessories.');
-  const [returnPhotoUrl, setReturnPhotoUrl] = useState(
-    'https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?auto=format&fit=crop&w=400&q=80'
-  );
+  const [returnPhotoUrl, setReturnPhotoUrl] = useState('');
   const [returnFile, setReturnFile] = useState(null);
 
   const [showInspectModal, setShowInspectModal] = useState(false);
