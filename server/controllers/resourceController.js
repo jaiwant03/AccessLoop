@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const Resource = require('../models/Resource');
 const Booking = require('../models/Booking');
 const { logAuditEvent } = require('../middleware/auditLogger');
@@ -137,7 +139,15 @@ const createResource = async (req, res, next) => {
 
     let parsedImages = [];
     if (req.files && req.files.length > 0) {
-      parsedImages = req.files.map((f) => `/uploads/${f.filename}`);
+      parsedImages = req.files.map((f) => {
+        try {
+          const buffer = fs.readFileSync(f.path);
+          const mime = f.mimetype || 'image/jpeg';
+          return `data:${mime};base64,${buffer.toString('base64')}`;
+        } catch (e) {
+          return `/uploads/${f.filename}`;
+        }
+      });
     } else if (images) {
       parsedImages = Array.isArray(images) ? images : [images];
     }
@@ -216,7 +226,15 @@ const updateResource = async (req, res, next) => {
 
     let updates = { ...req.body };
     if (req.files && req.files.length > 0) {
-      updates.images = req.files.map((f) => `/uploads/${f.filename}`);
+      updates.images = req.files.map((f) => {
+        try {
+          const buffer = fs.readFileSync(f.path);
+          const mime = f.mimetype || 'image/jpeg';
+          return `data:${mime};base64,${buffer.toString('base64')}`;
+        } catch (e) {
+          return `/uploads/${f.filename}`;
+        }
+      });
     }
 
     resource = await Resource.findByIdAndUpdate(req.params.id, updates, {
