@@ -287,19 +287,32 @@ const BorrowerDashboard = () => {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <img
-                      src={
-                        resolveImageUrl(b.resource?.images?.[0]) ||
-                        'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=120&q=80'
-                      }
-                      alt=""
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=120&q=80';
-                      }}
-                      style={{ width: '68px', height: '54px', borderRadius: '8px', objectFit: 'cover' }}
-                    />
+                    {resolveImageUrl(b.resource?.images?.[0]) ? (
+                      <img
+                        src={resolveImageUrl(b.resource?.images?.[0])}
+                        alt=""
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                        style={{ width: '68px', height: '54px', borderRadius: '8px', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '68px',
+                          height: '54px',
+                          borderRadius: '8px',
+                          backgroundColor: '#F1F5F9',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#94A3B8',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Camera size={20} />
+                      </div>
+                    )}
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                         <h4 style={{ fontSize: '0.975rem', color: '#0F172A', fontWeight: 700 }}>
@@ -402,19 +415,35 @@ const BorrowerDashboard = () => {
                 className="al-card al-card-hover"
                 style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}
               >
-                <img
-                  src={
-                    resolveImageUrl(r.images?.[0]) ||
-                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'
-                  }
-                  alt=""
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80';
-                  }}
-                  style={{ width: '100%', height: '130px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
-                />
+                {resolveImageUrl(r.images?.[0]) ? (
+                  <img
+                    src={resolveImageUrl(r.images?.[0])}
+                    alt=""
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                    style={{ width: '100%', height: '130px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '130px',
+                      borderRadius: '8px',
+                      backgroundColor: '#F1F5F9',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#94A3B8',
+                      marginBottom: '0.75rem',
+                      gap: '0.35rem',
+                    }}
+                  >
+                    <Camera size={24} />
+                    <span style={{ fontSize: '0.75rem', color: '#64748B' }}>No photo</span>
+                  </div>
+                )}
                 <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#16A34A', fontWeight: 700, letterSpacing: '0.04em' }}>
                   {r.category}
                 </div>
