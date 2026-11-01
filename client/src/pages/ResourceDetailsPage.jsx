@@ -274,6 +274,101 @@ const ResourceDetailsPage = () => {
       ? (endDateTime - startDateTime) / (1000 * 60 * 60)
       : 0;
 
+  const minDurAllowed = resource.minBookingDurationHours || 1;
+  const maxDurAllowed = resource.maxBookingDurationHours || 8;
+  const durationExceedsMax = durationHours > maxDurAllowed;
+  const durationBelowMin = durationHours < minDurAllowed && durationHours > 0;
+
+  // Calendar Days computation
+  const calendarDays = useMemo(() => {
+    const year = calendarViewDate.getFullYear();
+    const month = calendarViewDate.getMonth();
+
+    const firstDayIndex = new Date(year, month, 1).getDay(); // 0 is Sunday
+    const daysInCurrentMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+    const todayStr = getTodayISO();
+    const days = [];
+
+    // Previous month filler days
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      const prevDate = new Date(year, month - 1, daysInPrevMonth - i);
+      const isoStr = toDateStringISO(prevDate);
+      days.push({
+        date: prevDate,
+        dateString: isoStr,
+        dayNumber: daysInPrevMonth - i,
+        isCurrentMonth: false,
+        isPast: isoStr < todayStr,
+        isToday: isoStr === todayStr,
+        isSelected: isoStr === startDate,
+      });
+    }
+
+    // Current month days
+    for (let d = 1; d <= daysInCurrentMonth; d++) {
+      const currDate = new Date(year, month, d);
+      const isoStr = toDateStringISO(currDate);
+      const hasBooking = bookedSlots.some((slot) => {
+        const slotDate = slot.startTime ? slot.startTime.split('T')[0] : '';
+        return slotDate === isoStr;
+      });
+
+      days.push({
+        date: currDate,
+        dateString: isoStr,
+        dayNumber: d,
+        isCurrentMonth: true,
+        isPast: isoStr < todayStr,
+        isToday: isoStr === todayStr,
+        isSelected: isoStr === startDate,
+        hasBooking,
+      });
+    }
+
+    // Next month filler days up to 35 or 42 cells
+    const remaining = (7 - (days.length % 7)) % 7;
+    for (let d = 1; d <= remaining; d++) {
+      const nextDate = new Date(year, month + 1, d);
+      const isoStr = toDateStringISO(nextDate);
+      days.push({
+        date: nextDate,
+        dateString: isoStr,
+        dayNumber: d,
+        isCurrentMonth: false,
+        isPast: isoStr < todayStr,
+        isToday: isoStr === todayStr,
+        isSelected: isoStr === startDate,
+      });
+    }
+
+    return days;
+  }, [calendarViewDate, startDate, bookedSlots]);
+
+  // Allowed Durations for Quick Selection Pills
+  const allowedDurations = useMemo(() => {
+    const minDur = resource?.minBookingDurationHours || 1;
+    const maxDur = resource?.maxBookingDurationHours || 8;
+    const candidates = [1, 1.5, 2, 3, 4, 6, 8];
+    const filtered = candidates.filter((c) => c >= minDur && c <= maxDur);
+    if (!filtered.includes(minDur)) filtered.unshift(minDur);
+    if (!filtered.includes(maxDur)) filtered.push(maxDur);
+    return Array.from(new Set(filtered)).sort((a, b) => a - b);
+  }, [resource?.minBookingDurationHours, resource?.maxBookingDurationHours]);
+
+  const handleApplyDuration = (dur) => {
+    setEndTimeStr(addHoursToTime(startTimeStr, dur));
+    setBookingError('');
+  };
+
+  const handleStartTimeChange = (newStartTime) => {
+    setStartTimeStr(newStartTime);
+    const validDur = durationHours > 0 && !durationExceedsMax ? durationHours : Math.min(2, maxDurAllowed);
+    setEndTimeStr(addHoursToTime(newStartTime, validDur));
+    setBookingError('');
+  };
+
   // Eligibility Evaluation for the logged in user
   const isVerifiedUser = user?.verificationStatus === 'Verified';
   const fairScoreOk = (user?.fairUsageScore || 100) >= (resource.eligibilityRequirements?.minFairUsageScore || 50);
