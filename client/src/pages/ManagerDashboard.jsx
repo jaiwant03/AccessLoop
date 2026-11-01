@@ -683,22 +683,72 @@ const ManagerDashboard = () => {
               {deleteError && (
                 <div
                   style={{
-                    padding: '0.75rem 1rem',
+                    padding: '0.85rem 1rem',
                     backgroundColor: '#FEF2F2',
                     border: '1px solid #FECACA',
-                    borderRadius: '8px',
+                    borderRadius: '10px',
                     color: '#B91C1C',
-                    fontSize: '0.825rem',
+                    fontSize: '0.85rem',
                     marginBottom: '1.25rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
                   }}
                 >
-                  <AlertCircle size={16} color="#DC2626" style={{ flexShrink: 0 }} />
-                  <span>{deleteError}</span>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.65rem' }}>
+                    <AlertCircle size={18} color="#DC2626" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div>
+                      <strong style={{ display: 'block', color: '#991B1B', marginBottom: '2px' }}>Active Reservation Notice</strong>
+                      <span>{deleteError}</span>
+                    </div>
+                  </div>
+
+                  <div style={{ borderTop: '1px dashed #FCA5A5', paddingTop: '0.65rem', display: 'flex', justifyContent: 'flex-end' }}>
+                    <button
+                      type="button"
+                      disabled={deleteLoading}
+                      onClick={() => confirmDeleteResource(true)}
+                      className="btn btn-primary btn-sm"
+                      style={{
+                        backgroundColor: '#DC2626',
+                        borderColor: '#DC2626',
+                        color: '#FFFFFF',
+                        fontSize: '0.8rem',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        padding: '0.4rem 0.85rem',
+                        fontWeight: 700,
+                      }}
+                    >
+                      <Trash2 size={13} />
+                      <span>Force Delete (Cancel Bookings & Delete)</span>
+                    </button>
+                  </div>
                 </div>
               )}
+
+              <label
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  fontSize: '0.825rem',
+                  color: '#475569',
+                  marginBottom: '1.25rem',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  backgroundColor: '#F8FAFC',
+                  padding: '0.65rem 0.85rem',
+                  borderRadius: '8px',
+                  border: '1px solid #E2E8F0',
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={forceDelete}
+                  onChange={(e) => setForceDelete(e.target.checked)}
+                  style={{ width: '16px', height: '16px', accentColor: '#DC2626', cursor: 'pointer' }}
+                />
+                <span>Force delete: Cancel active or pending bookings and remove resource</span>
+              </label>
 
               <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
                 <button
