@@ -675,11 +675,6 @@ const OwnerDashboard = () => {
             </div>
           </div>
         )}
-                </div>
-              ))
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
