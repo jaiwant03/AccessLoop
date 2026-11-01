@@ -33,6 +33,7 @@ const OwnerDashboard = () => {
   const [resourceToDelete, setResourceToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [forceDelete, setForceDelete] = useState(false);
 
   const fetchOwnerData = async () => {
     setLoading(true);
