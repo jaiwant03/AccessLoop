@@ -15,8 +15,12 @@ import {
   ExternalLink,
   Inbox,
   ArrowRight,
+  Trash2,
+  Camera,
+  AlertCircle,
+  PlusCircle,
 } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveImageUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 const ManagerDashboard = () => {
@@ -24,25 +28,48 @@ const ManagerDashboard = () => {
   const [analytics, setAnalytics] = useState(null);
   const [verifications, setVerifications] = useState([]);
   const [incidents, setIncidents] = useState([]);
+  const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('verifications'); // 'verifications' | 'incidents'
+  const [activeTab, setActiveTab] = useState('verifications'); // 'verifications' | 'incidents' | 'resources'
+  const [resourceToDelete, setResourceToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const fetchManagerData = async () => {
     setLoading(true);
     try {
-      const [dashRes, verifRes, incRes] = await Promise.all([
+      const [dashRes, verifRes, incRes, resRes] = await Promise.all([
         api.get('/analytics/dashboard'),
         api.get('/verifications?status=Pending Review'),
         api.get('/incidents?status=Reported'),
+        api.get('/resources'),
       ]);
 
       setAnalytics(dashRes.data);
       setVerifications(verifRes.data.verifications || []);
       setIncidents(incRes.data.incidents || []);
+      setResources(resRes.data.resources || []);
     } catch (err) {
       console.error('Error fetching manager dashboard:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const confirmDeleteResource = async () => {
+    if (!resourceToDelete) return;
+    setDeleteLoading(true);
+    setDeleteError('');
+    try {
+      await api.delete(`/resources/${resourceToDelete._id}`);
+      setResourceToDelete(null);
+      await fetchManagerData();
+    } catch (err) {
+      setDeleteError(
+        err.response?.data?.message || 'Failed to delete resource. Please review active bookings.'
+      );
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
