@@ -271,12 +271,8 @@ const ResourceDetailsPage = () => {
             <div style={{ marginBottom: '2rem' }}>
               {(() => {
                 const currentImg = resource.images && resource.images[selectedImage];
-                const hasUploadedImage = Boolean(
-                  currentImg &&
-                    typeof currentImg === 'string' &&
-                    currentImg.trim() !== '' &&
-                    !imgFailed
-                );
+                const resolvedUrl = resolveImageUrl(currentImg);
+                const hasUploadedImage = Boolean(resolvedUrl && !imgFailed);
 
                 return (
                   <div
@@ -296,7 +292,7 @@ const ResourceDetailsPage = () => {
                   >
                     {hasUploadedImage ? (
                       <img
-                        src={resolveImageUrl(currentImg)}
+                        src={resolvedUrl}
                         alt={resource.name}
                         onError={() => setImgFailed(true)}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
