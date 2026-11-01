@@ -577,8 +577,11 @@ const BookingDetailsPage = () => {
                   {booking.checkOut?.returnPhotos && booking.checkOut.returnPhotos.length > 0 ? (
                     <div>
                       <img
-                        src={booking.checkOut.returnPhotos[0]}
+                        src={resolveImageUrl(booking.checkOut.returnPhotos[0])}
                         alt="Return Condition"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
                         style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px', marginBottom: '0.5rem' }}
                       />
                       <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
