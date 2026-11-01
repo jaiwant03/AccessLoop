@@ -69,6 +69,73 @@ const ResourceDetailsPage = () => {
     fetchResource();
   }, [id]);
 
+  useEffect(() => {
+    setImgFailed(false);
+  }, [selectedImage, resource?.images]);
+
+  const handleResourcePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUpdatingPhoto(true);
+    try {
+      const dataUri = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1200;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height = Math.round((height * MAX_WIDTH) / width);
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width = Math.round((width * MAX_HEIGHT) / height);
+                height = MAX_HEIGHT;
+              }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          };
+          img.onerror = () => resolve('');
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      if (!dataUri) throw new Error('Failed to process image');
+
+      const res = await api.put(`/resources/${resource._id}`, { images: [dataUri] });
+      setResource((prev) => ({ ...prev, images: res.data.resource?.images || [dataUri] }));
+      setImgFailed(false);
+      setSelectedImage(0);
+    } catch (err) {
+      console.error('Failed to update resource photo:', err);
+      alert('Failed to update resource photo. Please try again.');
+    } finally {
+      setUpdatingPhoto(false);
+      if (resourcePhotoInputRef.current) resourcePhotoInputRef.current.value = '';
+    }
+  };
+
+  const isOwner =
+    Boolean(user && resource?.owner) &&
+    (user._id === (resource.owner._id || resource.owner) ||
+      user.id === (resource.owner._id || resource.owner) ||
+      user.role === 'admin' ||
+      user.role === 'manager');
+
   if (loading) {
     return (
       <div className="main-content">
