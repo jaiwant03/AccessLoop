@@ -244,6 +244,27 @@ const ResourceDetailsPage = () => {
       user.role === 'admin' ||
       user.role === 'manager');
 
+  const handleDeleteResource = async () => {
+    if (!resource) return;
+    setDeleteLoading(true);
+    setDeleteError('');
+    try {
+      await api.delete(`/resources/${resource._id}`);
+      if (user?.role === 'owner') {
+        navigate('/dashboard/owner');
+      } else if (user?.role === 'manager') {
+        navigate('/dashboard/manager');
+      } else {
+        navigate('/explore');
+      }
+    } catch (err) {
+      setDeleteError(
+        err.response?.data?.message || 'Failed to delete resource. Please review active bookings.'
+      );
+      setDeleteLoading(false);
+    }
+  };
+
   // Calculate duration
   const startDateTime = new Date(`${startDate}T${startTimeStr}`);
   const endDateTime = new Date(`${startDate}T${endTimeStr}`);
