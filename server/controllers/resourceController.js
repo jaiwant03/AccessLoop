@@ -266,44 +266,60 @@ const updateResource = async (req, res, next) => {
   }
 };
 
-// @desc    Deactivate/Delete resource
+// @desc    Permanently delete or decommission mistakenly created resource
 // @route   DELETE /api/resources/:id
 const deleteResource = async (req, res, next) => {
   try {
     const resource = await Resource.findById(req.params.id);
 
     if (!resource) {
-      return res.status(404).json({ success: false, message: 'Resource not found' });
+      return res.status(404).json({ success: false, message: 'Resource not found.' });
     }
 
-    if (
-      resource.owner.toString() !== req.user._id.toString() &&
-      req.user.role !== 'admin'
-    ) {
+    const isOwner = resource.owner && resource.owner.toString() === req.user._id.toString();
+    const isStaff = req.user.role === 'admin' || req.user.role === 'manager';
+
+    if (!isOwner && !isStaff) {
       return res.status(403).json({
         success: false,
-        message: 'You are not authorized to delete this resource.',
+        message: 'You are not authorized to delete this resource. Only the creator, owner, or campus managers may delete resources.',
       });
     }
 
-    resource.isActive = false;
-    await resource.save();
+    // Check if there are active bookings associated with this resource
+    const activeBookings = await Booking.find({
+      resource: resource._id,
+      status: { $in: ['Approved', 'Active', 'Return Pending'] },
+    });
+
+    if (activeBookings.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot delete resource with ${activeBookings.length} active reservation(s). Please complete or cancel active bookings first.`,
+      });
+    }
+
+    // Delete associated bookings to avoid orphan records
+    await Booking.deleteMany({ resource: resource._id });
+
+    // Permanently remove resource from database
+    await Resource.findByIdAndDelete(req.params.id);
 
     await logAuditEvent({
       req,
-      actionType: 'resource_deactivated',
+      actionType: 'resource_deleted',
       performedBy: req.user._id,
       userRole: req.user.role,
       userName: req.user.name,
       userEmail: req.user.email,
       relatedResource: resource._id,
       resourceName: resource.name,
-      explanation: `Resource '${resource.name}' marked inactive/decommissioned.`,
+      explanation: `Resource '${resource.name}' (${resource.category}) permanently deleted by ${req.user.role} (${req.user.name}).`,
     });
 
     res.status(200).json({
       success: true,
-      message: 'Resource deactivated successfully.',
+      message: 'Resource deleted successfully.',
     });
   } catch (error) {
     next(error);
