@@ -245,12 +245,13 @@ const ResourceDetailsPage = () => {
       user.role === 'admin' ||
       user.role === 'manager');
 
-  const handleDeleteResource = async () => {
+  const handleDeleteResource = async (overrideForce) => {
     if (!resource) return;
+    const shouldForce = typeof overrideForce === 'boolean' ? overrideForce : forceDelete;
     setDeleteLoading(true);
     setDeleteError('');
     try {
-      await api.delete(`/resources/${resource._id}`);
+      await api.delete(`/resources/${resource._id}${shouldForce ? '?force=true' : ''}`);
       if (user?.role === 'owner') {
         navigate('/dashboard/owner');
       } else if (user?.role === 'manager') {
