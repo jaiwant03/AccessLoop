@@ -25,6 +25,7 @@ import {
   Camera,
   UploadCloud,
   Package,
+  Trash2,
 } from 'lucide-react';
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
