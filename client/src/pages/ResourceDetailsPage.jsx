@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   MapPin,
@@ -16,6 +16,11 @@ import {
   Sparkles,
   Users,
   ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  Check,
+  Zap,
+  RotateCcw,
   Home,
   Camera,
   UploadCloud,
