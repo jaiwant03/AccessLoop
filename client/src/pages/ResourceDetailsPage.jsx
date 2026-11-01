@@ -209,11 +209,15 @@ const ResourceDetailsPage = () => {
               >
                 <img
                   src={
-                    resource.images && resource.images[selectedImage]
-                      ? resource.images[selectedImage]
-                      : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80'
+                    resolveImageUrl(resource.images && resource.images[selectedImage]) ||
+                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80'
                   }
                   alt={resource.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80';
+                  }}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
@@ -234,7 +238,19 @@ const ResourceDetailsPage = () => {
                         transition: 'all 0.15s ease',
                       }}
                     >
-                      <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img
+                        src={
+                          resolveImageUrl(img) ||
+                          'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80'
+                        }
+                        alt=""
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src =
+                            'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80';
+                        }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
                     </div>
                   ))}
                 </div>

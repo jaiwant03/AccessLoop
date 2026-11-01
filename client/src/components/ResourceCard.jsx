@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, ShieldCheck, UserCheck, Star, Clock, AlertTriangle, ArrowRight } from 'lucide-react';
+import { resolveImageUrl } from '../services/api';
 
 const ResourceCard = ({ resource }) => {
   if (!resource) return null;
@@ -8,7 +9,7 @@ const ResourceCard = ({ resource }) => {
   const isAvailable = resource.availableQuantity > 0;
   const mainImage =
     resource.images && resource.images.length > 0
-      ? resource.images[0]
+      ? resolveImageUrl(resource.images[0])
       : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80';
 
   return (
