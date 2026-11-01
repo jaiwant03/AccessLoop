@@ -279,6 +279,23 @@ const ManagerDashboard = () => {
           >
             Incident Resolutions ({incidents.length})
           </button>
+
+          <button
+            onClick={() => setActiveTab('resources')}
+            style={{
+              padding: '0.75rem 1.25rem',
+              border: 'none',
+              background: 'none',
+              fontWeight: 700,
+              fontSize: '0.9rem',
+              color: activeTab === 'resources' ? '#16A34A' : '#64748B',
+              borderBottom: activeTab === 'resources' ? '2px solid #16A34A' : 'none',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            Campus Resources ({resources.length})
+          </button>
         </div>
 
         {/* TAB 1: Verifications Queue */}
