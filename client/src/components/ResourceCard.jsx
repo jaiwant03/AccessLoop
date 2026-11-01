@@ -1,38 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, ShieldCheck, UserCheck, Star, Clock, AlertTriangle, ArrowRight } from 'lucide-react';
+import { MapPin, ShieldCheck, UserCheck, Star, Clock, AlertTriangle, ArrowRight, Package } from 'lucide-react';
 import { resolveImageUrl } from '../services/api';
 
 const ResourceCard = ({ resource }) => {
   if (!resource) return null;
 
+  const [imgError, setImgError] = useState(false);
+
   const isAvailable = resource.availableQuantity > 0;
-  const mainImage =
+  const rawImage =
     resource.images && resource.images.length > 0
       ? resolveImageUrl(resource.images[0])
-      : 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80';
+      : '';
+  const hasImage = Boolean(rawImage && !imgError);
 
   return (
     <div className="resource-card">
       {/* Image Wrap */}
       <div className="resource-card-image-wrap">
-        <img
-          src={mainImage}
-          alt={resource.name}
-          className="resource-card-image"
-          loading="lazy"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80';
-          }}
-        />
+        {hasImage ? (
+          <img
+            src={rawImage}
+            alt={resource.name}
+            className="resource-card-image"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div
+            className="resource-card-image"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#F1F5F9',
+              color: '#94A3B8',
+              gap: '0.4rem',
+            }}
+          >
+            <Package size={34} strokeWidth={1.5} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748B' }}>
+              No photo uploaded
+            </span>
+          </div>
+        )}
 
         {/* Subtle gradient vignette for badge readability */}
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, transparent 45%)',
+            background: hasImage
+              ? 'linear-gradient(180deg, rgba(15, 23, 42, 0.35) 0%, transparent 45%)'
+              : 'transparent',
             pointerEvents: 'none',
           }}
         />
