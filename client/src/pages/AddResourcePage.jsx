@@ -187,7 +187,7 @@ const AddResourcePage = () => {
           hourlyFee: parseFloat(formData.hourlyFee) || 0,
           cancellationPolicy: formData.cancellationPolicy,
           tags: formData.tags ? formData.tags.split(',').map((t) => t.trim()) : [],
-          images: [formData.imageUrl],
+          images: formData.imageUrl ? [formData.imageUrl] : [],
         };
         res = await api.post('/resources', payload);
       } else if (imageFile) {
@@ -249,7 +249,7 @@ const AddResourcePage = () => {
           isPaid: formData.isPaid,
           hourlyFee: parseFloat(formData.hourlyFee) || 0,
           cancellationPolicy: formData.cancellationPolicy,
-          images: [formData.imageUrl],
+          images: formData.imageUrl ? [formData.imageUrl] : [],
           tags: formData.tags ? formData.tags.split(',').map((t) => t.trim()) : [],
         };
         res = await api.post('/resources', payload);
