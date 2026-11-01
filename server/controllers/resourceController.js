@@ -235,6 +235,8 @@ const updateResource = async (req, res, next) => {
           return `/uploads/${f.filename}`;
         }
       });
+    } else if (req.body.images) {
+      updates.images = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
     }
 
     resource = await Resource.findByIdAndUpdate(req.params.id, updates, {
