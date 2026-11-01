@@ -461,19 +461,35 @@ const OwnerDashboard = () => {
             ) : (
               myResources.map((r) => (
                 <div key={r._id} className="al-card al-card-hover" style={{ padding: '1.15rem', display: 'flex', flexDirection: 'column' }}>
-                  <img
-                    src={
-                      resolveImageUrl(r.images?.[0]) ||
-                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'
-                    }
-                    alt=""
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src =
-                        'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80';
-                    }}
-                    style={{ width: '100%', height: '145px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
-                  />
+                  {resolveImageUrl(r.images?.[0]) ? (
+                    <img
+                      src={resolveImageUrl(r.images?.[0])}
+                      alt=""
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
+                      style={{ width: '100%', height: '145px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '145px',
+                        borderRadius: '8px',
+                        backgroundColor: '#F1F5F9',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#94A3B8',
+                        marginBottom: '0.75rem',
+                        gap: '0.35rem',
+                      }}
+                    >
+                      <Camera size={26} />
+                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>No photo</span>
+                    </div>
+                  )}
                   <div style={{ marginBottom: '0.45rem' }}>
                     <span className="badge badge-green">
                       {r.category}
