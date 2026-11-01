@@ -127,6 +127,11 @@ const ResourceDetailsPage = () => {
   const [conflictDetected, setConflictDetected] = useState(false);
   const [waitingListSuccess, setWaitingListSuccess] = useState('');
 
+  // Delete Resource Modal State (For Owner & Manager)
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
   // Close calendar popover on outside click
   useEffect(() => {
     const handleOutsideClick = (e) => {
