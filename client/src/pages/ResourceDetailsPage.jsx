@@ -238,34 +238,6 @@ const ResourceDetailsPage = () => {
       user.role === 'admin' ||
       user.role === 'manager');
 
-  if (loading) {
-    return (
-      <div className="main-content">
-        <div className="app-container" style={{ textAlign: 'center', padding: '6rem 0' }}>
-          <div className="badge badge-green" style={{ padding: '0.65rem 1.25rem', fontSize: '0.9rem' }}>
-            Loading resource specifications...
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!resource) {
-    return (
-      <div className="main-content">
-        <div className="app-container" style={{ textAlign: 'center', padding: '6rem 0' }}>
-          <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', color: '#0F172A' }}>Resource not found</h2>
-          <p style={{ marginTop: '0.5rem', marginBottom: '1.75rem', color: '#64748B' }}>
-            The requested asset does not exist or may have been decommissioned.
-          </p>
-          <Link to="/explore" className="btn btn-primary">
-            Back to Explore
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   // Calculate duration
   const startDateTime = new Date(`${startDate}T${startTimeStr}`);
   const endDateTime = new Date(`${startDate}T${endTimeStr}`);
@@ -274,12 +246,12 @@ const ResourceDetailsPage = () => {
       ? (endDateTime - startDateTime) / (1000 * 60 * 60)
       : 0;
 
-  const minDurAllowed = resource.minBookingDurationHours || 1;
-  const maxDurAllowed = resource.maxBookingDurationHours || 8;
+  const minDurAllowed = resource?.minBookingDurationHours || 1;
+  const maxDurAllowed = resource?.maxBookingDurationHours || 8;
   const durationExceedsMax = durationHours > maxDurAllowed;
   const durationBelowMin = durationHours < minDurAllowed && durationHours > 0;
 
-  // Calendar Days computation
+  // Calendar Days computation (Called before any return to guarantee hook consistency)
   const calendarDays = useMemo(() => {
     const year = calendarViewDate.getFullYear();
     const month = calendarViewDate.getMonth();
@@ -346,7 +318,7 @@ const ResourceDetailsPage = () => {
     return days;
   }, [calendarViewDate, startDate, bookedSlots]);
 
-  // Allowed Durations for Quick Selection Pills
+  // Allowed Durations for Quick Selection Pills (Called before any return to guarantee hook consistency)
   const allowedDurations = useMemo(() => {
     const minDur = resource?.minBookingDurationHours || 1;
     const maxDur = resource?.maxBookingDurationHours || 8;
@@ -371,8 +343,8 @@ const ResourceDetailsPage = () => {
 
   // Eligibility Evaluation for the logged in user
   const isVerifiedUser = user?.verificationStatus === 'Verified';
-  const fairScoreOk = (user?.fairUsageScore || 100) >= (resource.eligibilityRequirements?.minFairUsageScore || 50);
-  const trainingRequired = resource.eligibilityRequirements?.requiresTraining;
+  const fairScoreOk = (user?.fairUsageScore || 100) >= (resource?.eligibilityRequirements?.minFairUsageScore || 50);
+  const trainingRequired = resource?.eligibilityRequirements?.requiresTraining;
 
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
@@ -385,21 +357,23 @@ const ResourceDetailsPage = () => {
       return;
     }
 
+    if (!resource) return;
+
     if (!purpose.trim()) {
       setBookingError('Please describe the purpose of use.');
       return;
     }
 
-    if (durationHours < resource.minBookingDurationHours) {
+    if (durationHours < (resource.minBookingDurationHours || 1)) {
       setBookingError(
-        `Minimum reservation duration is ${resource.minBookingDurationHours} hour(s).`
+        `Minimum reservation duration is ${resource.minBookingDurationHours || 1} hour(s).`
       );
       return;
     }
 
-    if (durationHours > resource.maxBookingDurationHours) {
+    if (durationHours > (resource.maxBookingDurationHours || 8)) {
       setBookingError(
-        `Maximum reservation duration is ${resource.maxBookingDurationHours} hour(s).`
+        `Maximum reservation duration is ${resource.maxBookingDurationHours || 8} hour(s).`
       );
       return;
     }
@@ -430,6 +404,7 @@ const ResourceDetailsPage = () => {
   };
 
   const handleJoinWaitingList = async () => {
+    if (!resource) return;
     try {
       const res = await api.post('/waiting-list', {
         resourceId: resource._id,
@@ -445,6 +420,34 @@ const ResourceDetailsPage = () => {
       );
     }
   };
+
+  if (loading) {
+    return (
+      <div className="main-content">
+        <div className="app-container" style={{ textAlign: 'center', padding: '6rem 0' }}>
+          <div className="badge badge-green" style={{ padding: '0.65rem 1.25rem', fontSize: '0.9rem' }}>
+            Loading resource specifications...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!resource) {
+    return (
+      <div className="main-content">
+        <div className="app-container" style={{ textAlign: 'center', padding: '6rem 0' }}>
+          <h2 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', color: '#0F172A' }}>Resource not found</h2>
+          <p style={{ marginTop: '0.5rem', marginBottom: '1.75rem', color: '#64748B' }}>
+            The requested asset does not exist or may have been decommissioned.
+          </p>
+          <Link to="/explore" className="btn btn-primary">
+            Back to Explore
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="main-content">
