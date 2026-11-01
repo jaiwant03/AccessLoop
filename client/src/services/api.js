@@ -49,7 +49,7 @@ export const resolveImageUrl = (url) => {
   const trimmed = url.trim();
   if (!trimmed) return '';
 
-  // Ignore stock/random Unsplash portrait URLs so unuploaded accounts remain clean and empty
+  // Ignore stock/random Unsplash portrait & default resource URLs so unuploaded accounts/resources remain clean and empty
   if (
     trimmed.includes('images.unsplash.com/photo-') &&
     (trimmed.includes('1534528741775') ||
@@ -61,7 +61,11 @@ export const resolveImageUrl = (url) => {
       trimmed.includes('1494790108377') ||
       trimmed.includes('1517841905240') ||
       trimmed.includes('1522075469751') ||
-      trimmed.includes('1544005313-94d'))
+      trimmed.includes('1544005313-94d') ||
+      trimmed.includes('1516035069371') ||
+      trimmed.includes('1544717305') ||
+      trimmed.includes('1581092160607') ||
+      trimmed.includes('1502982720700'))
   ) {
     return '';
   }
