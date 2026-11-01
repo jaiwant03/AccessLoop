@@ -3,6 +3,52 @@ import api from '../services/api';
 
 const AuthContext = createContext();
 
+// Compress and square-crop avatar to max 320x320 JPEG (< 35KB) for permanent cloud DB persistence
+export const compressAvatarImage = (file) => {
+  return new Promise((resolve) => {
+    if (!file || !(file instanceof File)) {
+      return resolve('');
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          const MAX_DIM = 320;
+          const width = img.width;
+          const height = img.height;
+
+          // Crop square from center
+          const minDim = Math.min(width, height);
+          const startX = (width - minDim) / 2;
+          const startY = (height - minDim) / 2;
+
+          const targetDim = Math.min(minDim, MAX_DIM);
+          canvas.width = targetDim;
+          canvas.height = targetDim;
+
+          const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, startX, startY, minDim, minDim, 0, 0, targetDim, targetDim);
+
+          // High-quality lightweight JPEG Data URI
+          const compressedDataUri = canvas.toDataURL('image/jpeg', 0.85);
+          resolve(compressedDataUri);
+        } catch (err) {
+          console.warn('Canvas processing error:', err);
+          resolve('');
+        }
+      };
+      img.onerror = () => resolve('');
+      img.src = e.target.result;
+    };
+    reader.onerror = () => resolve('');
+    reader.readAsDataURL(file);
+  });
+};
+
 export const DEMO_ACCOUNTS = {
   admin: {
     email: 'admin@accessloop.edu',
@@ -127,15 +173,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateAvatar = async (fileOrUrl) => {
-    let res;
+    let payload = fileOrUrl;
     if (fileOrUrl instanceof File) {
+      try {
+        const compressed = await compressAvatarImage(fileOrUrl);
+        if (compressed) {
+          payload = compressed;
+        }
+      } catch (err) {
+        console.warn('Avatar compression failed, falling back to raw file:', err);
+      }
+    }
+
+    let res;
+    if (typeof payload === 'string') {
+      res = await api.put('/auth/avatar', { avatar: payload });
+    } else {
       const formData = new FormData();
-      formData.append('avatar', fileOrUrl);
+      formData.append('avatar', payload);
       res = await api.put('/auth/avatar', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-    } else {
-      res = await api.put('/auth/avatar', { avatar: fileOrUrl });
     }
     const updatedUser = normalizeUser(res.data.user);
     setUser(updatedUser);

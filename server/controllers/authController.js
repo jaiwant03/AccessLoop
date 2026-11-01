@@ -1,7 +1,20 @@
+const fs = require('fs');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Verification = require('../models/Verification');
 const { logAuditEvent } = require('../middleware/auditLogger');
+
+// Sanitize dead /uploads/ paths if local files were wiped during ephemeral server restarts
+const sanitizeAvatar = async (user) => {
+  if (user && user.avatar && user.avatar.startsWith('/uploads/')) {
+    const filePath = path.join(__dirname, '..', user.avatar);
+    if (!fs.existsSync(filePath)) {
+      user.avatar = '';
+      await user.save();
+    }
+  }
+};
 
 const generateToken = (id) => {
   return jwt.sign(
@@ -118,6 +131,8 @@ const login = async (req, res, next) => {
       });
     }
 
+    await sanitizeAvatar(user);
+
     const token = generateToken(user._id);
 
     res.status(200).json({
@@ -147,6 +162,9 @@ const login = async (req, res, next) => {
 const getMe = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
+    if (user) {
+      await sanitizeAvatar(user);
+    }
     res.status(200).json({
       success: true,
       user,
@@ -176,7 +194,13 @@ const updateProfile = async (req, res, next) => {
     if (studentOrEmployeeId !== undefined) user.studentOrEmployeeId = studentOrEmployeeId;
 
     if (req.file) {
-      user.avatar = `/uploads/${req.file.filename}`;
+      try {
+        const fileBuffer = fs.readFileSync(req.file.path);
+        const mimeType = req.file.mimetype || 'image/jpeg';
+        user.avatar = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+      } catch (err) {
+        user.avatar = `/uploads/${req.file.filename}`;
+      }
     } else if (avatar !== undefined) {
       user.avatar = avatar;
     }
@@ -212,10 +236,18 @@ const updateAvatar = async (req, res, next) => {
   try {
     let avatarUrl = '';
 
-    if (req.file) {
-      avatarUrl = `/uploads/${req.file.filename}`;
-    } else if (req.body && typeof req.body.avatar === 'string') {
-      avatarUrl = req.body.avatar;
+    if (req.body && typeof req.body.avatar === 'string') {
+      avatarUrl = req.body.avatar.trim();
+    } else if (req.file) {
+      try {
+        const fileBuffer = fs.readFileSync(req.file.path);
+        const mimeType = req.file.mimetype || 'image/jpeg';
+        // Persist directly as Base64 Data URI in MongoDB so it never gets wiped on container restarts
+        avatarUrl = `data:${mimeType};base64,${fileBuffer.toString('base64')}`;
+      } catch (err) {
+        console.error('File read error:', err);
+        avatarUrl = `/uploads/${req.file.filename}`;
+      }
     } else {
       return res.status(400).json({
         success: false,

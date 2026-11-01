@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User } from 'lucide-react';
 import { resolveImageUrl } from '../services/api';
 
@@ -20,6 +20,10 @@ const UserAvatar = ({
   const [hasError, setHasError] = useState(false);
   const resolved = resolveImageUrl(src);
   const initial = name ? name.trim().charAt(0).toUpperCase() : '';
+
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
 
   if (resolved && !hasError) {
     return (
