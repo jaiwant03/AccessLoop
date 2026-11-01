@@ -30,6 +30,74 @@ import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import UserAvatar from '../components/UserAvatar';
 
+// Time options from 08:00 AM to 08:00 PM (30 min increments)
+const TIME_OPTIONS = [
+  '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
+  '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
+  '14:00', '14:30', '15:00', '15:30', '16:00', '16:30',
+  '17:00', '17:30', '18:00', '18:30', '19:00', '19:30',
+  '20:00',
+];
+
+const formatTime12Hour = (time24) => {
+  if (!time24) return '';
+  const [hStr, mStr] = time24.split(':');
+  let h = parseInt(hStr, 10);
+  const m = mStr || '00';
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12;
+  if (h === 0) h = 12;
+  return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+};
+
+const addHoursToTime = (time24, hoursToAdd) => {
+  if (!time24) return '11:00';
+  const [hStr, mStr] = time24.split(':');
+  const totalMinutes = parseInt(hStr, 10) * 60 + parseInt(mStr || '0', 10) + Math.round(hoursToAdd * 60);
+  const clampedMinutes = Math.min(Math.max(totalMinutes, 0), 23 * 60 + 59);
+  const newH = Math.floor(clampedMinutes / 60);
+  const newM = clampedMinutes % 60;
+  return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+};
+
+const toDateStringISO = (d) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const getTodayISO = () => toDateStringISO(new Date());
+
+const getTomorrowISO = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return toDateStringISO(d);
+};
+
+const formatDisplayDate = (dateStr) => {
+  if (!dateStr) return 'Select Reservation Date';
+  try {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    const todayStr = getTodayISO();
+    const tomorrowStr = getTomorrowISO();
+
+    const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+    const monthName = dateObj.toLocaleDateString('en-US', { month: 'short' });
+    const dayNum = dateObj.getDate();
+    const yr = dateObj.getFullYear();
+
+    let relativeLabel = '';
+    if (dateStr === todayStr) relativeLabel = ' • Today';
+    else if (dateStr === tomorrowStr) relativeLabel = ' • Tomorrow';
+
+    return `${dayName}, ${monthName} ${dayNum}, ${yr}${relativeLabel}`;
+  } catch {
+    return dateStr;
+  }
+};
+
 const ResourceDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,15 +111,35 @@ const ResourceDetailsPage = () => {
   const [imgFailed, setImgFailed] = useState(false);
   const [updatingPhoto, setUpdatingPhoto] = useState(false);
 
+  // Modern Calendar Picker State
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [calendarViewDate, setCalendarViewDate] = useState(new Date());
+  const datePickerRef = useRef(null);
+
   // Booking Form State
   const [startDate, setStartDate] = useState('');
   const [startTimeStr, setStartTimeStr] = useState('09:00');
-  const [endTimeStr, setEndTimeStr] = useState('13:00');
+  const [endTimeStr, setEndTimeStr] = useState('11:00');
   const [purpose, setPurpose] = useState('');
   const [bookingLoading, setBookingLoading] = useState(false);
   const [bookingError, setBookingError] = useState('');
   const [conflictDetected, setConflictDetected] = useState(false);
   const [waitingListSuccess, setWaitingListSuccess] = useState('');
+
+  // Close calendar popover on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(e.target)) {
+        setShowDatePicker(false);
+      }
+    };
+    if (showDatePicker) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [showDatePicker]);
 
   useEffect(() => {
     const fetchResource = async () => {
@@ -64,7 +152,16 @@ const ResourceDetailsPage = () => {
         // Default startDate to tomorrow
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
-        setStartDate(tomorrow.toISOString().split('T')[0]);
+        const tomorrowStr = toDateStringISO(tomorrow);
+        setStartDate(tomorrowStr);
+        setCalendarViewDate(tomorrow);
+
+        // Intelligently initialize start and end time to be valid by default
+        const minDur = res.data.resource?.minBookingDurationHours || 1;
+        const maxDur = res.data.resource?.maxBookingDurationHours || 8;
+        const defaultDur = Math.min(Math.max(minDur, 1), maxDur);
+        setStartTimeStr('09:00');
+        setEndTimeStr(addHoursToTime('09:00', defaultDur));
       } catch (err) {
         console.error('Error fetching resource:', err);
       } finally {
