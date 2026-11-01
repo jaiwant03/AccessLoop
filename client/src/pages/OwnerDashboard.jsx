@@ -527,10 +527,154 @@ const OwnerDashboard = () => {
                     <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>
                       {r.totalBookingsCount || 0} Bookings Completed
                     </span>
-                    <Link to={`/resources/${r._id}`} className="btn btn-secondary btn-sm">
-                      View
-                    </Link>
+                    <div style={{ display: 'flex', gap: '0.45rem', alignItems: 'center' }}>
+                      <Link to={`/resources/${r._id}`} className="btn btn-secondary btn-sm" style={{ padding: '0.3rem 0.65rem' }}>
+                        View
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setResourceToDelete(r);
+                          setDeleteError('');
+                        }}
+                        className="btn btn-secondary btn-sm"
+                        style={{
+                          color: '#DC2626',
+                          borderColor: '#FECACA',
+                          backgroundColor: '#FEF2F2',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.3rem',
+                          padding: '0.3rem 0.6rem',
+                        }}
+                        title="Delete resource"
+                      >
+                        <Trash2 size={13} />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal for Owner */}
+        {resourceToDelete && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 23, 42, 0.65)',
+              backdropFilter: 'blur(4px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              padding: '1rem',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '16px',
+                padding: '2rem',
+                maxWidth: '480px',
+                width: '100%',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                border: '1px solid #E2E8F0',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.25rem' }}>
+                <div
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    backgroundColor: '#FEF2F2',
+                    color: '#DC2626',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Trash2 size={24} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                    Delete Resource
+                  </h3>
+                  <p style={{ fontSize: '0.825rem', color: '#64748B', margin: '2px 0 0' }}>
+                    Permanently remove mistakenly created resource
+                  </p>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '0.9rem', color: '#334155', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                Are you sure you want to permanently delete <strong>{resourceToDelete.name}</strong>? This action cannot be undone and will remove it from the catalog.
+              </p>
+
+              {deleteError && (
+                <div
+                  style={{
+                    padding: '0.75rem 1rem',
+                    backgroundColor: '#FEF2F2',
+                    border: '1px solid #FECACA',
+                    borderRadius: '8px',
+                    color: '#B91C1C',
+                    fontSize: '0.825rem',
+                    marginBottom: '1.25rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                  }}
+                >
+                  <AlertCircle size={16} color="#DC2626" style={{ flexShrink: 0 }} />
+                  <span>{deleteError}</span>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                <button
+                  type="button"
+                  disabled={deleteLoading}
+                  onClick={() => {
+                    setResourceToDelete(null);
+                    setDeleteError('');
+                  }}
+                  className="btn btn-secondary"
+                  style={{ padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 600 }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  disabled={deleteLoading}
+                  onClick={confirmDeleteResource}
+                  className="btn btn-primary"
+                  style={{
+                    backgroundColor: '#DC2626',
+                    borderColor: '#DC2626',
+                    color: '#FFFFFF',
+                    padding: '0.6rem 1.25rem',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    cursor: deleteLoading ? 'not-allowed' : 'pointer',
+                  }}
+                >
+                  <Trash2 size={16} />
+                  <span>{deleteLoading ? 'Deleting...' : 'Yes, Delete Resource'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
                 </div>
               ))
             )}
