@@ -163,7 +163,36 @@ const AddResourcePage = () => {
 
     try {
       let res;
-      if (imageFile) {
+      if (formData.imageUrl && formData.imageUrl.startsWith('data:image')) {
+        const payload = {
+          name: formData.name.trim(),
+          category: formData.category,
+          resourceType: formData.resourceType,
+          description: formData.description.trim(),
+          department: formData.department.trim(),
+          location: formData.location.trim(),
+          quantity: parseInt(formData.quantity) || 1,
+          minBookingDurationHours: parseFloat(formData.minBookingDurationHours) || 1,
+          maxBookingDurationHours: parseFloat(formData.maxBookingDurationHours) || 8,
+          eligibilityRequirements: {
+            requiresVerifiedUser: formData.requiresVerifiedUser,
+            minFairUsageScore: parseInt(formData.minFairUsageScore) || 50,
+            requiresTraining: formData.requiresTraining,
+            trainingCourseName: formData.trainingCourseName,
+            requiresSupervision: formData.requiresSupervision,
+            supervisorName: formData.supervisorName,
+          },
+          safetyInstructions: formData.safetyInstructions,
+          usageGuidelines: formData.usageGuidelines,
+          securityDeposit: parseFloat(formData.securityDeposit) || 0,
+          isPaid: formData.isPaid,
+          hourlyFee: parseFloat(formData.hourlyFee) || 0,
+          cancellationPolicy: formData.cancellationPolicy,
+          tags: formData.tags ? formData.tags.split(',').map((t) => t.trim()) : [],
+          images: [formData.imageUrl],
+        };
+        res = await api.post('/resources', payload);
+      } else if (imageFile) {
         const data = new FormData();
         data.append('name', formData.name.trim());
         data.append('category', formData.category);
