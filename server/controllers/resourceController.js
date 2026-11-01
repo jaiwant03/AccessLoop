@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Resource = require('../models/Resource');
 const Booking = require('../models/Booking');
+const User = require('../models/User');
 const { logAuditEvent } = require('../middleware/auditLogger');
 
 // @desc    Get all resources with search, filters, pagination and sorting
