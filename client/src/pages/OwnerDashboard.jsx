@@ -30,6 +30,9 @@ const OwnerDashboard = () => {
   const [activeBorrowings, setActiveBorrowings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('requests'); // 'requests' | 'active' | 'resources'
+  const [resourceToDelete, setResourceToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const fetchOwnerData = async () => {
     setLoading(true);
