@@ -15,6 +15,8 @@ import {
   Layers,
   Inbox,
   ArrowRight,
+  Trash2,
+  AlertCircle,
 } from 'lucide-react';
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
