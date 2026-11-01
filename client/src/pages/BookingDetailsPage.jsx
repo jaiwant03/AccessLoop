@@ -475,19 +475,32 @@ const BookingDetailsPage = () => {
               </h3>
 
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.25rem' }}>
-                <img
-                  src={
-                    resolveImageUrl(booking.resource?.images?.[0]) ||
-                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=200&q=80'
-                  }
-                  alt=""
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=200&q=80';
-                  }}
-                  style={{ width: '90px', height: '70px', borderRadius: '8px', objectFit: 'cover' }}
-                />
+                {resolveImageUrl(booking.resource?.images?.[0]) ? (
+                  <img
+                    src={resolveImageUrl(booking.resource?.images?.[0])}
+                    alt=""
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                    style={{ width: '90px', height: '70px', borderRadius: '8px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '90px',
+                      height: '70px',
+                      borderRadius: '8px',
+                      backgroundColor: '#F1F5F9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#94A3B8',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Camera size={24} />
+                  </div>
+                )}
                 <div>
                   <h4 style={{ fontSize: '1rem', color: '#17231C' }}>
                     {booking.resource?.name}
