@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   MapPin,
@@ -17,6 +17,9 @@ import {
   Users,
   ChevronRight,
   Home,
+  Camera,
+  UploadCloud,
+  Package,
 } from 'lucide-react';
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -26,11 +29,14 @@ const ResourceDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const resourcePhotoInputRef = useRef(null);
 
   const [resource, setResource] = useState(null);
   const [bookedSlots, setBookedSlots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [imgFailed, setImgFailed] = useState(false);
+  const [updatingPhoto, setUpdatingPhoto] = useState(false);
 
   // Booking Form State
   const [startDate, setStartDate] = useState('');
