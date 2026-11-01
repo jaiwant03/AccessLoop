@@ -910,57 +910,89 @@ const AddResourcePage = () => {
                 </label>
                 <div
                   style={{
-                    border: '2px dashed #E2E8F0',
+                    border: imagePreview ? '1.5px solid #86EFAC' : '2px dashed #CBD5E1',
                     borderRadius: '12px',
-                    padding: '1.5rem',
+                    padding: '1.75rem 1.5rem',
                     textAlign: 'center',
-                    backgroundColor: '#F8FAFC',
-                    transition: 'border-color 0.2s ease',
+                    backgroundColor: imagePreview ? '#F0FDF4' : '#F8FAFC',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.65rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
                     {imagePreview ? (
-                      <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
-                        <img
-                          src={imagePreview}
-                          alt="Resource Preview"
-                          style={{
-                            width: '180px',
-                            height: '110px',
-                            objectFit: 'cover',
-                            borderRadius: '10px',
-                            border: '1px solid #E2E8F0',
-                            boxShadow: 'var(--shadow-sm)',
-                          }}
-                        />
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ position: 'relative' }}>
+                          <img
+                            src={imagePreview}
+                            alt="Resource Preview"
+                            style={{
+                              width: '240px',
+                              height: '140px',
+                              objectFit: 'cover',
+                              borderRadius: '10px',
+                              border: '2px solid #22C55E',
+                              boxShadow: '0 4px 12px rgba(34, 197, 94, 0.2)',
+                            }}
+                          />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                          <span
+                            className="badge badge-green"
+                            style={{ padding: '0.3rem 0.75rem', fontSize: '0.8rem', fontWeight: 700 }}
+                          >
+                            ✓ Photo ready to publish
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setImagePreview('');
+                              setImageFile(null);
+                              setFormData((prev) => ({ ...prev, imageUrl: '' }));
+                            }}
+                            className="btn btn-secondary btn-sm"
+                            style={{ color: '#DC2626', borderColor: '#FECACA' }}
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                     ) : (
-                      <div
-                        style={{
-                          width: '48px',
-                          height: '48px',
-                          borderRadius: '12px',
-                          backgroundColor: '#ECFDF5',
-                          color: '#16A34A',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Upload size={22} />
-                      </div>
+                      <>
+                        <div
+                          style={{
+                            width: '52px',
+                            height: '52px',
+                            borderRadius: '14px',
+                            backgroundColor: '#DCFCE7',
+                            color: '#15803D',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Upload size={24} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.2rem' }}>
+                            Upload Resource Photograph
+                          </div>
+                          <div style={{ fontSize: '0.8rem', color: '#64748B' }}>
+                            Only your uploaded photo will be published. No default stock photos.
+                          </div>
+                        </div>
+                      </>
                     )}
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.25rem' }}>
                       <label
-                        className="btn btn-secondary btn-sm"
+                        className="btn btn-primary btn-sm"
                         style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}
                       >
                         <Upload size={14} />
-                        <span>Select File from Device</span>
+                        <span>{imagePreview ? 'Change Photo from Device' : 'Select Photo from Device'}</span>
                         <input
                           type="file"
-                          accept="image/*"
+                          accept="image/png,image/jpeg,image/jpg,image/webp"
                           style={{ display: 'none' }}
                           onChange={handleImageFileChange}
                         />
@@ -972,14 +1004,15 @@ const AddResourcePage = () => {
                       type="text"
                       name="imageUrl"
                       className="form-input"
-                      placeholder="https://images.unsplash.com/..."
-                      value={formData.imageUrl}
+                      placeholder="Or enter direct image URL (e.g. https://...)"
+                      value={formData.imageUrl && !formData.imageUrl.startsWith('data:image') ? formData.imageUrl : ''}
                       onChange={(e) => {
-                        handleChange(e);
-                        setImagePreview(e.target.value);
+                        const val = e.target.value.trim();
+                        setFormData((prev) => ({ ...prev, imageUrl: val }));
+                        setImagePreview(val);
                         setImageFile(null);
                       }}
-                      style={{ maxWidth: '520px', marginTop: '0.5rem' }}
+                      style={{ maxWidth: '520px', marginTop: '0.35rem' }}
                     />
                   </div>
                 </div>
