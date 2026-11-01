@@ -287,21 +287,44 @@ const deleteResource = async (req, res, next) => {
       });
     }
 
+    const force = req.query.force === 'true' || req.body?.force === true;
+
     // Check if there are active bookings associated with this resource
     const activeBookings = await Booking.find({
       resource: resource._id,
-      status: { $in: ['Approved', 'Active', 'Return Pending'] },
+      status: { $in: ['Approved', 'Active', 'Return Pending', 'Pending'] },
     });
 
-    if (activeBookings.length > 0) {
+    if (activeBookings.length > 0 && !force) {
       return res.status(400).json({
         success: false,
-        message: `Cannot delete resource with ${activeBookings.length} active reservation(s). Please complete or cancel active bookings first.`,
+        hasActiveBookings: true,
+        activeCount: activeBookings.length,
+        message: `Cannot delete resource with ${activeBookings.length} active reservation(s). Click 'Force Delete' to cancel all active bookings and delete it immediately, or complete/cancel bookings first.`,
       });
+    }
+
+    // If force deleting, decrement activeBookingsCount for any active borrowers
+    for (const b of activeBookings) {
+      if (b.status === 'Active' && b.borrower) {
+        await User.findByIdAndUpdate(b.borrower, { $inc: { activeBookingsCount: -1 } });
+      }
     }
 
     // Delete associated bookings to avoid orphan records
     await Booking.deleteMany({ resource: resource._id });
+
+    // Clean up local uploaded image if stored locally
+    if (resource.imageUrl && resource.imageUrl.startsWith('/uploads/')) {
+      const localFilePath = path.join(__dirname, '..', resource.imageUrl);
+      if (fs.existsSync(localFilePath)) {
+        try {
+          fs.unlinkSync(localFilePath);
+        } catch (e) {
+          console.error('Failed to unlink uploaded image:', e);
+        }
+      }
+    }
 
     // Permanently remove resource from database
     await Resource.findByIdAndDelete(req.params.id);
@@ -315,12 +338,12 @@ const deleteResource = async (req, res, next) => {
       userEmail: req.user.email,
       relatedResource: resource._id,
       resourceName: resource.name,
-      explanation: `Resource '${resource.name}' (${resource.category}) permanently deleted by ${req.user.role} (${req.user.name}).`,
+      explanation: `Resource '${resource.name}' (${resource.category}) permanently deleted by ${req.user.role} (${req.user.name})${force ? ' [Force Deleted: active reservations cancelled]' : ''}.`,
     });
 
     res.status(200).json({
       success: true,
-      message: 'Resource deleted successfully.',
+      message: 'Resource and all associated records deleted permanently.',
     });
   } catch (error) {
     next(error);
