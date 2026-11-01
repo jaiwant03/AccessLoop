@@ -30,9 +30,7 @@ const IncidentCenterPage = () => {
   const [category, setCategory] = useState('physical_damage');
   const [severity, setSeverity] = useState('Medium');
   const [description, setDescription] = useState('');
-  const [evidenceUrl, setEvidenceUrl] = useState(
-    'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80'
-  );
+  const [evidenceUrl, setEvidenceUrl] = useState('');
   const [formLoading, setFormLoading] = useState(false);
   const [error, setError] = useState('');
 
