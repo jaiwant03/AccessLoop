@@ -15,7 +15,7 @@ import {
   Layers,
   Inbox,
 } from 'lucide-react';
-import api from '../services/api';
+import api, { resolveImageUrl } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import FairUsageBadge from '../components/FairUsageBadge';
 import UserAvatar from '../components/UserAvatar';
@@ -289,10 +289,15 @@ const BorrowerDashboard = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <img
                       src={
-                        b.resource?.images?.[0] ||
+                        resolveImageUrl(b.resource?.images?.[0]) ||
                         'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=120&q=80'
                       }
                       alt=""
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=120&q=80';
+                      }}
                       style={{ width: '68px', height: '54px', borderRadius: '8px', objectFit: 'cover' }}
                     />
                     <div>
@@ -398,8 +403,16 @@ const BorrowerDashboard = () => {
                 style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}
               >
                 <img
-                  src={r.images?.[0]}
+                  src={
+                    resolveImageUrl(r.images?.[0]) ||
+                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'
+                  }
                   alt=""
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80';
+                  }}
                   style={{ width: '100%', height: '130px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
                 />
                 <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: '#16A34A', fontWeight: 700, letterSpacing: '0.04em' }}>

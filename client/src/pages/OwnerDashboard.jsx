@@ -462,8 +462,16 @@ const OwnerDashboard = () => {
               myResources.map((r) => (
                 <div key={r._id} className="al-card al-card-hover" style={{ padding: '1.15rem', display: 'flex', flexDirection: 'column' }}>
                   <img
-                    src={r.images?.[0] || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'}
+                    src={
+                      resolveImageUrl(r.images?.[0]) ||
+                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80'
+                    }
                     alt=""
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src =
+                        'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80';
+                    }}
                     style={{ width: '100%', height: '145px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.75rem' }}
                   />
                   <div style={{ marginBottom: '0.45rem' }}>

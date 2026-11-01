@@ -481,10 +481,15 @@ const BookingDetailsPage = () => {
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <img
                   src={
-                    booking.resource?.images?.[0] ||
+                    resolveImageUrl(booking.resource?.images?.[0]) ||
                     'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=200&q=80'
                   }
                   alt=""
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src =
+                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=200&q=80';
+                  }}
                   style={{ width: '90px', height: '70px', borderRadius: '8px', objectFit: 'cover' }}
                 />
                 <div>
@@ -543,8 +548,11 @@ const BookingDetailsPage = () => {
                   {booking.checkIn?.initialPhotos && booking.checkIn.initialPhotos.length > 0 ? (
                     <div>
                       <img
-                        src={booking.checkIn.initialPhotos[0]}
+                        src={resolveImageUrl(booking.checkIn.initialPhotos[0])}
                         alt="Initial Condition"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
                         style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px', marginBottom: '0.5rem' }}
                       />
                       <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
