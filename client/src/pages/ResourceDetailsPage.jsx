@@ -131,6 +131,7 @@ const ResourceDetailsPage = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [forceDelete, setForceDelete] = useState(false);
 
   // Close calendar popover on outside click
   useEffect(() => {
