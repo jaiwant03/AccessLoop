@@ -69,105 +69,107 @@ function AppContent() {
         onClose={() => setIsChatbotOpen(false)}
       />
 
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/resources/:id" element={<ResourceDetailsPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+      <ErrorBoundary>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route path="/resources/:id" element={<ResourceDetailsPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-        {/* Authenticated Routes */}
-        <Route
-          path="/bookings/:id"
-          element={
-            <ProtectedRoute>
-              <BookingDetailsPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/incidents"
-          element={
-            <ProtectedRoute>
-              <IncidentCenterPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/incidents/:id"
-          element={
-            <ProtectedRoute>
-              <IncidentCenterPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Authenticated Routes */}
+          <Route
+            path="/bookings/:id"
+            element={
+              <ProtectedRoute>
+                <BookingDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/incidents"
+            element={
+              <ProtectedRoute>
+                <IncidentCenterPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/incidents/:id"
+            element={
+              <ProtectedRoute>
+                <IncidentCenterPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Role Dashboards */}
-        <Route
-          path="/dashboard/borrower"
-          element={
-            <ProtectedRoute allowedRoles={['borrower', 'admin', 'manager', 'owner']}>
-              <BorrowerDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/owner"
-          element={
-            <ProtectedRoute allowedRoles={['owner', 'admin', 'manager']}>
-              <OwnerDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/manager"
-          element={
-            <ProtectedRoute allowedRoles={['manager', 'admin']}>
-              <ManagerDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard/admin"
-          element={
-            <ProtectedRoute allowedRoles={['admin']}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* Role Dashboards */}
+          <Route
+            path="/dashboard/borrower"
+            element={
+              <ProtectedRoute allowedRoles={['borrower', 'admin', 'manager', 'owner']}>
+                <BorrowerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/owner"
+            element={
+              <ProtectedRoute allowedRoles={['owner', 'admin', 'manager']}>
+                <OwnerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/manager"
+            element={
+              <ProtectedRoute allowedRoles={['manager', 'admin']}>
+                <ManagerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Resource Creation */}
-        <Route
-          path="/resources/new"
-          element={
-            <ProtectedRoute allowedRoles={['owner', 'admin', 'manager']}>
-              <AddResourcePage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Resource Creation */}
+          <Route
+            path="/resources/new"
+            element={
+              <ProtectedRoute allowedRoles={['owner', 'admin', 'manager']}>
+                <AddResourcePage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Audit Logs */}
-        <Route
-          path="/audit-logs"
-          element={
-            <ProtectedRoute allowedRoles={['admin', 'manager']}>
-              <AuditLogPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Audit Logs */}
+          <Route
+            path="/audit-logs"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'manager']}>
+                <AuditLogPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </ErrorBoundary>
 
       <Footer />
     </div>
