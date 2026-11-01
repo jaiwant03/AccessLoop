@@ -625,11 +625,40 @@ const ResourceDetailsPage = () => {
 
             {/* Header Information */}
             <div style={{ marginBottom: '2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
-                <span className="badge badge-green">{resource.category}</span>
-                <span className="badge badge-gray">{resource.resourceType}</span>
-                <span className="badge badge-blue">Condition: {resource.condition}</span>
-                <span className="badge badge-gray">Capacity: {resource.quantity} unit(s)</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span className="badge badge-green">{resource.category}</span>
+                  <span className="badge badge-gray">{resource.resourceType}</span>
+                  <span className="badge badge-blue">Condition: {resource.condition}</span>
+                  <span className="badge badge-gray">Capacity: {resource.quantity} unit(s)</span>
+                </div>
+
+                {/* Owner & Manager Action: Delete mistakenly created resource */}
+                {isOwner && (
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(true)}
+                    className="btn btn-secondary btn-sm"
+                    style={{
+                      color: '#DC2626',
+                      borderColor: '#FECACA',
+                      backgroundColor: '#FEF2F2',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      fontWeight: 700,
+                      fontSize: '0.825rem',
+                      borderRadius: '8px',
+                      padding: '0.4rem 0.85rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                    }}
+                    title="Delete mistakenly created resource"
+                  >
+                    <Trash2 size={14} />
+                    <span>Delete Resource</span>
+                  </button>
+                )}
               </div>
 
               <h1 style={{ fontSize: '2.15rem', marginBottom: '0.75rem', lineHeight: 1.25, letterSpacing: '-0.03em' }}>
