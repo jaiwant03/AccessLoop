@@ -250,8 +250,8 @@ const BookingDetailsPage = () => {
         evidenceImages: [
           booking.checkOut?.returnPhotos?.[0] ||
             booking.checkIn?.initialPhotos?.[0] ||
-            'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80',
-        ],
+            '',
+        ].filter(Boolean),
       });
       setShowIncidentModal(false);
       setActionSuccess('Incident report filed. Staff will investigate with human oversight.');
