@@ -69,6 +69,23 @@ const OwnerDashboard = () => {
     }
   };
 
+  const confirmDeleteResource = async () => {
+    if (!resourceToDelete) return;
+    setDeleteLoading(true);
+    setDeleteError('');
+    try {
+      await api.delete(`/resources/${resourceToDelete._id}`);
+      setResourceToDelete(null);
+      await fetchOwnerData();
+    } catch (err) {
+      setDeleteError(
+        err.response?.data?.message || 'Failed to delete resource. Please review active bookings.'
+      );
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return (
     <div className="main-content">
       <div className="app-container">
