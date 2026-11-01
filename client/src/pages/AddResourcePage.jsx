@@ -63,14 +63,12 @@ const AddResourcePage = () => {
     isPaid: false,
     hourlyFee: 0,
     cancellationPolicy: 'Free cancellation up to 2 hours before scheduled slot.',
-    imageUrl: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '',
     tags: '',
   });
 
   const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(
-    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80'
-  );
+  const [imagePreview, setImagePreview] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
