@@ -70,13 +70,15 @@ const OwnerDashboard = () => {
     }
   };
 
-  const confirmDeleteResource = async () => {
+  const confirmDeleteResource = async (overrideForce) => {
     if (!resourceToDelete) return;
+    const shouldForce = typeof overrideForce === 'boolean' ? overrideForce : forceDelete;
     setDeleteLoading(true);
     setDeleteError('');
     try {
-      await api.delete(`/resources/${resourceToDelete._id}`);
+      await api.delete(`/resources/${resourceToDelete._id}${shouldForce ? '?force=true' : ''}`);
       setResourceToDelete(null);
+      setForceDelete(false);
       await fetchOwnerData();
     } catch (err) {
       setDeleteError(
