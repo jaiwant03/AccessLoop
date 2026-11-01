@@ -34,6 +34,7 @@ const ManagerDashboard = () => {
   const [resourceToDelete, setResourceToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState('');
+  const [forceDelete, setForceDelete] = useState(false);
 
   const fetchManagerData = async () => {
     setLoading(true);
