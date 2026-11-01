@@ -269,31 +269,109 @@ const ResourceDetailsPage = () => {
           <div>
             {/* Gallery */}
             <div style={{ marginBottom: '2rem' }}>
-              <div
-                style={{
-                  height: '400px',
-                  backgroundColor: '#F1F5F9',
-                  borderRadius: 'var(--radius-xl)',
-                  overflow: 'hidden',
-                  border: '1px solid #E2E8F0',
-                  marginBottom: '1rem',
-                  boxShadow: 'var(--shadow-sm)',
-                }}
-              >
-                <img
-                  src={
-                    resolveImageUrl(resource.images && resource.images[selectedImage]) ||
-                    'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80'
-                  }
-                  alt={resource.name}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src =
-                      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80';
-                  }}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
+              {(() => {
+                const currentImg = resource.images && resource.images[selectedImage];
+                const hasUploadedImage = Boolean(
+                  currentImg &&
+                    typeof currentImg === 'string' &&
+                    currentImg.trim() !== '' &&
+                    !imgFailed
+                );
+
+                return (
+                  <div
+                    style={{
+                      height: '400px',
+                      backgroundColor: '#F8FAFC',
+                      borderRadius: 'var(--radius-xl)',
+                      overflow: 'hidden',
+                      border: '1px solid #E2E8F0',
+                      marginBottom: '1rem',
+                      boxShadow: 'var(--shadow-sm)',
+                      position: 'relative',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {hasUploadedImage ? (
+                      <img
+                        src={resolveImageUrl(currentImg)}
+                        alt={resource.name}
+                        onError={() => setImgFailed(true)}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div style={{ textAlign: 'center', padding: '2rem', color: '#64748B' }}>
+                        <div
+                          style={{
+                            width: '64px',
+                            height: '64px',
+                            borderRadius: '16px',
+                            backgroundColor: '#F1F5F9',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#94A3B8',
+                            margin: '0 auto 1rem',
+                          }}
+                        >
+                          <Camera size={32} />
+                        </div>
+                        <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.25rem' }}>
+                          No photograph uploaded
+                        </h4>
+                        <p style={{ fontSize: '0.85rem', color: '#64748B', maxWidth: '340px', margin: '0 auto' }}>
+                          Only custodian-uploaded photos are displayed for this resource.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Owner/Custodian Photo Upload & Update Action */}
+                    {isOwner && (
+                      <label
+                        style={{
+                          position: 'absolute',
+                          bottom: '1rem',
+                          right: '1rem',
+                          backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                          backdropFilter: 'blur(8px)',
+                          color: '#FFFFFF',
+                          padding: '0.55rem 1rem',
+                          borderRadius: '10px',
+                          fontSize: '0.825rem',
+                          fontWeight: 600,
+                          cursor: updatingPhoto ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                          transition: 'all 0.2s ease',
+                          border: '1px solid rgba(255,255,255,0.2)',
+                          userSelect: 'none',
+                        }}
+                      >
+                        <UploadCloud size={15} />
+                        <span>
+                          {updatingPhoto
+                            ? 'Processing photo...'
+                            : hasUploadedImage
+                            ? 'Change Photograph'
+                            : 'Upload Resource Photo'}
+                        </span>
+                        <input
+                          ref={resourcePhotoInputRef}
+                          type="file"
+                          accept="image/png,image/jpeg,image/jpg,image/webp"
+                          style={{ display: 'none' }}
+                          onChange={handleResourcePhotoUpload}
+                          disabled={updatingPhoto}
+                        />
+                      </label>
+                    )}
+                  </div>
+                );
+              })()}
 
               {resource.images && resource.images.length > 1 && (
                 <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -312,16 +390,8 @@ const ResourceDetailsPage = () => {
                       }}
                     >
                       <img
-                        src={
-                          resolveImageUrl(img) ||
-                          'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80'
-                        }
+                        src={resolveImageUrl(img)}
                         alt=""
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80';
-                        }}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     </div>
