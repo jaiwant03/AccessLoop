@@ -670,7 +670,7 @@ const ResourceDetailsPage = () => {
 
           {/* ================= RIGHT COLUMN: BOOKING & ELIGIBILITY ================= */}
           <div style={{ position: 'sticky', top: '90px' }}>
-            <div className="al-card" style={{ boxShadow: 'var(--shadow-md)' }}>
+            <div className="al-card" style={{ boxShadow: 'var(--shadow-md)', borderRadius: '16px' }}>
               {/* Pricing & Deposit Bar */}
               <div
                 style={{
@@ -683,57 +683,113 @@ const ResourceDetailsPage = () => {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700, letterSpacing: '0.04em' }}>
+                  <div style={{ fontSize: '0.725rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700, letterSpacing: '0.05em' }}>
                     Access Fee
                   </div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#16A34A', letterSpacing: '-0.02em' }}>
+                  <div style={{ fontSize: '1.85rem', fontWeight: 800, color: '#16A34A', letterSpacing: '-0.02em' }}>
                     {resource.isPaid ? `₹${resource.hourlyFee}/hr` : 'Free'}
                   </div>
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700, letterSpacing: '0.04em' }}>
+                  <div style={{ fontSize: '0.725rem', textTransform: 'uppercase', color: '#64748B', fontWeight: 700, letterSpacing: '0.05em' }}>
                     Security Deposit
                   </div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0F172A' }}>
+                  <div style={{ fontSize: '1.15rem', fontWeight: 700, color: '#0F172A' }}>
                     {resource.securityDeposit > 0 ? `₹${resource.securityDeposit}` : 'None Required'}
                   </div>
                 </div>
               </div>
 
-              {/* Eligibility Checklist */}
+              {/* Eligibility Assessment Card */}
               <div
                 style={{
                   backgroundColor: '#F8FAFC',
-                  borderRadius: '10px',
-                  padding: '1rem',
+                  borderRadius: '12px',
+                  padding: '1.1rem',
                   border: '1px solid #E2E8F0',
-                  marginBottom: '1.5rem',
+                  marginBottom: '1.35rem',
                 }}
               >
-                <div style={{ fontSize: '0.785rem', fontWeight: 700, textTransform: 'uppercase', color: '#475569', marginBottom: '0.65rem', letterSpacing: '0.04em' }}>
-                  Your Eligibility Assessment
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#334155', letterSpacing: '0.04em' }}>
+                    Eligibility Standing
+                  </div>
+                  <span
+                    className={`badge ${isVerifiedUser && fairScoreOk ? 'badge-green' : 'badge-amber'}`}
+                    style={{ fontSize: '0.72rem', padding: '0.2rem 0.55rem' }}
+                  >
+                    {isVerifiedUser && fairScoreOk ? 'Eligible to Reserve' : 'Action Required'}
+                  </span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', fontSize: '0.8rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#475569' }}>Verified Academic Status:</span>
-                    <strong style={{ color: isVerifiedUser ? '#16A34A' : '#EF4444' }}>
-                      {isVerifiedUser ? 'Verified ✓' : 'Pending Verification'}
-                    </strong>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                  {/* Academic Status */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.825rem' }}>
+                    <span style={{ color: '#475569' }}>Academic Verification:</span>
+                    {isVerifiedUser ? (
+                      <span style={{ color: '#16A34A', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <CheckCircle2 size={14} />
+                        <span>Verified Account</span>
+                      </span>
+                    ) : (
+                      <Link
+                        to="/profile"
+                        style={{
+                          color: '#D97706',
+                          fontWeight: 700,
+                          textDecoration: 'none',
+                          fontSize: '0.785rem',
+                          backgroundColor: '#FEF3C7',
+                          padding: '0.2rem 0.55rem',
+                          borderRadius: '6px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.25rem',
+                        }}
+                      >
+                        <span>Pending Verification</span>
+                        <ChevronRight size={12} />
+                      </Link>
+                    )}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ color: '#475569' }}>Fair Usage Standing (Min {resource.eligibilityRequirements?.minFairUsageScore || 50}):</span>
-                    <strong style={{ color: fairScoreOk ? '#16A34A' : '#EF4444' }}>
-                      {user?.fairUsageScore || 100}/100 {fairScoreOk ? '✓' : '✕'}
-                    </strong>
+                  {/* Fair Usage Score */}
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.825rem', marginBottom: '0.35rem' }}>
+                      <span style={{ color: '#475569' }}>
+                        Fair Usage Standing (Min {resource.eligibilityRequirements?.minFairUsageScore || 50}):
+                      </span>
+                      <strong style={{ color: fairScoreOk ? '#16A34A' : '#EF4444' }}>
+                        {user?.fairUsageScore || 100}/100 {fairScoreOk ? '✓' : '✕'}
+                      </strong>
+                    </div>
+                    <div
+                      style={{
+                        height: '5px',
+                        width: '100%',
+                        backgroundColor: '#E2E8F0',
+                        borderRadius: '3px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <div
+                        style={{
+                          height: '100%',
+                          width: `${Math.min(user?.fairUsageScore || 100, 100)}%`,
+                          backgroundColor: fairScoreOk ? '#22C55E' : '#EF4444',
+                          borderRadius: '3px',
+                          transition: 'width 0.3s ease',
+                        }}
+                      />
+                    </div>
                   </div>
 
+                  {/* Training Requirement if any */}
                   {trainingRequired && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.825rem' }}>
                       <span style={{ color: '#475569' }}>Safety Certification:</span>
-                      <strong style={{ color: '#D97706' }}>
+                      <strong style={{ color: '#D97706', fontSize: '0.785rem' }}>
                         Required ({resource.eligibilityRequirements?.trainingCourseName || 'Shop Orientation'})
                       </strong>
                     </div>
@@ -743,90 +799,661 @@ const ResourceDetailsPage = () => {
 
               {/* Booking Request Form */}
               <form onSubmit={handleBookingSubmit}>
-                <div className="form-group">
-                  <label className="form-label">Reservation Date</label>
-                  <input
-                    type="date"
-                    className="form-input"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    required
-                  />
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div>
-                    <label className="form-label">Start Time</label>
-                    <input
-                      type="time"
-                      className="form-input"
-                      value={startTimeStr}
-                      onChange={(e) => setStartTimeStr(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label">End Time</label>
-                    <input
-                      type="time"
-                      className="form-input"
-                      value={endTimeStr}
-                      onChange={(e) => setEndTimeStr(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">
-                    Purpose of Use <span style={{ color: '#EF4444' }}>*</span>
+                {/* Modern Interactive Date Picker */}
+                <div className="form-group" style={{ position: 'relative', marginBottom: '1.25rem' }} ref={datePickerRef}>
+                  <label className="form-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.45rem' }}>
+                    <span style={{ fontWeight: 600, color: '#0F172A' }}>Reservation Date</span>
+                    <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 700 }}>
+                      {startDate === getTodayISO() ? 'Today' : startDate === getTomorrowISO() ? 'Tomorrow' : ''}
+                    </span>
                   </label>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowDatePicker((prev) => !prev)}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 0.95rem',
+                      backgroundColor: '#FFFFFF',
+                      border: showDatePicker ? '1.5px solid #22C55E' : '1px solid #E2E8F0',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      boxShadow: showDatePicker ? '0 0 0 3px rgba(34, 197, 94, 0.18)' : 'var(--shadow-xs)',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div
+                        style={{
+                          width: '36px',
+                          height: '36px',
+                          borderRadius: '8px',
+                          backgroundColor: '#ECFDF5',
+                          color: '#16A34A',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Calendar size={18} />
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.925rem', fontWeight: 700, color: '#0F172A' }}>
+                          {formatDisplayDate(startDate)}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                          Click to select a date
+                        </div>
+                      </div>
+                    </div>
+                    <ChevronDown
+                      size={18}
+                      color="#64748B"
+                      style={{
+                        transform: showDatePicker ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.2s ease',
+                      }}
+                    />
+                  </button>
+
+                  {/* Modern Date Picker Popover */}
+                  {showDatePicker && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 'calc(100% + 6px)',
+                        left: 0,
+                        right: 0,
+                        zIndex: 60,
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: '16px',
+                        border: '1px solid #E2E8F0',
+                        boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1)',
+                        padding: '1.15rem',
+                      }}
+                    >
+                      {/* Quick Preset Buttons */}
+                      <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.9rem', flexWrap: 'wrap' }}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const today = getTodayISO();
+                            setStartDate(today);
+                            setCalendarViewDate(new Date());
+                            setShowDatePicker(false);
+                          }}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            border: startDate === getTodayISO() ? '1.5px solid #16A34A' : '1px solid #E2E8F0',
+                            backgroundColor: startDate === getTodayISO() ? '#ECFDF5' : '#F8FAFC',
+                            color: startDate === getTodayISO() ? '#15803D' : '#475569',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Today
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const tom = getTomorrowISO();
+                            setStartDate(tom);
+                            const d = new Date();
+                            d.setDate(d.getDate() + 1);
+                            setCalendarViewDate(d);
+                            setShowDatePicker(false);
+                          }}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            border: startDate === getTomorrowISO() ? '1.5px solid #16A34A' : '1px solid #E2E8F0',
+                            backgroundColor: startDate === getTomorrowISO() ? '#ECFDF5' : '#F8FAFC',
+                            color: startDate === getTomorrowISO() ? '#15803D' : '#475569',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Tomorrow
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date();
+                            d.setDate(d.getDate() + 2);
+                            const iso = toDateStringISO(d);
+                            setStartDate(iso);
+                            setCalendarViewDate(d);
+                            setShowDatePicker(false);
+                          }}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            border: '1px solid #E2E8F0',
+                            backgroundColor: '#F8FAFC',
+                            color: '#475569',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          +2 Days
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const d = new Date();
+                            const day = d.getDay();
+                            const diff = (8 - day) % 7 || 7;
+                            d.setDate(d.getDate() + diff);
+                            const iso = toDateStringISO(d);
+                            setStartDate(iso);
+                            setCalendarViewDate(d);
+                            setShowDatePicker(false);
+                          }}
+                          style={{
+                            padding: '0.35rem 0.65rem',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            border: '1px solid #E2E8F0',
+                            backgroundColor: '#F8FAFC',
+                            color: '#475569',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Next Mon
+                        </button>
+                      </div>
+
+                      {/* Calendar Month & Navigation Header */}
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginBottom: '0.85rem',
+                          padding: '0 0.25rem',
+                        }}
+                      >
+                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0F172A' }}>
+                          {calendarViewDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.35rem' }}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const prev = new Date(calendarViewDate);
+                              prev.setMonth(prev.getMonth() - 1);
+                              setCalendarViewDate(prev);
+                            }}
+                            style={{
+                              width: '28px',
+                              height: '28px',
+                              borderRadius: '6px',
+                              border: '1px solid #E2E8F0',
+                              backgroundColor: '#FFFFFF',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: '#475569',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <ChevronLeft size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const next = new Date(calendarViewDate);
+                              next.setMonth(next.getMonth() + 1);
+                              setCalendarViewDate(next);
+                            }}
+                            style={{
+                              width: '28px',
+                              height: '28px',
+                              borderRadius: '6px',
+                              border: '1px solid #E2E8F0',
+                              backgroundColor: '#FFFFFF',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: '#475569',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <ChevronRight size={16} />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Weekdays header */}
+                      <div
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(7, 1fr)',
+                          textAlign: 'center',
+                          marginBottom: '0.45rem',
+                        }}
+                      >
+                        {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((w) => (
+                          <span
+                            key={w}
+                            style={{
+                              fontSize: '0.725rem',
+                              fontWeight: 700,
+                              color: '#94A3B8',
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            {w}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Days Grid */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.25rem' }}>
+                        {calendarDays.map((cell, idx) => {
+                          let bg = 'transparent';
+                          let color = cell.isCurrentMonth ? '#0F172A' : '#CBD5E1';
+                          let border = '1px solid transparent';
+                          let cursor = cell.isPast ? 'not-allowed' : 'pointer';
+
+                          if (cell.isSelected) {
+                            bg = 'linear-gradient(135deg, #22C55E 0%, #16A34A 100%)';
+                            color = '#FFFFFF';
+                          } else if (cell.isToday) {
+                            border = '1.5px solid #22C55E';
+                            color = '#15803D';
+                            bg = '#F0FDF4';
+                          }
+
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              disabled={cell.isPast}
+                              onClick={() => {
+                                if (cell.isPast) return;
+                                setStartDate(cell.dateString);
+                                setShowDatePicker(false);
+                              }}
+                              style={{
+                                height: '34px',
+                                borderRadius: '8px',
+                                border,
+                                background: bg,
+                                color,
+                                fontSize: '0.825rem',
+                                fontWeight: cell.isSelected || cell.isToday ? 700 : 500,
+                                cursor,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                position: 'relative',
+                                opacity: cell.isPast ? 0.35 : 1,
+                                transition: 'all 0.1s ease',
+                              }}
+                            >
+                              <span>{cell.dayNumber}</span>
+                              {cell.hasBooking && !cell.isSelected && (
+                                <span
+                                  style={{
+                                    position: 'absolute',
+                                    bottom: '3px',
+                                    width: '4px',
+                                    height: '4px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#F59E0B',
+                                  }}
+                                />
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Footer summary */}
+                      <div
+                        style={{
+                          marginTop: '0.85rem',
+                          paddingTop: '0.75rem',
+                          borderTop: '1px solid #F1F5F9',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          fontSize: '0.75rem',
+                        }}
+                      >
+                        <div style={{ color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#F59E0B' }} />
+                          <span>Reserved slots</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setShowDatePicker(false)}
+                          className="btn btn-secondary btn-sm"
+                          style={{ padding: '0.25rem 0.75rem', fontSize: '0.75rem' }}
+                        >
+                          Done
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Modern Time Selector (Start & End Time) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.85rem', marginBottom: '0.75rem' }}>
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 600, color: '#0F172A', marginBottom: '0.35rem' }}>
+                      Start Time
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <select
+                        className="form-input"
+                        value={startTimeStr}
+                        onChange={(e) => handleStartTimeChange(e.target.value)}
+                        style={{
+                          height: '44px',
+                          fontWeight: 600,
+                          paddingLeft: '2.25rem',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {TIME_OPTIONS.slice(0, -1).map((t) => (
+                          <option key={t} value={t}>
+                            {formatTime12Hour(t)}
+                          </option>
+                        ))}
+                      </select>
+                      <Clock
+                        size={16}
+                        color="#16A34A"
+                        style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="form-label" style={{ fontWeight: 600, color: '#0F172A', marginBottom: '0.35rem' }}>
+                      End Time
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <select
+                        className="form-input"
+                        value={endTimeStr}
+                        onChange={(e) => {
+                          setEndTimeStr(e.target.value);
+                          setBookingError('');
+                        }}
+                        style={{
+                          height: '44px',
+                          fontWeight: 600,
+                          paddingLeft: '2.25rem',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {TIME_OPTIONS.filter((t) => t > startTimeStr).map((t) => {
+                          const diff = (new Date(`2000-01-01T${t}`) - new Date(`2000-01-01T${startTimeStr}`)) / (1000 * 60 * 60);
+                          return (
+                            <option key={t} value={t}>
+                              {formatTime12Hour(t)} ({diff} hr{diff > 1 ? 's' : ''})
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <Clock
+                        size={16}
+                        color="#16A34A"
+                        style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Duration Preset Pills */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                    <span style={{ fontSize: '0.725rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Quick Duration
+                    </span>
+                    <span style={{ fontSize: '0.725rem', color: '#16A34A', fontWeight: 600 }}>
+                      Limit: {resource.minBookingDurationHours || 1}–{resource.maxBookingDurationHours || 8} hrs
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                    {allowedDurations.map((dur) => {
+                      const isSelected = Math.abs(durationHours - dur) < 0.05;
+                      return (
+                        <button
+                          key={dur}
+                          type="button"
+                          onClick={() => handleApplyDuration(dur)}
+                          style={{
+                            border: isSelected ? '1.5px solid #16A34A' : '1px solid #E2E8F0',
+                            backgroundColor: isSelected ? '#DCFCE7' : '#FFFFFF',
+                            color: isSelected ? '#15803D' : '#475569',
+                            fontWeight: isSelected ? 700 : 600,
+                            fontSize: '0.785rem',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '20px',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                            boxShadow: isSelected ? '0 2px 6px rgba(34, 197, 94, 0.2)' : 'none',
+                          }}
+                        >
+                          {dur} {dur === 1 ? 'hr' : 'hrs'}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Duration Exceeded Warning & Auto-Fix Banner */}
+                {durationExceedsMax && (
+                  <div
+                    style={{
+                      padding: '0.85rem 1rem',
+                      backgroundColor: '#FEF2F2',
+                      border: '1px solid #FECACA',
+                      borderRadius: '12px',
+                      marginBottom: '1.15rem',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '0.75rem',
+                    }}
+                  >
+                    <AlertTriangle size={18} color="#DC2626" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#991B1B', marginBottom: '0.2rem' }}>
+                        Duration Exceeds Allowed Limit
+                      </div>
+                      <div style={{ fontSize: '0.775rem', color: '#B91C1C', marginBottom: '0.5rem', lineHeight: 1.4 }}>
+                        Selected duration is {durationHours} hours, but this resource permits a maximum of {resource.maxBookingDurationHours} hour(s).
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyDuration(resource.maxBookingDurationHours)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                          padding: '0.35rem 0.75rem',
+                          backgroundColor: '#DC2626',
+                          color: '#FFFFFF',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          borderRadius: '8px',
+                          border: 'none',
+                          cursor: 'pointer',
+                          boxShadow: '0 2px 6px rgba(220, 38, 38, 0.25)',
+                        }}
+                      >
+                        <Zap size={13} />
+                        <span>Adjust to {resource.maxBookingDurationHours} hour(s)</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Duration Below Min Warning */}
+                {durationBelowMin && (
+                  <div
+                    style={{
+                      padding: '0.85rem 1rem',
+                      backgroundColor: '#FFFBEB',
+                      border: '1px solid #FDE68A',
+                      borderRadius: '12px',
+                      marginBottom: '1.15rem',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '0.75rem',
+                    }}
+                  >
+                    <AlertCircle size={18} color="#D97706" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.825rem', fontWeight: 700, color: '#92400E', marginBottom: '0.2rem' }}>
+                        Minimum Reservation Requirement
+                      </div>
+                      <div style={{ fontSize: '0.775rem', color: '#B45309', marginBottom: '0.5rem' }}>
+                        Minimum reservation duration is {resource.minBookingDurationHours} hour(s).
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyDuration(resource.minBookingDurationHours)}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.35rem',
+                          padding: '0.35rem 0.75rem',
+                          backgroundColor: '#D97706',
+                          color: '#FFFFFF',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          borderRadius: '8px',
+                          border: 'none',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        <Zap size={13} />
+                        <span>Adjust to {resource.minBookingDurationHours} hour(s)</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Real-Time Duration & Cost Summary */}
+                {!durationExceedsMax && !durationBelowMin && durationHours > 0 && (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0.75rem 0.95rem',
+                      backgroundColor: '#F0FDF4',
+                      borderRadius: '10px',
+                      fontSize: '0.825rem',
+                      marginBottom: '1.25rem',
+                      border: '1px solid rgba(34, 197, 94, 0.25)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <Clock size={16} color="#16A34A" />
+                      <span style={{ color: '#15803D', fontWeight: 600 }}>Total Duration:</span>
+                      <strong style={{ color: '#16A34A', fontSize: '0.9rem' }}>
+                        {durationHours} hr{durationHours > 1 ? 's' : ''}
+                      </strong>
+                    </div>
+                    <span
+                      className="badge badge-green"
+                      style={{ fontSize: '0.75rem', padding: '0.2rem 0.55rem', fontWeight: 700 }}
+                    >
+                      ✓ Within limits
+                    </span>
+                  </div>
+                )}
+
+                {/* Purpose of Use Section with Quick Presets */}
+                <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.45rem' }}>
+                    <label className="form-label" style={{ margin: 0, fontWeight: 600, color: '#0F172A' }}>
+                      Purpose of Use <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <span style={{ fontSize: '0.72rem', color: '#94A3B8' }}>
+                      {purpose.length}/300
+                    </span>
+                  </div>
+
+                  {/* Quick Purpose Chips */}
+                  <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.55rem' }}>
+                    {[
+                      { label: 'Academic Project', text: 'Enrolled coursework and academic degree project.' },
+                      { label: 'Lab Experiment', text: 'Faculty-guided laboratory experiment and data collection.' },
+                      { label: 'Campus Media', text: 'Campus media production and documentation project.' },
+                      { label: 'Workshop Session', text: 'Hands-on practical training and workshop session.' },
+                    ].map((preset) => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => setPurpose(preset.text)}
+                        style={{
+                          padding: '0.25rem 0.55rem',
+                          fontSize: '0.725rem',
+                          fontWeight: 600,
+                          borderRadius: '6px',
+                          border: '1px solid #E2E8F0',
+                          backgroundColor: purpose === preset.text ? '#ECFDF5' : '#F8FAFC',
+                          color: purpose === preset.text ? '#15803D' : '#64748B',
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        + {preset.label}
+                      </button>
+                    ))}
+                  </div>
+
                   <textarea
                     rows={3}
                     className="form-textarea"
                     placeholder="Specify project title, research objective, or class experiment..."
                     value={purpose}
+                    maxLength={300}
                     onChange={(e) => setPurpose(e.target.value)}
                     required
+                    style={{ resize: 'vertical', borderRadius: '10px' }}
                   />
-                  <div className="form-hint">
+                  <div className="form-hint" style={{ marginTop: '0.35rem', fontSize: '0.75rem', color: '#94A3B8' }}>
                     Resource custodians review your stated purpose before approving.
                   </div>
                 </div>
 
-                {/* Duration summary */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.65rem 0.85rem',
-                    backgroundColor: '#ECFDF5',
-                    borderRadius: '8px',
-                    fontSize: '0.825rem',
-                    marginBottom: '1.25rem',
-                    border: '1px solid rgba(34, 197, 94, 0.25)',
-                  }}
-                >
-                  <span style={{ color: '#15803D', fontWeight: 600 }}>Total Duration:</span>
-                  <strong style={{ color: '#16A34A' }}>{durationHours} hour(s)</strong>
-                </div>
-
-                {/* Error Banner */}
-                {bookingError && (
+                {/* API / Server Error Banner */}
+                {bookingError && !durationExceedsMax && !durationBelowMin && (
                   <div
                     style={{
-                      padding: '0.75rem',
+                      padding: '0.85rem 1rem',
                       backgroundColor: '#FEF2F2',
-                      border: '1px solid rgba(239, 68, 68, 0.4)',
-                      borderRadius: '8px',
+                      border: '1px solid #FECACA',
+                      borderRadius: '10px',
                       color: '#B91C1C',
-                      fontSize: '0.8rem',
+                      fontSize: '0.825rem',
                       marginBottom: '1rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
                     }}
                   >
-                    {bookingError}
+                    <AlertCircle size={16} color="#DC2626" style={{ flexShrink: 0 }} />
+                    <span>{bookingError}</span>
                   </div>
                 )}
 
@@ -834,25 +1461,31 @@ const ResourceDetailsPage = () => {
                 {conflictDetected && (
                   <div
                     style={{
-                      padding: '1rem',
+                      padding: '1.15rem',
                       backgroundColor: '#FAF5FF',
                       border: '1px solid #DDD6FE',
-                      borderRadius: '8px',
-                      marginBottom: '1rem',
+                      borderRadius: '12px',
+                      marginBottom: '1.25rem',
                       textAlign: 'center',
                     }}
                   >
-                    <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#6D28D9', marginBottom: '0.35rem' }}>
-                      Slot Conflicted - Join Waiting List
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#6D28D9', marginBottom: '0.35rem' }}>
+                      Slot Conflicted — Join Waiting List
                     </div>
-                    <p style={{ fontSize: '0.775rem', color: '#6B7280', marginBottom: '0.75rem' }}>
+                    <p style={{ fontSize: '0.785rem', color: '#6B7280', marginBottom: '0.85rem', lineHeight: 1.45 }}>
                       You will be automatically queued. If the current reservation is cancelled, you will receive priority notification.
                     </p>
                     <button
                       type="button"
                       onClick={handleJoinWaitingList}
                       className="btn btn-sm"
-                      style={{ backgroundColor: '#8B5CF6', color: '#FFF' }}
+                      style={{
+                        backgroundColor: '#8B5CF6',
+                        color: '#FFF',
+                        borderRadius: '8px',
+                        padding: '0.5rem 1rem',
+                        fontWeight: 600,
+                      }}
                     >
                       <Users size={14} />
                       <span>Join Queue Position</span>
@@ -863,38 +1496,66 @@ const ResourceDetailsPage = () => {
                 {waitingListSuccess && (
                   <div
                     style={{
-                      padding: '0.75rem',
+                      padding: '0.85rem 1rem',
                       backgroundColor: '#ECFDF5',
                       color: '#15803D',
-                      borderRadius: '8px',
+                      borderRadius: '10px',
                       fontSize: '0.825rem',
                       marginBottom: '1rem',
                       fontWeight: 600,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
                     }}
                   >
-                    {waitingListSuccess}
+                    <CheckCircle2 size={16} color="#16A34A" />
+                    <span>{waitingListSuccess}</span>
                   </div>
                 )}
 
+                {/* Modern Primary Submit Action */}
                 <button
                   type="submit"
-                  disabled={bookingLoading}
+                  disabled={bookingLoading || durationExceedsMax || durationBelowMin}
                   className="btn btn-primary"
-                  style={{ width: '100%', height: '48px', fontSize: '0.975rem', gap: '0.5rem' }}
+                  style={{
+                    width: '100%',
+                    height: '50px',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    gap: '0.5rem',
+                    borderRadius: '12px',
+                    boxShadow: durationExceedsMax || durationBelowMin ? 'none' : '0 4px 14px rgba(34, 197, 94, 0.35)',
+                    opacity: durationExceedsMax || durationBelowMin ? 0.6 : 1,
+                    cursor: durationExceedsMax || durationBelowMin ? 'not-allowed' : 'pointer',
+                  }}
                 >
                   {bookingLoading ? (
                     'Evaluating Request...'
                   ) : (
                     <>
                       <span>Submit Booking Request</span>
-                      <ArrowRight size={17} />
+                      <ArrowRight size={18} />
                     </>
                   )}
                 </button>
               </form>
 
-              <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.75rem', color: '#94A3B8' }}>
-                Protected by 5-Step Handover & Return Verification Protocol
+              {/* Trust Badge */}
+              <div
+                style={{
+                  textAlign: 'center',
+                  marginTop: '1.15rem',
+                  fontSize: '0.75rem',
+                  color: '#94A3B8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.35rem',
+                }}
+              >
+                <ShieldCheck size={14} color="#16A34A" />
+                <span>Protected by 5-Step Handover & Return Verification Protocol</span>
               </div>
             </div>
           </div>
