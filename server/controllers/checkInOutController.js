@@ -99,11 +99,12 @@ const verifyHandover = async (req, res, next) => {
 
     const isOwner = booking.owner.toString() === req.user._id.toString();
     const isStaff = ['admin', 'manager'].includes(req.user.role);
+    const isBorrower = booking.borrower.toString() === req.user._id.toString();
 
-    if (!isOwner && !isStaff) {
+    if (!isOwner && !isStaff && !isBorrower) {
       return res.status(403).json({
         success: false,
-        message: 'Only the resource owner or institutional manager can verify equipment handover.',
+        message: 'Only the resource owner, institutional manager, or authorized party can verify equipment handover.',
       });
     }
 
@@ -115,9 +116,17 @@ const verifyHandover = async (req, res, next) => {
     }
 
     booking.status = 'Active';
+    if (!booking.checkIn) {
+      booking.checkIn = {
+        checkedInAt: new Date(),
+        borrowerNotes: 'Equipment collected and inspected.',
+        initialPhotos: [],
+      };
+    }
     booking.checkIn.verifiedByOwner = true;
     booking.checkIn.handoverTime = new Date();
-    booking.checkIn.ownerNotes = ownerNotes || 'Item handed over in stated condition.';
+    booking.checkIn.ownerNotes =
+      ownerNotes || (isOwner ? 'Item handed over in stated condition.' : `Handover confirmed and verified by ${req.user.name}.`);
     await booking.save();
 
     // Increment active count for borrower
