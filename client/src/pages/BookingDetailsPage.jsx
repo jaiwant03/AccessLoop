@@ -16,6 +16,10 @@ import {
   Repeat,
   ArrowLeft,
   User,
+  Package,
+  Users,
+  Award,
+  ExternalLink,
 } from 'lucide-react';
 import api, { resolveImageUrl, DEFAULT_AVATAR } from '../services/api';
 import { useAuth } from '../context/AuthContext';
