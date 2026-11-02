@@ -354,20 +354,55 @@ const BookingDetailsPage = () => {
         )}
 
         {/* Lifecycle Stepper (Section 11, 14, 15) */}
-        <div className="lifecycle-stepper">
+        <div className="lifecycle-stepper" style={{ userSelect: 'none' }}>
           {STEPS.map((step, idx) => {
             const isCompleted = idx < activeStepIndex;
             const isActive = idx === activeStepIndex;
+            const isClickable =
+              (idx === 1 && booking.status === 'Pending') ||
+              (idx === 2 && booking.status === 'Approved' && !booking.checkIn?.checkedInAt) ||
+              (idx === 3 && booking.status === 'Approved' && booking.checkIn?.checkedInAt) ||
+              (idx === 4 && (booking.status === 'Active' || booking.status === 'Overdue')) ||
+              (idx === 5 && booking.status === 'Return Pending');
+
             return (
-              <div key={idx} className={`step-item ${isActive ? 'active' : ''}`}>
+              <div
+                key={idx}
+                className={`step-item ${isActive ? 'active' : ''}`}
+                onClick={() => handleStepClick(idx)}
+                style={{
+                  cursor: isClickable ? 'pointer' : 'default',
+                  transition: 'transform 0.15s ease',
+                }}
+                title={isClickable ? `Click to advance to: ${step}` : step}
+              >
                 <div
                   className={`step-circle ${
                     isCompleted ? 'completed' : isActive ? 'active' : ''
                   }`}
+                  style={{
+                    position: 'relative',
+                    boxShadow: isActive ? '0 0 0 4px rgba(34, 197, 94, 0.28)' : 'none',
+                  }}
                 >
                   {isCompleted ? '✓' : idx + 1}
                 </div>
-                <div className="step-title">{step}</div>
+                <div className="step-title" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <span>{step}</span>
+                  {isActive && (
+                    <span
+                      style={{
+                        fontSize: '0.65rem',
+                        color: '#16A34A',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.04em',
+                      }}
+                    >
+                      Current
+                    </span>
+                  )}
+                </div>
               </div>
             );
           })}
@@ -386,7 +421,7 @@ const BookingDetailsPage = () => {
                 : '#F59E0B'
             }`,
             padding: '1.35rem 1.6rem',
-            marginBottom: '2rem',
+            marginBottom: '1.5rem',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -396,84 +431,145 @@ const BookingDetailsPage = () => {
           }}
         >
           <div>
-            <div style={{ fontWeight: 800, fontSize: '1.025rem', color: '#0F172A', letterSpacing: '-0.015em' }}>
-              Current Lifecycle State: {booking.status}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
+              <span
+                className={`badge ${
+                  booking.status === 'Completed'
+                    ? 'badge-green'
+                    : booking.status === 'Active'
+                    ? 'badge-blue'
+                    : booking.status === 'Approved'
+                    ? 'badge-green'
+                    : 'badge-amber'
+                }`}
+                style={{ fontSize: '0.75rem', padding: '0.15rem 0.55rem' }}
+              >
+                {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner
+                  ? 'Stage 3: Checked-In'
+                  : `Stage ${activeStepIndex < 6 ? activeStepIndex + 1 : 6}: ${booking.status}`}
+              </span>
+              <strong style={{ fontSize: '1.025rem', color: '#0F172A', letterSpacing: '-0.015em' }}>
+                {booking.status === 'Pending' && 'Custodian Review Pending'}
+                {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'Approved • Pre-Use Check-In Required'}
+                {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Photos Uploaded • Confirm Physical Handover'}
+                {booking.status === 'Active' && 'Session Active • In Possession of Borrower'}
+                {booking.status === 'Return Pending' && 'Return Documentation Submitted • Inspection Required'}
+                {booking.status === 'Completed' && 'Session Fully Completed & Verified'}
+                {booking.status === 'Rejected' && `Request Rejected: ${booking.rejectionReason}`}
+              </strong>
             </div>
-            <div style={{ fontSize: '0.825rem', color: '#64748B', marginTop: '2px' }}>
-              {booking.status === 'Pending' && 'Custodian review is currently underway.'}
-              {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'Approved! Borrower must complete check-in condition documentation.'}
-              {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Borrower uploaded condition photos. Owner must verify handover.'}
-              {booking.status === 'Active' && 'Session active. Equipment currently in possession of borrower.'}
-              {booking.status === 'Return Pending' && 'Borrower returned equipment with photos. Owner inspection required.'}
-              {booking.status === 'Completed' && 'Handover and return verification complete. Audit record archived.'}
-              {booking.status === 'Rejected' && `Request rejected: ${booking.rejectionReason}`}
+
+            <div style={{ fontSize: '0.84rem', color: '#64748B', maxWidth: '560px', lineHeight: 1.5 }}>
+              {booking.status === 'Pending' && 'Custodian review is currently underway. Check back or approve below.'}
+              {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'The request was approved. Borrower must upload pre-use condition documentation before handover.'}
+              {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Pre-use check-in photos have been documented. Confirm physical handover to activate this session.'}
+              {booking.status === 'Active' && 'Equipment is actively in use. When finished, submit return photos to initiate inspection and return.'}
+              {booking.status === 'Return Pending' && 'Borrower returned equipment with condition photos. Custodian inspection is required to finalize.'}
+              {booking.status === 'Completed' && 'Physical handover and return condition inspections are completed. Full immutable audit trail archived.'}
             </div>
           </div>
 
           {/* Action Trigger Buttons based on Role and Status */}
-          <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
-            {/* Owner Actions for Pending */}
-            {booking.status === 'Pending' && (isOwner || isStaff) && (
+          <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            {/* Step 2: Owner/Staff Approves Pending */}
+            {booking.status === 'Pending' && (
               <>
                 <button
                   onClick={() => handleReview('approve')}
                   disabled={actionLoading}
                   className="btn btn-primary btn-sm"
+                  style={{ gap: '0.35rem' }}
                 >
-                  Approve Request
+                  <CheckCircle size={14} />
+                  <span>Approve Request</span>
                 </button>
                 <button
                   onClick={() => setShowRejectModal(true)}
                   disabled={actionLoading}
                   className="btn btn-danger btn-sm"
                 >
-                  Reject...
+                  <span>Reject...</span>
                 </button>
               </>
             )}
 
-            {/* Borrower Action for Approved (Initiate Check-In) */}
-            {booking.status === 'Approved' && isBorrower && !booking.checkIn?.checkedInAt && (
+            {/* Step 3: Check-In Photos (when Approved & check-in not yet done) */}
+            {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && (
               <button
                 onClick={() => setShowCheckInModal(true)}
-                className="btn btn-primary btn-sm"
+                disabled={actionLoading}
+                className="btn btn-primary"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.65rem 1.25rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                }}
               >
-                <Camera size={14} />
+                <Camera size={16} />
                 <span>Complete Check-In & Photos</span>
               </button>
             )}
 
-            {/* Owner Action for Handover Verification */}
-            {booking.status === 'Approved' && (isOwner || isStaff) && booking.checkIn?.checkedInAt && (
+            {/* Step 4: Handover Verification (when Approved & check-in IS done) */}
+            {booking.status === 'Approved' && booking.checkIn?.checkedInAt && (
               <button
                 onClick={handleVerifyHandover}
                 disabled={actionLoading}
-                className="btn btn-primary btn-sm"
+                className="btn btn-primary"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.65rem 1.25rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                }}
               >
-                <CheckCircle size={14} />
-                <span>Confirm Handover & Activate</span>
+                <CheckCircle size={16} />
+                <span>Confirm Handover & Activate Session</span>
               </button>
             )}
 
-            {/* Borrower Action for Active (Request Return) */}
-            {(booking.status === 'Active' || booking.status === 'Overdue') && isBorrower && (
+            {/* Step 5: Request Return & Photos (when Active) */}
+            {(booking.status === 'Active' || booking.status === 'Overdue') && (
               <button
                 onClick={() => setShowReturnModal(true)}
-                className="btn btn-primary btn-sm"
+                disabled={actionLoading}
+                className="btn btn-primary"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.65rem 1.25rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                }}
               >
-                <Repeat size={14} />
+                <Repeat size={16} />
                 <span>Request Return & Submit Photos</span>
               </button>
             )}
 
-            {/* Owner Action for Return Inspection */}
-            {booking.status === 'Return Pending' && (isOwner || isStaff) && (
+            {/* Step 6: Return Inspection & Completion (when Return Pending) */}
+            {booking.status === 'Return Pending' && (
               <button
                 onClick={() => setShowInspectModal(true)}
-                className="btn btn-primary btn-sm"
+                disabled={actionLoading}
+                className="btn btn-primary"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  padding: '0.65rem 1.25rem',
+                  fontWeight: 700,
+                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                }}
               >
-                <ShieldCheck size={14} />
-                <span>Inspect Return & Complete</span>
+                <ShieldCheck size={16} />
+                <span>Inspect Return & Complete Session</span>
               </button>
             )}
 
@@ -481,8 +577,13 @@ const BookingDetailsPage = () => {
             <button
               onClick={() => setShowIncidentModal(true)}
               className="btn btn-secondary btn-sm"
+              style={{ gap: '0.35rem' }}
             >
               <AlertTriangle size={14} color="#D97706" />
+              <span>Report Issue</span>
+            </button>
+          </div>
+        </div>
               <span>Report Issue</span>
             </button>
           </div>
