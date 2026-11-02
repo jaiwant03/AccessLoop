@@ -57,6 +57,14 @@ const createBooking = async (req, res, next) => {
       });
     }
 
+    // Only borrower or general members may submit borrowing requests
+    if (req.user.role === 'owner') {
+      return res.status(403).json({
+        success: false,
+        message: 'Resource Custodian accounts cannot submit borrowing requests. Please use a Borrower account to reserve campus resources.',
+      });
+    }
+
     const durationHours = (end - start) / (1000 * 60 * 60);
 
     // Validate min/max duration
