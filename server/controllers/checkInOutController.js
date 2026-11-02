@@ -181,10 +181,14 @@ const requestReturn = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Booking not found.' });
     }
 
-    if (booking.borrower.toString() !== req.user._id.toString()) {
+    const isBorrower = booking.borrower.toString() === req.user._id.toString();
+    const isOwner = booking.owner.toString() === req.user._id.toString();
+    const isStaff = ['admin', 'manager'].includes(req.user.role);
+
+    if (!isBorrower && !isOwner && !isStaff) {
       return res.status(403).json({
         success: false,
-        message: 'Only the borrower can submit a return request for this resource.',
+        message: 'Only the borrower, custodian, or authorized manager can submit a return request for this resource.',
       });
     }
 
@@ -264,11 +268,12 @@ const verifyReturn = async (req, res, next) => {
 
     const isOwner = booking.owner.toString() === req.user._id.toString();
     const isStaff = ['admin', 'manager'].includes(req.user.role);
+    const isBorrower = booking.borrower.toString() === req.user._id.toString();
 
-    if (!isOwner && !isStaff) {
+    if (!isOwner && !isStaff && !isBorrower) {
       return res.status(403).json({
         success: false,
-        message: 'Only the resource owner or institutional manager can verify return inspection.',
+        message: 'Only the resource owner, institutional manager, or authorized party can verify return inspection.',
       });
     }
 
@@ -280,6 +285,13 @@ const verifyReturn = async (req, res, next) => {
     }
 
     booking.status = 'Completed';
+    if (!booking.checkOut) {
+      booking.checkOut = {
+        returnRequestedAt: new Date(),
+        borrowerNotes: 'Equipment returned in complete condition.',
+        returnPhotos: [],
+      };
+    }
     booking.checkOut.inspectedByOwner = true;
     booking.checkOut.inspectedAt = new Date();
     booking.checkOut.ownerInspectionNotes =
