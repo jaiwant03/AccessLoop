@@ -357,9 +357,12 @@ const Navbar = ({ onOpenChatbot }) => {
               </div>
 
               {/* User Profile Avatar / Menu */}
-              <div style={{ position: 'relative' }}>
+              <div ref={profileRef} style={{ position: 'relative' }}>
                 <button
-                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                  onClick={() => {
+                    setShowProfileDropdown((prev) => !prev);
+                    setShowNotifDropdown(false);
+                  }}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
