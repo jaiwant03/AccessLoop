@@ -357,102 +357,78 @@ const BookingDetailsPage = () => {
           </div>
         )}
 
-        {/* Lifecycle Stepper (Section 11, 14, 15) */}
-        <div className="lifecycle-stepper" style={{ userSelect: 'none' }}>
-          {STEPS.map((step, idx) => {
-            const isCompleted = idx < activeStepIndex;
-            const isActive = idx === activeStepIndex;
-            const isClickable =
-              (idx === 1 && booking.status === 'Pending') ||
-              (idx === 2 && booking.status === 'Approved' && !booking.checkIn?.checkedInAt) ||
-              (idx === 3 && booking.status === 'Approved' && booking.checkIn?.checkedInAt) ||
-              (idx === 4 && (booking.status === 'Active' || booking.status === 'Overdue')) ||
-              (idx === 5 && booking.status === 'Return Pending');
-
-            return (
-              <div
-                key={idx}
-                className={`step-item ${isActive ? 'active' : ''}`}
-                onClick={() => handleStepClick(idx)}
-                style={{
-                  cursor: isClickable ? 'pointer' : 'default',
-                  transition: 'transform 0.15s ease',
-                }}
-                title={isClickable ? `Click to advance to: ${step}` : step}
-              >
-                <div
-                  className={`step-circle ${
-                    isCompleted ? 'completed' : isActive ? 'active' : ''
-                  }`}
-                  style={{
-                    position: 'relative',
-                    boxShadow: isActive ? '0 0 0 4px rgba(34, 197, 94, 0.28)' : 'none',
-                  }}
-                >
-                  {isCompleted ? '✓' : idx + 1}
-                </div>
-                <div className="step-title" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <span>{step}</span>
-                  {isActive && (
-                    <span
-                      style={{
-                        fontSize: '0.65rem',
-                        color: '#16A34A',
-                        fontWeight: 700,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.04em',
-                      }}
-                    >
-                      Current
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Dynamic Action Callout Bar */}
+        {/* Unified Hero Lifecycle Card */}
         <div
           className="al-card"
           style={{
             backgroundColor: '#FFFFFF',
-            borderLeft: `4px solid ${
-              booking.status === 'Completed' || booking.status === 'Active' || booking.status === 'Approved'
-                ? '#22C55E'
-                : booking.status === 'Rejected'
-                ? '#EF4444'
-                : '#F59E0B'
-            }`,
-            padding: '1.35rem 1.6rem',
-            marginBottom: '1.5rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            boxShadow: 'var(--shadow-sm)',
+            borderRadius: '16px',
+            border: '1px solid #E2E8F0',
+            boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
+            padding: 0,
+            marginBottom: '2rem',
+            overflow: 'hidden',
           }}
         >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '4px' }}>
-              <span
-                className={`badge ${
-                  booking.status === 'Completed'
-                    ? 'badge-green'
-                    : booking.status === 'Active'
-                    ? 'badge-blue'
-                    : booking.status === 'Approved'
-                    ? 'badge-green'
-                    : 'badge-amber'
-                }`}
-                style={{ fontSize: '0.75rem', padding: '0.15rem 0.55rem' }}
+          {/* Top Section: Stage Headline & Action CTAs */}
+          <div
+            style={{
+              padding: '1.5rem 1.75rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '1.25rem',
+              borderLeft: `5px solid ${
+                booking.status === 'Completed' || booking.status === 'Active' || booking.status === 'Approved'
+                  ? '#16A34A'
+                  : booking.status === 'Rejected'
+                  ? '#EF4444'
+                  : '#F59E0B'
+              }`,
+              backgroundColor: '#FFFFFF',
+            }}
+          >
+            <div style={{ flex: '1 1 320px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+                <span
+                  className={`badge ${
+                    booking.status === 'Completed'
+                      ? 'badge-green'
+                      : booking.status === 'Active'
+                      ? 'badge-blue'
+                      : booking.status === 'Approved'
+                      ? 'badge-green'
+                      : booking.status === 'Rejected'
+                      ? 'badge-red'
+                      : 'badge-amber'
+                  }`}
+                  style={{ fontSize: '0.725rem', padding: '0.2rem 0.65rem', fontWeight: 700 }}
+                >
+                  {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner
+                    ? 'Stage 3 of 6 • Checked-In'
+                    : `Stage ${activeStepIndex < 6 ? activeStepIndex + 1 : 6} of 6 • ${booking.status}`}
+                </span>
+                <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 500 }}>
+                  {booking.status === 'Completed' && 'All checkpoints verified'}
+                  {booking.status === 'Active' && 'Session in progress'}
+                  {booking.status === 'Pending' && 'Awaiting custodian action'}
+                  {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'Action required from borrower'}
+                  {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Action required from custodian'}
+                  {booking.status === 'Return Pending' && 'Inspection required from custodian'}
+                </span>
+              </div>
+
+              <h2
+                style={{
+                  fontSize: '1.25rem',
+                  fontWeight: 800,
+                  color: '#0F172A',
+                  letterSpacing: '-0.02em',
+                  margin: 0,
+                  lineHeight: 1.3,
+                }}
               >
-                {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner
-                  ? 'Stage 3: Checked-In'
-                  : `Stage ${activeStepIndex < 6 ? activeStepIndex + 1 : 6}: ${booking.status}`}
-              </span>
-              <strong style={{ fontSize: '1.025rem', color: '#0F172A', letterSpacing: '-0.015em' }}>
                 {booking.status === 'Pending' && 'Custodian Review Pending'}
                 {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'Approved • Pre-Use Check-In Required'}
                 {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Photos Uploaded • Confirm Physical Handover'}
@@ -460,405 +436,501 @@ const BookingDetailsPage = () => {
                 {booking.status === 'Return Pending' && 'Return Documentation Submitted • Inspection Required'}
                 {booking.status === 'Completed' && 'Session Fully Completed & Verified'}
                 {booking.status === 'Rejected' && `Request Rejected: ${booking.rejectionReason}`}
-              </strong>
+              </h2>
+
+              <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.35rem 0 0 0', lineHeight: 1.5 }}>
+                {booking.status === 'Pending' && 'Custodian review is currently underway. Check back or approve below.'}
+                {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'The request was approved. Borrower must upload pre-use condition documentation before handover.'}
+                {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Pre-use check-in photos have been documented. Confirm physical handover to activate this session.'}
+                {booking.status === 'Active' && 'Equipment is actively in use. When finished, submit return photos to initiate inspection and return.'}
+                {booking.status === 'Return Pending' && 'Borrower returned equipment with condition photos. Custodian inspection is required to finalize.'}
+                {booking.status === 'Completed' && 'Physical handover and return condition inspections are completed. Full immutable audit trail archived.'}
+              </p>
             </div>
 
-            <div style={{ fontSize: '0.84rem', color: '#64748B', maxWidth: '560px', lineHeight: 1.5 }}>
-              {booking.status === 'Pending' && 'Custodian review is currently underway. Check back or approve below.'}
-              {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && 'The request was approved. Borrower must upload pre-use condition documentation before handover.'}
-              {booking.status === 'Approved' && booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner && 'Pre-use check-in photos have been documented. Confirm physical handover to activate this session.'}
-              {booking.status === 'Active' && 'Equipment is actively in use. When finished, submit return photos to initiate inspection and return.'}
-              {booking.status === 'Return Pending' && 'Borrower returned equipment with condition photos. Custodian inspection is required to finalize.'}
-              {booking.status === 'Completed' && 'Physical handover and return condition inspections are completed. Full immutable audit trail archived.'}
-            </div>
-          </div>
+            {/* Action Trigger Buttons */}
+            <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              {/* Step 2: Owner/Staff Approves Pending */}
+              {booking.status === 'Pending' && (
+                <>
+                  <button
+                    onClick={() => handleReview('approve')}
+                    disabled={actionLoading}
+                    className="btn btn-primary btn-sm"
+                    style={{ gap: '0.4rem', fontWeight: 600 }}
+                  >
+                    <CheckCircle size={15} />
+                    <span>Approve Request</span>
+                  </button>
+                  <button
+                    onClick={() => setShowRejectModal(true)}
+                    disabled={actionLoading}
+                    className="btn btn-danger btn-sm"
+                    style={{ fontWeight: 600 }}
+                  >
+                    <span>Reject...</span>
+                  </button>
+                </>
+              )}
 
-          {/* Action Trigger Buttons based on Role and Status */}
-          <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            {/* Step 2: Owner/Staff Approves Pending */}
-            {booking.status === 'Pending' && (
-              <>
-                <button
-                  onClick={() => handleReview('approve')}
-                  disabled={actionLoading}
-                  className="btn btn-primary btn-sm"
-                  style={{ gap: '0.35rem' }}
-                >
-                  <CheckCircle size={14} />
-                  <span>Approve Request</span>
-                </button>
-                <button
-                  onClick={() => setShowRejectModal(true)}
-                  disabled={actionLoading}
-                  className="btn btn-danger btn-sm"
-                >
-                  <span>Reject...</span>
-                </button>
-              </>
-            )}
-
-            {/* Step 3: Check-In Photos (when Approved & check-in not yet done) */}
-            {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && (
-              <button
-                onClick={() => setShowCheckInModal(true)}
-                disabled={actionLoading}
-                className="btn btn-primary"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.65rem 1.25rem',
-                  fontWeight: 700,
-                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
-                }}
-              >
-                <Camera size={16} />
-                <span>Complete Check-In & Photos</span>
-              </button>
-            )}
-
-            {/* Step 4: Handover Verification (when Approved & check-in IS done) */}
-            {booking.status === 'Approved' && booking.checkIn?.checkedInAt && (
-              <button
-                onClick={handleVerifyHandover}
-                disabled={actionLoading}
-                className="btn btn-primary"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.65rem 1.25rem',
-                  fontWeight: 700,
-                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
-                }}
-              >
-                <CheckCircle size={16} />
-                <span>Confirm Handover & Activate Session</span>
-              </button>
-            )}
-
-            {/* Step 5: Request Return & Photos (when Active) */}
-            {(booking.status === 'Active' || booking.status === 'Overdue') && (
-              <button
-                onClick={() => setShowReturnModal(true)}
-                disabled={actionLoading}
-                className="btn btn-primary"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.65rem 1.25rem',
-                  fontWeight: 700,
-                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
-                }}
-              >
-                <Repeat size={16} />
-                <span>Request Return & Submit Photos</span>
-              </button>
-            )}
-
-            {/* Step 6: Return Inspection & Completion (when Return Pending) */}
-            {booking.status === 'Return Pending' && (
-              <button
-                onClick={() => setShowInspectModal(true)}
-                disabled={actionLoading}
-                className="btn btn-primary"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  padding: '0.65rem 1.25rem',
-                  fontWeight: 700,
-                  boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
-                }}
-              >
-                <ShieldCheck size={16} />
-                <span>Inspect Return & Complete Session</span>
-              </button>
-            )}
-
-            {/* Incident Filing */}
-            <button
-              onClick={() => setShowIncidentModal(true)}
-              className="btn btn-secondary btn-sm"
-              style={{ gap: '0.35rem' }}
-            >
-              <AlertTriangle size={14} color="#D97706" />
-              <span>Report Issue</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Interactive Handover & Return Checkpoints Card */}
-        <div
-          className="al-card"
-          style={{
-            backgroundColor: '#F8FAFC',
-            border: '1px solid #E2E8F0',
-            borderRadius: '12px',
-            padding: '1.25rem 1.5rem',
-            marginBottom: '2rem',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <ShieldCheck size={18} color="#16A34A" />
-              <strong style={{ fontSize: '0.95rem', color: '#0F172A' }}>
-                5-Step Trusted Lifecycle Checkpoints
-              </strong>
-            </div>
-            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
-              Click any active checkpoint button below to advance to the next step
-            </span>
-          </div>
-
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
-              gap: '0.75rem',
-            }}
-          >
-            {/* 1. Request */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '8px',
-                padding: '0.85rem',
-                border: '1px solid #E2E8F0',
-                borderLeft: '3px solid #16A34A',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#16A34A' }}>1. Request</span>
-                <span className="badge badge-green" style={{ fontSize: '0.65rem', padding: '1px 5px' }}>✓ Done</span>
-              </div>
-              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Borrower Submitted</div>
-              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>Stated use & slot reserved</div>
-            </div>
-
-            {/* 2. Approval */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '8px',
-                padding: '0.85rem',
-                border: '1px solid #E2E8F0',
-                borderLeft: `3px solid ${booking.status !== 'Pending' ? '#16A34A' : '#F59E0B'}`,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.status !== 'Pending' ? '#16A34A' : '#F59E0B' }}>
-                  2. Approval
-                </span>
-                <span className={`badge ${booking.status !== 'Pending' ? 'badge-green' : 'badge-amber'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
-                  {booking.status !== 'Pending' ? '✓ Approved' : 'Pending'}
-                </span>
-              </div>
-              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Custodian Verification</div>
-              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>Clearance & schedule checked</div>
-            </div>
-
-            {/* 3. Pre-Use Check-In */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '8px',
-                padding: '0.85rem',
-                border: '1px solid #E2E8F0',
-                borderLeft: `3px solid ${booking.checkIn?.checkedInAt ? '#16A34A' : activeStepIndex === 1 ? '#22C55E' : '#CBD5E1'}`,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.checkIn?.checkedInAt ? '#16A34A' : '#334155' }}>
-                  3. Check-In
-                </span>
-                <span className={`badge ${booking.checkIn?.checkedInAt ? 'badge-green' : activeStepIndex === 1 ? 'badge-blue' : 'badge-gray'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
-                  {booking.checkIn?.checkedInAt ? '✓ Uploaded' : activeStepIndex === 1 ? 'Action Needed' : 'Upcoming'}
-                </span>
-              </div>
-              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Pre-Use Photo Proof</div>
-              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>
-                {booking.checkIn?.checkedInAt ? 'Initial condition saved' : 'Borrower documents condition'}
-              </div>
-              {!booking.checkIn?.checkedInAt && booking.status === 'Approved' && (
+              {/* Step 3: Check-In Photos */}
+              {booking.status === 'Approved' && !booking.checkIn?.checkedInAt && (
                 <button
                   onClick={() => setShowCheckInModal(true)}
-                  className="btn btn-primary btn-sm"
-                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem' }}
+                  disabled={actionLoading}
+                  className="btn btn-primary"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.65rem 1.25rem',
+                    fontWeight: 700,
+                    boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                  }}
                 >
-                  Upload Photos
+                  <Camera size={16} />
+                  <span>Complete Check-In & Photos</span>
                 </button>
               )}
-            </div>
 
-            {/* 4. Handover & Active */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '8px',
-                padding: '0.85rem',
-                border: '1px solid #E2E8F0',
-                borderLeft: `3px solid ${booking.checkIn?.verifiedByOwner || booking.status === 'Active' || booking.status === 'Return Pending' || booking.status === 'Completed' ? '#16A34A' : activeStepIndex === 2 ? '#22C55E' : '#CBD5E1'}`,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.status === 'Active' || booking.status === 'Completed' || booking.status === 'Return Pending' ? '#16A34A' : '#334155' }}>
-                  4. Handover
-                </span>
-                <span className={`badge ${booking.status === 'Active' || booking.status === 'Completed' || booking.status === 'Return Pending' ? 'badge-green' : activeStepIndex === 2 ? 'badge-blue' : 'badge-gray'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
-                  {booking.status === 'Active' || booking.status === 'Completed' || booking.status === 'Return Pending' ? '✓ Active' : activeStepIndex === 2 ? 'Action Needed' : 'Upcoming'}
-                </span>
-              </div>
-              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Physical Handover</div>
-              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>
-                {booking.status === 'Active' ? 'Session active • in use' : 'Confirm equipment collection'}
-              </div>
+              {/* Step 4: Handover Verification */}
               {booking.status === 'Approved' && booking.checkIn?.checkedInAt && (
                 <button
                   onClick={handleVerifyHandover}
                   disabled={actionLoading}
-                  className="btn btn-primary btn-sm"
-                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem', backgroundColor: '#16A34A' }}
+                  className="btn btn-primary"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.65rem 1.25rem',
+                    fontWeight: 700,
+                    boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                  }}
                 >
-                  Confirm Handover
+                  <CheckCircle size={16} />
+                  <span>Confirm Handover & Activate Session</span>
                 </button>
               )}
-            </div>
 
-            {/* 5. Return & Final Inspection */}
-            <div
-              style={{
-                backgroundColor: '#FFFFFF',
-                borderRadius: '8px',
-                padding: '0.85rem',
-                border: '1px solid #E2E8F0',
-                borderLeft: `3px solid ${booking.status === 'Completed' ? '#16A34A' : booking.status === 'Return Pending' ? '#F59E0B' : '#CBD5E1'}`,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.status === 'Completed' ? '#16A34A' : '#334155' }}>
-                  5. Return
-                </span>
-                <span className={`badge ${booking.status === 'Completed' ? 'badge-green' : booking.status === 'Return Pending' ? 'badge-amber' : 'badge-gray'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
-                  {booking.status === 'Completed' ? '✓ Completed' : booking.status === 'Return Pending' ? 'Inspect Now' : 'Upcoming'}
-                </span>
-              </div>
-              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Return & Sign-Off</div>
-              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>
-                {booking.status === 'Completed' ? 'Condition signed off' : booking.status === 'Return Pending' ? 'Photos submitted' : 'Final return inspection'}
-              </div>
+              {/* Step 5: Request Return */}
               {(booking.status === 'Active' || booking.status === 'Overdue') && (
                 <button
                   onClick={() => setShowReturnModal(true)}
-                  className="btn btn-primary btn-sm"
-                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem' }}
+                  disabled={actionLoading}
+                  className="btn btn-primary"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.65rem 1.25rem',
+                    fontWeight: 700,
+                    boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                  }}
                 >
-                  Submit Return
+                  <Repeat size={16} />
+                  <span>Request Return & Submit Photos</span>
                 </button>
               )}
+
+              {/* Step 6: Return Inspection */}
               {booking.status === 'Return Pending' && (
                 <button
                   onClick={() => setShowInspectModal(true)}
-                  className="btn btn-primary btn-sm"
-                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem', backgroundColor: '#16A34A' }}
+                  disabled={actionLoading}
+                  className="btn btn-primary"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.65rem 1.25rem',
+                    fontWeight: 700,
+                    boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                  }}
                 >
-                  Inspect & Complete
+                  <ShieldCheck size={16} />
+                  <span>Inspect Return & Complete Session</span>
                 </button>
               )}
+
+              {/* Incident Filing */}
+              <button
+                onClick={() => setShowIncidentModal(true)}
+                className="btn btn-secondary btn-sm"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.55rem 0.95rem',
+                  fontWeight: 600,
+                  color: '#475569',
+                  border: '1px solid #CBD5E1',
+                  backgroundColor: '#FFFFFF',
+                }}
+              >
+                <AlertTriangle size={15} color="#D97706" />
+                <span>Report Issue</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Bottom Section: Connected Horizontal Progress Stepper */}
+          <div
+            style={{
+              backgroundColor: '#F8FAFC',
+              borderTop: '1px solid #E2E8F0',
+              padding: '1.5rem 1.75rem 1.75rem',
+              overflowX: 'auto',
+            }}
+          >
+            <div
+              style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'flex-start',
+                justifyContent: 'space-between',
+                minWidth: '580px',
+              }}
+            >
+              {/* Background gray connecting line */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '19px',
+                  left: '35px',
+                  right: '35px',
+                  height: '3px',
+                  backgroundColor: '#E2E8F0',
+                  zIndex: 0,
+                  borderRadius: '2px',
+                }}
+              />
+              {/* Active green progress connecting line */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '19px',
+                  left: '35px',
+                  width: `calc(${Math.min(100, Math.max(0, (Math.min(activeStepIndex, STEPS.length - 1) / (STEPS.length - 1)) * 100))}% - 70px)`,
+                  height: '3px',
+                  backgroundColor: '#16A34A',
+                  zIndex: 0,
+                  borderRadius: '2px',
+                  transition: 'width 0.4s ease',
+                }}
+              />
+
+              {STEPS.map((step, idx) => {
+                const isCompleted = idx < activeStepIndex;
+                const isActive = idx === activeStepIndex;
+                const isClickable =
+                  (idx === 1 && booking.status === 'Pending') ||
+                  (idx === 2 && booking.status === 'Approved' && !booking.checkIn?.checkedInAt) ||
+                  (idx === 3 && booking.status === 'Approved' && booking.checkIn?.checkedInAt) ||
+                  (idx === 4 && (booking.status === 'Active' || booking.status === 'Overdue')) ||
+                  (idx === 5 && booking.status === 'Return Pending');
+
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => handleStepClick(idx)}
+                    style={{
+                      position: 'relative',
+                      zIndex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      width: '15%',
+                      minWidth: '75px',
+                      cursor: isClickable ? 'pointer' : 'default',
+                      userSelect: 'none',
+                    }}
+                    title={isClickable ? `Click to advance: ${step}` : step}
+                  >
+                    {/* Circle Node */}
+                    <div
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        backgroundColor: isCompleted ? '#16A34A' : isActive ? '#22C55E' : '#FFFFFF',
+                        color: isCompleted || isActive ? '#FFFFFF' : '#94A3B8',
+                        border: isCompleted
+                          ? '2px solid #16A34A'
+                          : isActive
+                          ? '2px solid #22C55E'
+                          : '2px solid #CBD5E1',
+                        boxShadow: isActive
+                          ? '0 0 0 4px rgba(34, 197, 94, 0.25)'
+                          : isCompleted
+                          ? '0 2px 6px rgba(22, 163, 74, 0.2)'
+                          : 'none',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      {isCompleted ? <CheckCircle2 size={18} color="#FFFFFF" strokeWidth={2.5} /> : idx + 1}
+                    </div>
+
+                    {/* Step Label */}
+                    <div style={{ marginTop: '0.6rem', textAlign: 'center' }}>
+                      <div
+                        style={{
+                          fontSize: '0.8rem',
+                          fontWeight: isActive ? 700 : isCompleted ? 600 : 500,
+                          color: isActive ? '#0F172A' : isCompleted ? '#16A34A' : '#64748B',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {step}
+                      </div>
+                      {isActive && (
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            marginTop: '2px',
+                            fontSize: '0.625rem',
+                            fontWeight: 700,
+                            color: '#16A34A',
+                            backgroundColor: '#DCFCE7',
+                            padding: '1px 6px',
+                            borderRadius: '10px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.04em',
+                          }}
+                        >
+                          Current
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
         {/* Booking Details Grid */}
         <div className="responsive-booking-grid">
-          {/* Left Column: Resource & Schedule */}
-          <div>
-            <div className="al-card" style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
-                Resource Information
-              </h3>
+          {/* Left Column: Resource & Condition Documentation */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Resource Information Card */}
+            <div
+              className="al-card"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '16px',
+                border: '1px solid #E2E8F0',
+                padding: '1.5rem',
+                boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '8px',
+                      backgroundColor: '#ECFDF5',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Package size={17} color="#16A34A" />
+                  </div>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                    Resource Information
+                  </h3>
+                </div>
+                <span className="badge badge-gray" style={{ fontSize: '0.72rem', letterSpacing: '0.02em' }}>
+                  Asset ID: {booking.resource?._id?.slice(-6).toUpperCase() || 'ITEM'}
+                </span>
+              </div>
 
+              {/* Asset Snapshot Row */}
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.25rem' }}>
                 {resolveImageUrl(booking.resource?.images?.[0]) ? (
                   <img
                     src={resolveImageUrl(booking.resource?.images?.[0])}
-                    alt=""
+                    alt={booking.resource?.name || 'Resource'}
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
-                    style={{ width: '90px', height: '70px', borderRadius: '8px', objectFit: 'cover' }}
+                    style={{
+                      width: '92px',
+                      height: '74px',
+                      borderRadius: '10px',
+                      objectFit: 'cover',
+                      border: '1px solid #E2E8F0',
+                      flexShrink: 0,
+                    }}
                   />
                 ) : (
                   <div
                     style={{
-                      width: '90px',
-                      height: '70px',
-                      borderRadius: '8px',
+                      width: '92px',
+                      height: '74px',
+                      borderRadius: '10px',
                       backgroundColor: '#F1F5F9',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       color: '#94A3B8',
                       flexShrink: 0,
+                      border: '1px solid #E2E8F0',
                     }}
                   >
                     <Camera size={24} />
                   </div>
                 )}
-                <div>
-                  <h4 style={{ fontSize: '1rem', color: '#17231C' }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', margin: '0 0 0.35rem 0' }}>
                     {booking.resource?.name}
                   </h4>
-                  <div style={{ fontSize: '0.8rem', color: '#64748B' }}>
-                    {booking.resource?.category} • {booking.resource?.location}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
+                    <span className="badge badge-gray" style={{ fontSize: '0.72rem' }}>
+                      {booking.resource?.category}
+                    </span>
+                    <span style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <MapPin size={13} color="#94A3B8" />
+                      {booking.resource?.location}
+                    </span>
                   </div>
                   <Link
                     to={`/resources/${booking.resource?._id}`}
-                    style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}
+                    style={{
+                      fontSize: '0.775rem',
+                      color: '#16A34A',
+                      fontWeight: 600,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                      textDecoration: 'none',
+                    }}
                   >
-                    View Resource Page →
+                    <span>View Resource Page</span>
+                    <ExternalLink size={12} />
                   </Link>
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid #E5E7EB', paddingTop: '1rem' }}>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Scheduled Start</div>
-                  <strong style={{ fontSize: '0.85rem' }}>
-                    {new Date(booking.startTime).toLocaleString()}
+              {/* Schedule Details Grid */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '0.75rem',
+                  borderTop: '1px solid #F1F5F9',
+                  paddingTop: '1rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <div style={{ backgroundColor: '#F8FAFC', padding: '0.75rem 0.9rem', borderRadius: '10px', border: '1px solid #F1F5F9' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.25rem' }}>
+                    <Calendar size={13} color="#16A34A" />
+                    <span>Scheduled Start</span>
+                  </div>
+                  <strong style={{ fontSize: '0.84rem', color: '#0F172A' }}>
+                    {new Date(booking.startTime).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                   </strong>
                 </div>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Scheduled End</div>
-                  <strong style={{ fontSize: '0.85rem' }}>
-                    {new Date(booking.endTime).toLocaleString()}
+
+                <div style={{ backgroundColor: '#F8FAFC', padding: '0.75rem 0.9rem', borderRadius: '10px', border: '1px solid #F1F5F9' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.25rem' }}>
+                    <Clock size={13} color="#16A34A" />
+                    <span>Scheduled End</span>
+                  </div>
+                  <strong style={{ fontSize: '0.84rem', color: '#0F172A' }}>
+                    {new Date(booking.endTime).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                   </strong>
                 </div>
               </div>
 
-              <div style={{ marginTop: '1rem', borderTop: '1px solid #E5E7EB', paddingTop: '1rem' }}>
-                <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.25rem' }}>
+              {/* Purpose Callout Box */}
+              <div style={{ borderTop: '1px solid #F1F5F9', paddingTop: '1rem' }}>
+                <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: '0.35rem' }}>
                   Stated Purpose of Use
                 </div>
-                <p style={{ fontSize: '0.85rem', color: '#17231C', lineHeight: 1.5 }}>
+                <div
+                  style={{
+                    backgroundColor: '#F8FAFC',
+                    borderLeft: '3px solid #22C55E',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '0 8px 8px 0',
+                    fontSize: '0.85rem',
+                    color: '#334155',
+                    fontStyle: 'italic',
+                    lineHeight: 1.5,
+                  }}
+                >
                   "{booking.purpose}"
-                </p>
+                </div>
               </div>
             </div>
 
             {/* Condition Documentation Photos: Check-in vs Return */}
-            <div className="al-card">
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
-                Condition Documentation & Verification Proof
-              </h3>
+            <div
+              className="al-card"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '16px',
+                border: '1px solid #E2E8F0',
+                padding: '1.5rem',
+                boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.35rem' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    backgroundColor: '#ECFDF5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <ShieldCheck size={17} color="#16A34A" />
+                </div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                  Condition Documentation & Verification Proof
+                </h3>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: '#64748B', margin: '0 0 1.25rem 0', lineHeight: 1.4 }}>
+                Tamper-resistant visual proof captured during handover and return sign-off.
+              </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-                {/* Initial Check-In Photos */}
-                <div style={{ backgroundColor: '#F8FAF9', padding: '1rem', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.825rem', color: '#17231C', marginBottom: '0.5rem' }}>
-                    1. Check-In Condition
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                {/* 1. Initial Check-In Photos */}
+                <div
+                  style={{
+                    backgroundColor: '#F8FAFC',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #E2E8F0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#0F172A' }}>
+                      1. Check-In Condition
+                    </span>
+                    <span
+                      className={`badge ${booking.checkIn?.checkedInAt ? 'badge-green' : 'badge-gray'}`}
+                      style={{ fontSize: '0.65rem', padding: '1px 6px' }}
+                    >
+                      {booking.checkIn?.checkedInAt ? '✓ Uploaded' : 'Pending'}
+                    </span>
                   </div>
+
                   {booking.checkIn?.initialPhotos && booking.checkIn.initialPhotos.length > 0 ? (
                     <div>
                       <img
@@ -867,27 +939,84 @@ const BookingDetailsPage = () => {
                         onError={(e) => {
                           e.target.style.display = 'none';
                         }}
-                        style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px', marginBottom: '0.5rem' }}
+                        style={{
+                          width: '100%',
+                          height: '140px',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          border: '1px solid #E2E8F0',
+                          marginBottom: '0.6rem',
+                        }}
                       />
-                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                        Notes: "{booking.checkIn.borrowerNotes}"
+                      <div style={{ fontSize: '0.75rem', color: '#475569', lineHeight: 1.4, fontStyle: 'italic', marginBottom: '0.4rem' }}>
+                        "{booking.checkIn.borrowerNotes}"
                       </div>
-                      <div style={{ fontSize: '0.7rem', color: '#16A34A', fontWeight: 600, marginTop: '0.25rem' }}>
-                        Handover Confirmed: {booking.checkIn.verifiedByOwner ? '✓ Verified' : 'Awaiting sign-off'}
+                      <div
+                        style={{
+                          fontSize: '0.72rem',
+                          color: booking.checkIn.verifiedByOwner ? '#16A34A' : '#D97706',
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.3rem',
+                        }}
+                      >
+                        {booking.checkIn.verifiedByOwner ? <CheckCircle size={13} /> : <Clock size={13} />}
+                        <span>Handover: {booking.checkIn.verifiedByOwner ? 'Verified by Custodian' : 'Awaiting sign-off'}</span>
                       </div>
                     </div>
                   ) : (
-                    <div style={{ fontSize: '0.785rem', color: '#94A3B8', textAlign: 'center', padding: '2rem 0' }}>
-                      No initial check-in photos recorded yet.
+                    <div
+                      style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '2rem 1rem',
+                        textAlign: 'center',
+                        color: '#94A3B8',
+                      }}
+                    >
+                      <Camera size={26} strokeWidth={1.5} style={{ marginBottom: '0.4rem', opacity: 0.7 }} />
+                      <span style={{ fontSize: '0.78rem' }}>No check-in photo recorded</span>
                     </div>
                   )}
                 </div>
 
-                {/* Final Return Photos */}
-                <div style={{ backgroundColor: '#F8FAF9', padding: '1rem', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
-                  <div style={{ fontWeight: 700, fontSize: '0.825rem', color: '#17231C', marginBottom: '0.5rem' }}>
-                    2. Return Condition
+                {/* 2. Final Return Photos */}
+                <div
+                  style={{
+                    backgroundColor: '#F8FAFC',
+                    padding: '1rem',
+                    borderRadius: '12px',
+                    border: '1px solid #E2E8F0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.8rem', color: '#0F172A' }}>
+                      2. Return Condition
+                    </span>
+                    <span
+                      className={`badge ${
+                        booking.status === 'Completed'
+                          ? 'badge-green'
+                          : booking.status === 'Return Pending'
+                          ? 'badge-amber'
+                          : 'badge-gray'
+                      }`}
+                      style={{ fontSize: '0.65rem', padding: '1px 6px' }}
+                    >
+                      {booking.status === 'Completed'
+                        ? '✓ Verified'
+                        : booking.status === 'Return Pending'
+                        ? 'Submitted'
+                        : 'Pending'}
+                    </span>
                   </div>
+
                   {booking.checkOut?.returnPhotos && booking.checkOut.returnPhotos.length > 0 ? (
                     <div>
                       <img
@@ -896,18 +1025,47 @@ const BookingDetailsPage = () => {
                         onError={(e) => {
                           e.target.style.display = 'none';
                         }}
-                        style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: '6px', marginBottom: '0.5rem' }}
+                        style={{
+                          width: '100%',
+                          height: '140px',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          border: '1px solid #E2E8F0',
+                          marginBottom: '0.6rem',
+                        }}
                       />
-                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>
-                        Notes: "{booking.checkOut.borrowerNotes}"
+                      <div style={{ fontSize: '0.75rem', color: '#475569', lineHeight: 1.4, fontStyle: 'italic', marginBottom: '0.4rem' }}>
+                        "{booking.checkOut.borrowerNotes}"
                       </div>
-                      <div style={{ fontSize: '0.7rem', color: '#16A34A', fontWeight: 600, marginTop: '0.25rem' }}>
-                        Inspection: {booking.checkOut.conditionStatus || 'Completed'}
+                      <div
+                        style={{
+                          fontSize: '0.72rem',
+                          color: '#16A34A',
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.3rem',
+                        }}
+                      >
+                        <ShieldCheck size={13} />
+                        <span>Inspection: {booking.checkOut.conditionStatus || 'Completed'}</span>
                       </div>
                     </div>
                   ) : (
-                    <div style={{ fontSize: '0.785rem', color: '#94A3B8', textAlign: 'center', padding: '2rem 0' }}>
-                      Return documentation pending.
+                    <div
+                      style={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '2rem 1rem',
+                        textAlign: 'center',
+                        color: '#94A3B8',
+                      }}
+                    >
+                      <Clock size={26} strokeWidth={1.5} style={{ marginBottom: '0.4rem', opacity: 0.7 }} />
+                      <span style={{ fontSize: '0.78rem' }}>Return documentation pending</span>
                     </div>
                   )}
                 </div>
@@ -915,65 +1073,159 @@ const BookingDetailsPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Stakeholders & Audit Details */}
-          <div>
-            <div className="al-card" style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>
-                Parties Involved
-              </h3>
+          {/* Right Column: Stakeholders & Audit */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Parties Involved Card */}
+            <div
+              className="al-card"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '16px',
+                border: '1px solid #E2E8F0',
+                padding: '1.5rem',
+                boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    backgroundColor: '#ECFDF5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Users size={17} color="#16A34A" />
+                </div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                  Parties Involved
+                </h3>
+              </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
                 {/* Borrower */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                   <UserAvatar
                     src={booking.borrower?.avatar}
                     name={booking.borrower?.name}
-                    size={40}
-                    border="1.5px solid #22C55E"
+                    size={44}
+                    border="2px solid #22C55E"
                   />
-                  <div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Borrower</div>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#17231C' }}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Borrower
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {booking.borrower?.name}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#475569' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '1px' }}>
                       {booking.borrower?.department} • ID: {booking.borrower?.studentOrEmployeeId || 'STU-VERIFIED'}
                     </div>
                   </div>
                 </div>
 
-                {/* Owner */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderTop: '1px solid #E5E7EB', paddingTop: '1rem' }}>
+                {/* Divider */}
+                <div style={{ height: '1px', backgroundColor: '#F1F5F9' }} />
+
+                {/* Custodian / Owner */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                   <UserAvatar
                     src={booking.owner?.avatar}
                     name={booking.owner?.name}
-                    size={40}
-                    border="1.5px solid #22C55E"
+                    size={44}
+                    border="2px solid #CBD5E1"
                   />
-                  <div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Custodian / Owner</div>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#17231C' }}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
+                    <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Custodian / Asset Owner
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0F172A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {booking.owner?.name}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#475569' }}>
-                      {booking.owner?.department}
+                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '1px' }}>
+                      {booking.owner?.department || 'Resource Custodian'}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Fair Allocation Standing */}
-            <div className="al-card">
-              <h3 style={{ fontSize: '1.05rem', marginBottom: '0.75rem' }}>
-                Fair Allocation Audit Snapshot
-              </h3>
-              <div style={{ fontSize: '0.825rem', color: '#475569', lineHeight: 1.6 }}>
-                <div><strong>Score at Reservation:</strong> {booking.fairAllocationScoreAtBooking}/100</div>
-                <div><strong>Verified Status:</strong> {booking.eligibilitySnapshot?.isVerified ? 'Campus Verified' : 'Standard'}</div>
-                <div style={{ marginTop: '0.5rem', color: '#16A34A', fontSize: '0.785rem' }}>
-                  ✓ Transparent community fair share rules verified. No consecutive reservation breach detected.
+            {/* Fair Allocation Standing Card */}
+            <div
+              className="al-card"
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '16px',
+                border: '1px solid #E2E8F0',
+                padding: '1.5rem',
+                boxShadow: '0 2px 10px rgba(15, 23, 42, 0.03)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '8px',
+                    backgroundColor: '#ECFDF5',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Award size={17} color="#16A34A" />
                 </div>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                  Fair Allocation Audit Snapshot
+                </h3>
+              </div>
+
+              {/* Score Metric Tile */}
+              <div
+                style={{
+                  backgroundColor: '#F8FAFC',
+                  borderRadius: '12px',
+                  border: '1px solid #E2E8F0',
+                  padding: '1rem',
+                  marginBottom: '1rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontSize: '0.8rem', color: '#64748B', fontWeight: 600 }}>
+                    Score at Reservation
+                  </span>
+                  <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#16A34A' }}>
+                    {booking.fairAllocationScoreAtBooking || 100}/100
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8rem' }}>
+                  <span style={{ color: '#64748B' }}>Verified Campus Standing</span>
+                  <span className="badge badge-green" style={{ fontSize: '0.68rem', padding: '2px 7px' }}>
+                    {booking.eligibilitySnapshot?.isVerified ? 'Campus Verified' : 'Good Standing'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Audit Compliance Check */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.5rem',
+                  fontSize: '0.785rem',
+                  color: '#15803D',
+                  backgroundColor: '#F0FDF4',
+                  padding: '0.75rem 0.85rem',
+                  borderRadius: '8px',
+                  border: '1px solid #DCFCE7',
+                  lineHeight: 1.45,
+                }}
+              >
+                <CheckCircle2 size={16} color="#16A34A" style={{ flexShrink: 0, marginTop: '2px' }} />
+                <span>Transparent community fair share rules verified. No consecutive reservation breach detected.</span>
               </div>
             </div>
           </div>
