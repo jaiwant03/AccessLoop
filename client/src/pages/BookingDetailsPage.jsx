@@ -120,12 +120,35 @@ const BookingDetailsPage = () => {
 
   // Stepper Calculation
   let activeStepIndex = 0;
-  if (booking.status === 'Pending') activeStepIndex = 0;
-  else if (booking.status === 'Approved') activeStepIndex = 1;
-  else if (booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner) activeStepIndex = 2;
-  else if (booking.status === 'Active') activeStepIndex = 3;
-  else if (booking.status === 'Return Pending') activeStepIndex = 4;
-  else if (booking.status === 'Completed') activeStepIndex = 5;
+  if (booking.status === 'Pending') {
+    activeStepIndex = 0;
+  } else if (booking.status === 'Approved') {
+    if (booking.checkIn?.checkedInAt && !booking.checkIn?.verifiedByOwner) {
+      activeStepIndex = 2; // Step 3: Checked-In (Awaiting Handover Confirmation)
+    } else {
+      activeStepIndex = 1; // Step 2: Approved (Awaiting Borrower Check-in)
+    }
+  } else if (booking.status === 'Active') {
+    activeStepIndex = 3; // Step 4: Active
+  } else if (booking.status === 'Return Pending') {
+    activeStepIndex = 4; // Step 5: Return Pending
+  } else if (booking.status === 'Completed') {
+    activeStepIndex = 6; // All 6 steps completed!
+  }
+
+  const handleStepClick = (stepIndex) => {
+    if (stepIndex === 1 && booking.status === 'Pending') {
+      handleReview('approve');
+    } else if (stepIndex === 2 && booking.status === 'Approved' && !booking.checkIn?.checkedInAt) {
+      setShowCheckInModal(true);
+    } else if (stepIndex === 3 && booking.status === 'Approved' && booking.checkIn?.checkedInAt) {
+      handleVerifyHandover();
+    } else if (stepIndex === 4 && (booking.status === 'Active' || booking.status === 'Overdue')) {
+      setShowReturnModal(true);
+    } else if (stepIndex === 5 && booking.status === 'Return Pending') {
+      setShowInspectModal(true);
+    }
+  };
 
   // Actions
   const handleReview = async (action) => {
