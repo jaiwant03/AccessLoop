@@ -238,12 +238,13 @@ const ResourceDetailsPage = () => {
     }
   };
 
-  const isOwner =
+  const isResourceOwner =
     Boolean(user && resource?.owner) &&
-    (user._id === (resource.owner._id || resource.owner) ||
-      user.id === (resource.owner._id || resource.owner) ||
-      user.role === 'admin' ||
-      user.role === 'manager');
+    ((user._id || user.id)?.toString() === (resource.owner._id || resource.owner)?.toString());
+  const isStaff = ['admin', 'manager'].includes(user?.role);
+  const isOwner = isResourceOwner || isStaff;
+  const isBorrower = user?.role === 'borrower';
+  const canBorrow = isAuthenticated && isBorrower && !isResourceOwner;
 
   const handleDeleteResource = async (overrideForce) => {
     if (!resource) return;
