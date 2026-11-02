@@ -239,10 +239,13 @@ const Navbar = ({ onOpenChatbot }) => {
           {isAuthenticated ? (
             <>
               {/* Notification Bell */}
-              <div style={{ position: 'relative' }}>
+              <div ref={notifRef} style={{ position: 'relative' }}>
                 <button
                   className="btn btn-secondary btn-sm"
-                  onClick={() => setShowNotifDropdown(!showNotifDropdown)}
+                  onClick={() => {
+                    setShowNotifDropdown((prev) => !prev);
+                    setShowProfileDropdown(false);
+                  }}
                   style={{
                     padding: '0.5rem',
                     borderRadius: '50%',
