@@ -1892,6 +1892,8 @@ const ResourceDetailsPage = () => {
                   )}
                 </button>
               </form>
+              </>
+              )}
 
               {/* Trust Badge */}
               <div
