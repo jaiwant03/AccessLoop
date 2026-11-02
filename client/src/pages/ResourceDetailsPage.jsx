@@ -763,6 +763,296 @@ const ResourceDetailsPage = () => {
                 </div>
               </div>
 
+              {/* Conditional Role-Based Right Column */}
+              {isResourceOwner ? (
+                /* 1. Custodian / Owner View (Own Resource) */
+                <div
+                  style={{
+                    backgroundColor: '#F0FDF4',
+                    border: '1px solid #BBF7D0',
+                    borderRadius: '12px',
+                    padding: '1.35rem',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.65rem' }}>
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        backgroundColor: '#DCFCE7',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#16A34A',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <ShieldCheck size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '1rem', color: '#14532D' }}>
+                        Your Custody Listing
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600 }}>
+                        Resource Custodian Console
+                      </div>
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: '0.825rem', color: '#166534', lineHeight: 1.55, margin: '0 0 1.15rem' }}>
+                    You are the registered custodian for this equipment. Eligible students and researchers submit reservation requests here for your review and handover sign-off.
+                  </p>
+
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '0.65rem',
+                      marginBottom: '1.25rem',
+                      backgroundColor: '#FFFFFF',
+                      padding: '0.85rem',
+                      borderRadius: '10px',
+                      border: '1px solid #DCFCE7',
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>Total Units</div>
+                      <strong style={{ fontSize: '0.95rem', color: '#0F172A' }}>{resource.totalQuantity || 1} Unit(s)</strong>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>Equipment Health</div>
+                      <strong style={{ fontSize: '0.95rem', color: '#16A34A' }}>{resource.condition || 'Excellent'}</strong>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>Completed Uses</div>
+                      <strong style={{ fontSize: '0.95rem', color: '#0F172A' }}>{resource.totalBookingsCount || 0}</strong>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>Catalog Status</div>
+                      <span className="badge badge-green" style={{ fontSize: '0.7rem', padding: '2px 7px' }}>Active</span>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <Link
+                      to="/dashboard/owner"
+                      className="btn btn-primary"
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
+                        padding: '0.65rem 1rem',
+                        boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                      }}
+                    >
+                      <span>Open Custodian Dashboard</span>
+                      <ArrowRight size={15} />
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDeleteError('');
+                        setShowDeleteModal(true);
+                      }}
+                      className="btn btn-secondary btn-sm"
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        color: '#DC2626',
+                        borderColor: '#FECACA',
+                        backgroundColor: '#FEF2F2',
+                        fontWeight: 600,
+                        padding: '0.55rem 1rem',
+                      }}
+                    >
+                      <Trash2 size={14} />
+                      <span>Delete / Remove Resource</span>
+                    </button>
+                  </div>
+                </div>
+              ) : isStaff ? (
+                /* 2. Manager / Admin View */
+                <div
+                  style={{
+                    backgroundColor: '#EFF6FF',
+                    border: '1px solid #BFDBFE',
+                    borderRadius: '12px',
+                    padding: '1.35rem',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.65rem' }}>
+                    <div
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        borderRadius: '10px',
+                        backgroundColor: '#DBEAFE',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#2563EB',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Building size={20} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '1rem', color: '#1E3A8A' }}>
+                        Institutional Governance
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 600 }}>
+                        {user?.role === 'manager' ? 'Campus Institution Manager' : 'Platform Administrator'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <p style={{ fontSize: '0.825rem', color: '#1E40AF', lineHeight: 1.55, margin: '0 0 1.15rem' }}>
+                    Campus managers oversee equipment safety, dispute resolutions, and catalog governance. Booking requests are reserved for registered campus borrowers.
+                  </p>
+
+                  <div
+                    style={{
+                      backgroundColor: '#FFFFFF',
+                      padding: '0.85rem',
+                      borderRadius: '10px',
+                      border: '1px solid #DBEAFE',
+                      marginBottom: '1.25rem',
+                    }}
+                  >
+                    <div style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>Assigned Custodian</div>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0F172A', marginTop: '2px' }}>
+                      {resource.owner?.name || 'Assigned Custodian'}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
+                      {resource.owner?.department || resource.department} • {resource.location}
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <Link
+                      to="/dashboard/manager"
+                      className="btn btn-primary"
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        fontSize: '0.875rem',
+                        fontWeight: 700,
+                        padding: '0.65rem 1rem',
+                        boxShadow: '0 4px 14px rgba(37, 99, 235, 0.3)',
+                        backgroundColor: '#2563EB',
+                        borderColor: '#2563EB',
+                      }}
+                    >
+                      <span>Open Manager Console</span>
+                      <ArrowRight size={15} />
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDeleteError('');
+                        setShowDeleteModal(true);
+                      }}
+                      className="btn btn-secondary btn-sm"
+                      style={{
+                        width: '100%',
+                        justifyContent: 'center',
+                        color: '#DC2626',
+                        borderColor: '#FECACA',
+                        backgroundColor: '#FEF2F2',
+                        fontWeight: 600,
+                        padding: '0.55rem 1rem',
+                      }}
+                    >
+                      <Trash2 size={14} />
+                      <span>Decommission Resource</span>
+                    </button>
+                  </div>
+                </div>
+              ) : user?.role === 'owner' ? (
+                /* 3. Owner Viewing Another Custodian's Resource */
+                <div
+                  style={{
+                    backgroundColor: '#F8FAFC',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '12px',
+                    padding: '1.35rem',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.65rem' }}>
+                    <User size={18} color="#64748B" />
+                    <strong style={{ fontSize: '0.95rem', color: '#0F172A' }}>
+                      Custodian Account Active
+                    </strong>
+                  </div>
+                  <p style={{ fontSize: '0.825rem', color: '#64748B', lineHeight: 1.55, marginBottom: '1.15rem' }}>
+                    Your account is registered as a <strong>Resource Custodian</strong>. Booking requests are reserved for student, researcher, and faculty borrowers. To reserve equipment, please use a <strong>Borrower</strong> account.
+                  </p>
+                  <Link
+                    to="/dashboard/owner"
+                    className="btn btn-secondary btn-sm"
+                    style={{ width: '100%', justifyContent: 'center', fontWeight: 600, padding: '0.6rem 1rem' }}
+                  >
+                    <span>Go to My Custodian Dashboard</span>
+                  </Link>
+                </div>
+              ) : !isAuthenticated ? (
+                /* 4. Guest / Unauthenticated User */
+                <div
+                  style={{
+                    backgroundColor: '#F8FAFC',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '12px',
+                    padding: '1.75rem 1.25rem',
+                    textAlign: 'center',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '44px',
+                      height: '44px',
+                      borderRadius: '50%',
+                      backgroundColor: '#ECFDF5',
+                      color: '#16A34A',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 0.85rem',
+                    }}
+                  >
+                    <User size={22} />
+                  </div>
+                  <h4 style={{ fontSize: '1.05rem', color: '#0F172A', marginBottom: '0.35rem', fontWeight: 700 }}>
+                    Sign In to Reserve Equipment
+                  </h4>
+                  <p style={{ fontSize: '0.825rem', color: '#64748B', lineHeight: 1.55, marginBottom: '1.25rem', maxWidth: '320px', margin: '0 auto 1.25rem' }}>
+                    AccessLoop requires verified institutional membership to evaluate fair share allocation and safety prerequisites.
+                  </p>
+                  <Link
+                    to="/login"
+                    className="btn btn-primary"
+                    style={{
+                      width: '100%',
+                      justifyContent: 'center',
+                      fontWeight: 700,
+                      padding: '0.65rem 1rem',
+                      boxShadow: '0 4px 14px rgba(34, 197, 94, 0.35)',
+                    }}
+                  >
+                    <span>Log In as Borrower to Reserve</span>
+                    <ArrowRight size={15} />
+                  </Link>
+                </div>
+              ) : (
+                /* 5. Eligible Borrower: Render Full Booking Form */
+                <>
               {/* Eligibility Assessment Card */}
               <div
                 style={{
