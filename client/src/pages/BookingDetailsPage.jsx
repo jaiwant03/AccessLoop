@@ -584,8 +584,185 @@ const BookingDetailsPage = () => {
             </button>
           </div>
         </div>
-              <span>Report Issue</span>
-            </button>
+
+        {/* Interactive Handover & Return Checkpoints Card */}
+        <div
+          className="al-card"
+          style={{
+            backgroundColor: '#F8FAFC',
+            border: '1px solid #E2E8F0',
+            borderRadius: '12px',
+            padding: '1.25rem 1.5rem',
+            marginBottom: '2rem',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <ShieldCheck size={18} color="#16A34A" />
+              <strong style={{ fontSize: '0.95rem', color: '#0F172A' }}>
+                5-Step Trusted Lifecycle Checkpoints
+              </strong>
+            </div>
+            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+              Click any active checkpoint button below to advance to the next step
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))',
+              gap: '0.75rem',
+            }}
+          >
+            {/* 1. Request */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '8px',
+                padding: '0.85rem',
+                border: '1px solid #E2E8F0',
+                borderLeft: '3px solid #16A34A',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#16A34A' }}>1. Request</span>
+                <span className="badge badge-green" style={{ fontSize: '0.65rem', padding: '1px 5px' }}>✓ Done</span>
+              </div>
+              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Borrower Submitted</div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>Stated use & slot reserved</div>
+            </div>
+
+            {/* 2. Approval */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '8px',
+                padding: '0.85rem',
+                border: '1px solid #E2E8F0',
+                borderLeft: `3px solid ${booking.status !== 'Pending' ? '#16A34A' : '#F59E0B'}`,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.status !== 'Pending' ? '#16A34A' : '#F59E0B' }}>
+                  2. Approval
+                </span>
+                <span className={`badge ${booking.status !== 'Pending' ? 'badge-green' : 'badge-amber'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
+                  {booking.status !== 'Pending' ? '✓ Approved' : 'Pending'}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Custodian Verification</div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>Clearance & schedule checked</div>
+            </div>
+
+            {/* 3. Pre-Use Check-In */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '8px',
+                padding: '0.85rem',
+                border: '1px solid #E2E8F0',
+                borderLeft: `3px solid ${booking.checkIn?.checkedInAt ? '#16A34A' : activeStepIndex === 1 ? '#22C55E' : '#CBD5E1'}`,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.checkIn?.checkedInAt ? '#16A34A' : '#334155' }}>
+                  3. Check-In
+                </span>
+                <span className={`badge ${booking.checkIn?.checkedInAt ? 'badge-green' : activeStepIndex === 1 ? 'badge-blue' : 'badge-gray'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
+                  {booking.checkIn?.checkedInAt ? '✓ Uploaded' : activeStepIndex === 1 ? 'Action Needed' : 'Upcoming'}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Pre-Use Photo Proof</div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>
+                {booking.checkIn?.checkedInAt ? 'Initial condition saved' : 'Borrower documents condition'}
+              </div>
+              {!booking.checkIn?.checkedInAt && booking.status === 'Approved' && (
+                <button
+                  onClick={() => setShowCheckInModal(true)}
+                  className="btn btn-primary btn-sm"
+                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem' }}
+                >
+                  Upload Photos
+                </button>
+              )}
+            </div>
+
+            {/* 4. Handover & Active */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '8px',
+                padding: '0.85rem',
+                border: '1px solid #E2E8F0',
+                borderLeft: `3px solid ${booking.checkIn?.verifiedByOwner || booking.status === 'Active' || booking.status === 'Return Pending' || booking.status === 'Completed' ? '#16A34A' : activeStepIndex === 2 ? '#22C55E' : '#CBD5E1'}`,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.status === 'Active' || booking.status === 'Completed' || booking.status === 'Return Pending' ? '#16A34A' : '#334155' }}>
+                  4. Handover
+                </span>
+                <span className={`badge ${booking.status === 'Active' || booking.status === 'Completed' || booking.status === 'Return Pending' ? 'badge-green' : activeStepIndex === 2 ? 'badge-blue' : 'badge-gray'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
+                  {booking.status === 'Active' || booking.status === 'Completed' || booking.status === 'Return Pending' ? '✓ Active' : activeStepIndex === 2 ? 'Action Needed' : 'Upcoming'}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Physical Handover</div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>
+                {booking.status === 'Active' ? 'Session active • in use' : 'Confirm equipment collection'}
+              </div>
+              {booking.status === 'Approved' && booking.checkIn?.checkedInAt && (
+                <button
+                  onClick={handleVerifyHandover}
+                  disabled={actionLoading}
+                  className="btn btn-primary btn-sm"
+                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem', backgroundColor: '#16A34A' }}
+                >
+                  Confirm Handover
+                </button>
+              )}
+            </div>
+
+            {/* 5. Return & Final Inspection */}
+            <div
+              style={{
+                backgroundColor: '#FFFFFF',
+                borderRadius: '8px',
+                padding: '0.85rem',
+                border: '1px solid #E2E8F0',
+                borderLeft: `3px solid ${booking.status === 'Completed' ? '#16A34A' : booking.status === 'Return Pending' ? '#F59E0B' : '#CBD5E1'}`,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: booking.status === 'Completed' ? '#16A34A' : '#334155' }}>
+                  5. Return
+                </span>
+                <span className={`badge ${booking.status === 'Completed' ? 'badge-green' : booking.status === 'Return Pending' ? 'badge-amber' : 'badge-gray'}`} style={{ fontSize: '0.65rem', padding: '1px 5px' }}>
+                  {booking.status === 'Completed' ? '✓ Completed' : booking.status === 'Return Pending' ? 'Inspect Now' : 'Upcoming'}
+                </span>
+              </div>
+              <div style={{ fontSize: '0.775rem', color: '#334155', fontWeight: 600 }}>Return & Sign-Off</div>
+              <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>
+                {booking.status === 'Completed' ? 'Condition signed off' : booking.status === 'Return Pending' ? 'Photos submitted' : 'Final return inspection'}
+              </div>
+              {(booking.status === 'Active' || booking.status === 'Overdue') && (
+                <button
+                  onClick={() => setShowReturnModal(true)}
+                  className="btn btn-primary btn-sm"
+                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem' }}
+                >
+                  Submit Return
+                </button>
+              )}
+              {booking.status === 'Return Pending' && (
+                <button
+                  onClick={() => setShowInspectModal(true)}
+                  className="btn btn-primary btn-sm"
+                  style={{ width: '100%', marginTop: '0.5rem', fontSize: '0.72rem', padding: '0.3rem 0.5rem', backgroundColor: '#16A34A' }}
+                >
+                  Inspect & Complete
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
